@@ -1,7 +1,6 @@
 import unittest
 import numpy as np
 import pygame
-import random
 from gym_pathfinding.envs import Renderer
 from gym_pathfinding.envs.pathfinding_env import PathfindingEnv
 from gym_pathfinding.envs.physics import PhysicsObject
@@ -16,7 +15,7 @@ class TestVisualization(unittest.TestCase):
         self.agent = PhysicsObject([1, 1])
         self.obstacle_manager = ObstacleManager(world_bounds=np.array([100.0, 100.0]))
         self.target = [10, 10]
-        
+
     def test_initial_rendering(self):
         # Test the initial rendering of the environment
         self.env.reset()  # Reset the environment
@@ -24,15 +23,15 @@ class TestVisualization(unittest.TestCase):
             self.visualization.render(self.agent, self.obstacle_manager, self.target)  # Render the initial state
         except Exception as e:
             self.fail(f"Initial rendering failed with exception: {e}")
-        
+
     def test_update_rendering(self):
         # Test that the environment updates the rendering after each action
         self.env.reset()
-        self.env.agent.position= (np.array([1.0, 0.0], dtype=np.float32))  # Move the agent
+        self.env.agent.position = (np.array([1.0, 0.0], dtype=np.float32))  # Move the agent
         try:
             self.visualization.render(self.agent, self.obstacle_manager, self.target)  # Render updated state
             for i in range(100):
-                self.env.agent.position= (np.array([(1.0+ i), (1.0+ i)], dtype=np.float32))
+                self.env.agent.position = (np.array([(1.0+ i), (1.0+ i)], dtype=np.float32))
                 self.visualization.render(self.env.agent, self.obstacle_manager, self.target)
         except Exception as e:
             self.fail(f"Updated rendering failed with exception: {e}")
@@ -78,7 +77,6 @@ class TestVisualization(unittest.TestCase):
         # Ensure the rendering window appears and stays open
         try:
             self.visualization.render(self.agent, self.obstacle_manager, self.target)  # Render the environment once
-            #pygame.time.wait(5000)  # Wait 500ms to see the window
         except Exception as e:
             self.fail(f"Rendering window test failed with exception: {e}")
 
@@ -93,7 +91,7 @@ class TestVisualization(unittest.TestCase):
     def test_path_updates(self):
         # Test that the environment updates the rendering after each action
         self.env.reset()
-        self.env.agent.position= (np.array([1.0, 0.0], dtype=np.float32))  # Move the agent
+        self.env.agent.position = (np.array([1.0, 0.0], dtype=np.float32))  # Move the agent
         try:
             self.visualization.render(self.agent, self.obstacle_manager, self.target)  # Render updated state
             for i in range(100):

@@ -40,7 +40,7 @@ class TestPathfindingEnv(unittest.TestCase):
         self.env.reset()
 
     def test_environment_reset(self):
-        obs = self.env.reset()
+        self.env.reset()
         self.assertTrue(self.env.agent.position is not None)
         self.assertTrue(self.env.target_position is not None)
 
@@ -50,8 +50,6 @@ class TestPathfindingEnv(unittest.TestCase):
         self.assertTrue(obs is not None)
         self.assertTrue(isinstance(reward, float))
         self.assertTrue(isinstance(done, bool))
-
-
 
 
 if __name__ == "__main__":

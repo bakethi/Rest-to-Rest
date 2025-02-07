@@ -2,7 +2,6 @@ import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
 from .physics import PhysicsObject, PhysicsEngine
-from .visualization import Renderer
 from ..utils.obstacles import ObstacleManager
 
 
@@ -29,9 +28,15 @@ class PathfindingEnv(gym.Env):
         # Initialize environment components
         self.obstacle_manager = ObstacleManager()
         self.generate_random_obstacles()
-        self.agent = PhysicsObject(position=np.array([0.0, 0.0]), velocity=np.array([0.0, 0.0]), obstacleManager=self.obstacle_manager, bounds=self.bounds, bounce_factor=self.bounce_factor)
+        self.agent = PhysicsObject(
+            position=np.array([0.0, 0.0]),
+            velocity=np.array([0.0, 0.0]),
+            obstacleManager=self.obstacle_manager,
+            bounds=self.bounds,
+            bounce_factor=self.bounce_factor,
+        )
         self.engine = PhysicsEngine([self.agent])
-        
+
 
         # Target position
         self.target_position = np.array([90.0, 90.0])
@@ -71,8 +76,6 @@ class PathfindingEnv(gym.Env):
 
         # Return the observation, reward, done flag, and info
         return self._get_observation(), reward, done, {}
-
-
 
     def _get_observation(self):
         """
@@ -119,7 +122,7 @@ class PathfindingEnv(gym.Env):
 
         # Negative reward proportional to the distance to the target
         return -np.linalg.norm(self.agent.position - self.target_position)
-    
+
     def generate_random_obstacles(self):
         self.obstacle_manager.generate_random_obstacles(self.number_of_obstacles)
         if self.obstacle_manager.obstacles == []:

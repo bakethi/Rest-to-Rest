@@ -3,9 +3,18 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 
+
 # Configuration class for managing hyperparameters
 class Config:
-    def __init__(self, batch_size=64, gamma=0.99, epsilon=0.1, learning_rate=1e-3, max_episodes=1000, target_update_frequency=10):
+    def __init__(
+        self,
+        batch_size=64,
+        gamma=0.99,
+        epsilon=0.1,
+        learning_rate=1e-3,
+        max_episodes=1000,
+        target_update_frequency=10,
+    ):
         self.batch_size = batch_size
         self.gamma = gamma
         self.epsilon = epsilon
@@ -20,6 +29,7 @@ class Config:
     def set(self, param, value):
         """Set a configuration parameter."""
         setattr(self, param, value)
+
 
 # Plotter class to visualize training progress
 class Plotter:
@@ -42,6 +52,7 @@ class Plotter:
         plt.ylabel('Loss')
         plt.title('Training Loss')
         plt.show()
+
 
 # Checkpointer class to save and load models
 class Checkpointer:
@@ -69,10 +80,12 @@ class Checkpointer:
             print(f"No checkpoint found at {self.save_path}")
             return model, optimizer, 0
 
+
 # Utility function to normalize the state data (example)
 def normalize(state, state_min, state_max):
     """Normalize the state to be within a specified range."""
     return (state - state_min) / (state_max - state_min)
+
 
 # Epsilon-greedy function for action selection
 def epsilon_greedy(agent, state, epsilon):
@@ -81,6 +94,7 @@ def epsilon_greedy(agent, state, epsilon):
         return agent.select_random_action()  # Exploration
     else:
         return agent.select_best_action(state)  # Exploitation
+
 
 # Function to compute various performance metrics
 def compute_metrics(total_rewards):

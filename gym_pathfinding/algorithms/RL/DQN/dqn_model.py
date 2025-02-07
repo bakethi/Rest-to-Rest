@@ -1,6 +1,6 @@
-import torch
 import torch.nn as nn
 import torch.nn.functional as F
+
 
 class DQNModel(nn.Module):
     def __init__(self, input_size, output_size):
@@ -12,7 +12,7 @@ class DQNModel(nn.Module):
             output_size (int): The number of possible actions (output size).
         """
         super(DQNModel, self).__init__()
-        
+
         # Define the layers of the neural network
         self.layer1 = nn.Linear(input_size, 128)  # First hidden layer
         self.layer2 = nn.Linear(128, 128)         # Second hidden layer
@@ -32,5 +32,5 @@ class DQNModel(nn.Module):
         x = F.relu(self.layer1(x))  # Apply ReLU activation after first layer
         x = F.relu(self.layer2(x))  # Apply ReLU activation after second layer
         x = self.layer3(x)          # Output layer (no activation function here)
-        
+
         return x

@@ -1,9 +1,9 @@
 import torch
 import torch.optim as optim
-import numpy as np
 from dqn_agent import DQNAgent
 from replay_buffer import ReplayBuffer
 from dqn_model import DQNModel
+
 
 class Trainer:
     def __init__(self, env, batch_size, gamma, target_update_frequency):
@@ -20,16 +20,16 @@ class Trainer:
         self.batch_size = batch_size
         self.gamma = gamma
         self.target_update_frequency = target_update_frequency
-        
+
         # Create the model and the optimizer
         self.model = DQNModel(env.observation_space.shape[0], env.action_space.n)
         self.target_model = DQNModel(env.observation_space.shape[0], env.action_space.n)
         self.target_model.load_state_dict(self.model.state_dict())  # Initialize target model with same weights
         self.optimizer = optim.Adam(self.model.parameters())
-        
+
         # Create the replay buffer
         self.buffer = ReplayBuffer(max_size=100000)
-        
+
         # Initialize the agent
         self.agent = DQNAgent(self.model)
 
@@ -48,13 +48,13 @@ class Trainer:
             while not done:
                 # Select an action using epsilon-greedy strategy
                 action = self.agent.select_action(state)
-                
+
                 # Step in the environment
                 next_state, reward, done, _ = self.env.step(action)
-                
+
                 # Store experience in replay buffer
                 self.buffer.add(state, action, reward, next_state, done)
-                
+
                 # Update state and accumulate reward
                 state = next_state
                 total_reward += reward
@@ -62,10 +62,10 @@ class Trainer:
                 # Train the model if we have enough samples in the buffer
                 if len(self.buffer) > self.batch_size:
                     self.optimize_model()
-            
+
             # Print episode summary
             print(f"Episode {episode + 1}, Total Reward: {total_reward}")
-            
+
             # Update the target network periodically
             if episode % self.target_update_frequency == 0:
                 self.update_target_network()
@@ -88,10 +88,10 @@ class Trainer:
         # Get Q-values for the current states and next states
         current_q_values = self.model(states)
         next_q_values = self.target_model(next_states)
-        
+
         # Get the Q-values corresponding to the selected actions
         current_q_value = current_q_values.gather(1, actions.unsqueeze(1)).squeeze(1)
-        
+
         # Compute the target Q-values
         next_q_value = next_q_values.max(1)[0]
         target_q_value = rewards + (self.gamma * next_q_value * ~dones)

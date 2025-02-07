@@ -1,8 +1,7 @@
-import gymnasium
 import numpy as np
 from gym_pathfinding.envs.pathfinding_env import PathfindingEnv
 from gym_pathfinding.envs import Renderer
-from gym_pathfinding.utils.pathfinding import Pathfinding
+
 
 
 class RunExample:
@@ -15,8 +14,8 @@ class RunExample:
     def run(self):
         # Run the environment
         done = False
-        
-        while done == False:
+
+        while not done:
             self.visualization.render(self.env.agent, self.env.obstacle_manager, self.env.target_position)
             action = self.env.action_space.sample()
             action * self.magnitude
@@ -27,11 +26,6 @@ class RunExample:
                 self.visualization.render(self.env.agent, self.env.obstacle_manager, self.env.target_position)
             if np.array_equal(self.env.target_position, self.env.agent.position):
                 done = True
-
-        
-        
-
-
 
 
 if __name__ == "__main__":

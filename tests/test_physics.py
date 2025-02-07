@@ -21,7 +21,6 @@ class TestPhysics(unittest.TestCase):
         self.agent.apply_force(np.array([1.0, 0.0]))
         self.agent.update()  # Update for 1 second
         self.assertTrue(np.allclose(self.agent.velocity, np.array([0.9, 0.0])))  # Velocity should match acceleration
-        
 
     def test_drag_effect(self):
         # Test drag reducing velocity over time
@@ -49,7 +48,11 @@ class TestPhysics(unittest.TestCase):
         self.agent = PhysicsObject(bounds=np.array([[0, 0], [100, 100]]))  # 2D bounds for x and y
         self.agent.position = np.array([1000.0, 1000.0])
         self.agent.update()
-        self.assertTrue(np.all(self.agent.position >= self.agent.bounds[0]) and np.all(self.agent.position <= self.agent.bounds[1]))  # Position should not exceed world bounds
+        self.assertTrue(
+            np.all(self.agent.position >= self.agent.bounds[0]) 
+            and np.all(self.agent.position <= self.agent.bounds[1])
+        )  # Position should not exceed world bounds
+
 
     def test_physics_engine(self):
         self.agent = PhysicsObject()
@@ -57,19 +60,19 @@ class TestPhysics(unittest.TestCase):
         self.engine.add_object(self.agent)
         self.agent.apply_force(np.array([1.0, 0.0]))
         self.engine.update()
-        self.assertTrue(np.allclose(self.agent.velocity, np.array([0.9, 0.0]))) 
+        self.assertTrue(np.allclose(self.agent.velocity, np.array([0.9, 0.0])))
 
     def test_multiple_steps(self):
-        self.agent = PhysicsObject(bounds=[[0, 0], [300, 300]]) 
+        self.agent = PhysicsObject(bounds=[[0, 0], [300, 300]])
         self.engine = PhysicsEngine()
         self.engine.add_object(self.agent)
         for _ in range(100):
             self.agent.apply_force(np.array([1.0, 1.0]))
             self.engine.update()
-        self.assertTrue(np.allclose(self.agent.position, np.array([300, 300]))) 
+        self.assertTrue(np.allclose(self.agent.position, np.array([300, 300])))
 
     def test_position_change_without_inputs(self):
-        self.agent = PhysicsObject(bounds=[[0, 0], [300, 300]]) 
+        self.agent = PhysicsObject(bounds=[[0, 0], [300, 300]])
         self.engine = PhysicsEngine()
         self.engine.add_object(self.agent)
         self.agent.apply_force(np.array([1.0, 1.0]))
@@ -80,7 +83,7 @@ class TestPhysics(unittest.TestCase):
         self.assertFalse(np.array_equal(old_position, new_position))
 
     def test_sliding(self):
-        self.agent = PhysicsObject(bounds=[[0, 0], [300, 300]]) 
+        self.agent = PhysicsObject(bounds=[[0, 0], [300, 300]])
         self.engine = PhysicsEngine()
         self.engine.add_object(self.agent)
         self.agent.apply_force(np.array([1.0, 1.0]))
@@ -99,7 +102,7 @@ class TestPhysics(unittest.TestCase):
 
     def test_collision(self):
         # test square obstacle
-        self.agent = PhysicsObject(bounds=[[0, 0], [300, 300]]) 
+        self.agent = PhysicsObject(bounds=[[0, 0], [300, 300]])
         self.engine = PhysicsEngine()
         self.engine.add_object(self.agent)
         self.obstacleManager.add_obstacle([300, 300], 599)
@@ -107,18 +110,13 @@ class TestPhysics(unittest.TestCase):
         self.agent.update()
         self.assertTrue(self.obstacleManager.check_collision(self.agent), "square obstacle collision failing")
         # test circle obstacle
-        self.agent = PhysicsObject(bounds=[[0, 0], [300, 300]]) 
+        self.agent = PhysicsObject(bounds=[[0, 0], [300, 300]])
         self.engine = PhysicsEngine()
         self.engine.add_object(self.agent)
         self.obstacleManager.add_obstacle([300, 300], 599, shape_type="circle")
         self.agent.apply_force(np.array([10, 10]))
         self.agent.update()
         self.assertTrue(self.obstacleManager.check_collision(self.agent), "circle obstacle collision failing")
-
-
-
-
-
 
 
 if __name__ == "__main__":

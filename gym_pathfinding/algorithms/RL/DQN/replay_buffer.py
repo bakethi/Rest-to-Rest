@@ -1,5 +1,5 @@
 import random
-import numpy as np
+
 
 class ReplayBuffer:
     def __init__(self, max_size):
@@ -25,13 +25,13 @@ class ReplayBuffer:
             done (bool): Whether the episode has ended.
         """
         experience = (state, action, reward, next_state, done)
-        
+
         # If buffer is full, remove the oldest experience
         if self.size >= self.max_size:
             self.buffer.pop(0)
         else:
             self.size += 1
-        
+
         # Add new experience to buffer
         self.buffer.append(experience)
 

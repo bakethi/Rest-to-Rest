@@ -1,5 +1,4 @@
 import pygame
-import numpy as np
 
 
 class Renderer:
@@ -26,7 +25,6 @@ class Renderer:
             "target": (0, 0, 255),
             "path": (255, 192, 203)
         }
-        
 
     def render(self, agent, obstacle_manager, target_position):
         """
@@ -52,13 +50,13 @@ class Renderer:
         for obstacle in obstacle_manager.get_obstacles():
             # Convert world coordinates to screen coordinates
             obstacle_screen_pos = self._world_to_screen(obstacle["position"])
-            
+
             # Scale the obstacle size
             obstacle_size = int(obstacle["size"] * self.scale)
-            
+
             # Get obstacle type
             obstacle_type = obstacle.get("type", "square")  # Default to "square" if type is missing
-            
+
             if obstacle_type == "circle":
                 # Draw a circle obstacle
                 pygame.draw.circle(
@@ -80,7 +78,6 @@ class Renderer:
                     ),
                 )
 
-
         # Draw the path taken by the agent
         if len(agent.path_history) > 1:
             for i in range(1, len(agent.path_history)):
@@ -88,7 +85,6 @@ class Renderer:
                 end_pos = tuple(self._world_to_screen(agent.path_history[i]))
                 if start_pos != end_pos:  # Avoid drawing zero-length lines
                     pygame.draw.line(self.screen, self.colors["path"], start_pos, end_pos, 2)
-
 
         # Update the display
         pygame.display.flip()

@@ -100,7 +100,6 @@ class Pathfinding:
         # Check if the position is within the grid boundaries
         return 0 <= x < grid_width and 0 <= y < grid_height
 
-
     def _a_star(self, start_grid, target_grid):
         """
         A* algorithm for pathfinding.

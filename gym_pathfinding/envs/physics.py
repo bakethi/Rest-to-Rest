@@ -2,7 +2,17 @@ import numpy as np
 
 
 class PhysicsObject:
-    def __init__(self, position=[0, 0], velocity=None, mass=1.0, drag=0.1, bounds=None, max_speed=None, bounce_factor=1, obstacleManager=None):  #bounds [x_min, y_min], [x_max, y_max]
+    def __init__(
+    self,
+    position=[0, 0],
+    velocity=None,
+    mass=1.0,
+    drag=0.1,
+    bounds=None, # bounds [x_min, y_min], [x_max, y_max]
+    max_speed=None,
+    bounce_factor=1,
+    obstacleManager=None,
+):  
         """
         Initializes the PhysicsObject.
 
@@ -37,7 +47,6 @@ class PhysicsObject:
         """
         self.velocity = (self.velocity * (1 - self.drag)) / self.mass
         
-
         speed = np.linalg.norm(self.velocity)
         if self.max_speed != None:
             if speed > self.max_speed:
@@ -74,7 +83,6 @@ class PhysicsObject:
 class PhysicsEngine:
     def __init__(self, objects=None):
         self.objects = objects if objects is not None else []
-
 
     def add_object(self, obj):
         """
