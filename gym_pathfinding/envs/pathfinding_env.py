@@ -9,7 +9,7 @@ from ..utils.obstacles import ObstacleManager
 class PathfindingEnv(gym.Env):
     metadata = {"render.modes": ["human"]}
 
-    def __init__(self, number_of_obstacles, bounds=np.array([[0, 0], [100, 100]]), bounce_factor=1):
+    def __init__(self, number_of_obstacles=1, bounds=np.array([[0, 0], [100, 100]]), bounce_factor=1):
         super(PathfindingEnv, self).__init__()
 
         # Define action and observation spaces
@@ -18,8 +18,8 @@ class PathfindingEnv(gym.Env):
 
         # Observations: [x, y, vx, vy] (position and velocity of agent)
         self.observation_space = spaces.Box(
-            low=np.array([0, 0, -np.inf, -np.inf]),
-            high=np.array([100, 100, np.inf, np.inf]),
+            low=np.array([0, 0, -np.inf, -np.inf], dtype=np.float32),
+            high=np.array([100, 100, np.inf, np.inf], dtype=np.float32),
             dtype=np.float32
         )
         self.number_of_obstacles = number_of_obstacles
