@@ -8,7 +8,8 @@ class PhysicsObject:
         velocity=None,
         mass=1.0,
         drag=0.1,
-        bounds=None, #bounds [x_min, y_min], [x_max, y_max]
+        bounds=None,  
+        #bounds [x_min, y_min], [x_max, y_max]
         max_speed=None,
         bounce_factor=1,
         obstacleManager=None,
@@ -21,7 +22,7 @@ class PhysicsObject:
             velocity (list or np.array, optional): The initial velocity of the object (default is None, meaning zero velocity).
             mass (float, optional): The mass of the object (default is 1.0).
             drag (float, optional): The drag coefficient, which will affect the velocity over time (default is 0.1).
-            bounds (tuple, optional): The bounds for the object in the form ((x_min, y_min), (x_max, y_max)) to keep the 
+            bounds (tuple, optional): The bounds for the object in the form ((x_min, y_min), (x_max, y_max)) to keep the
             object within these limits.
             max_speed (float, optional): The maximum speed the object can reach. If None, there is no speed limit.
         """
