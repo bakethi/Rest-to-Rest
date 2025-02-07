@@ -8,8 +8,7 @@ class PhysicsObject:
         velocity=None,
         mass=1.0,
         drag=0.1,
-        bounds=None,  
-        #bounds [x_min, y_min], [x_max, y_max]
+        bounds=None,    # bounds [x_min, y_min], [x_max, y_max]
         max_speed=None,
         bounce_factor=1,
         obstacleManager=None,
