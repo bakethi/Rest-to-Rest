@@ -17,19 +17,19 @@ class TrainDQN:
 
         # Initialize the configuration with default values
         self.config = Config(
-            batch_size=64, 
-            gamma=0.99, 
-            epsilon=0.1, 
-            learning_rate=1e-3, 
-            max_episodes=1000, 
+            batch_size=64,
+            gamma=0.99,
+            epsilon=0.1,
+            learning_rate=1e-3,
+            max_episodes=1000,
             target_update_frequency=10
             )
 
         # Initialize the trainer that handles the DQN agent's training
         self.trainer = Trainer(
-            env=self.env, 
-            batch_size=self.config.batch_size, 
-            gamma=self.config.gamma, 
+            env=self.env,
+            batch_size=self.config.batch_size,
+            gamma=self.config.gamma,
             target_update_frequency=self.config.target_update_frequency
             )
 
