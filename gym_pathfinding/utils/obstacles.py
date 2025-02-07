@@ -83,3 +83,26 @@ class ObstacleManager:
         Reset the obstacle manager, clearing all obstacles.
         """
         self.obstacles = []
+
+    def check_collision_of_point(self, point):
+        """
+        Check for a collision between a Point and any obstacle.
+
+        Args:
+            point (array): The point to check for collisions.
+
+        Returns:
+            bool: True if a collision occurs, False otherwise.
+        """
+        for obstacle in self.obstacles:
+            if obstacle["type"] == "square":
+                half_size = obstacle["size"] / 2
+                lower_bound = obstacle["position"] - half_size
+                upper_bound = obstacle["position"] + half_size
+                if np.all(lower_bound <= point) and np.all(point <= upper_bound):
+                    return True
+            elif obstacle["type"] == "circle":
+                distance = np.linalg.norm(obstacle["position"] - point)
+                if distance < obstacle["size"]:
+                    return True
+        return False

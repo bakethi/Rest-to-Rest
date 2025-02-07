@@ -3,12 +3,19 @@ from gymnasium import spaces
 import numpy as np
 from .physics import PhysicsObject, PhysicsEngine
 from ..utils.obstacles import ObstacleManager
+import copy
 
 
 class PathfindingEnv(gym.Env):
     metadata = {"render.modes": ["human"]}
 
-    def __init__(self, number_of_obstacles=1, bounds=np.array([[0, 0], [100, 100]]), bounce_factor=1):
+    def __init__(
+            self, 
+            number_of_obstacles=1, 
+            bounds=np.array([[0, 0], [100, 100]]), 
+            bounce_factor=1,
+            num_lidar_scans=360,
+            lidar_max_range=600):
         super(PathfindingEnv, self).__init__()
 
         # Define action and observation spaces
@@ -42,6 +49,8 @@ class PathfindingEnv(gym.Env):
 
         # Renderer (initialized later when render is called)
         self.renderer = None
+        self.num_lidar_scans = num_lidar_scans
+        self.lidar_max_range = lidar_max_range
 
     def reset(self):
         """
@@ -83,7 +92,10 @@ class PathfindingEnv(gym.Env):
         Returns:
             np.array: [x, y, vx, vy]
         """
-        return np.concatenate([self.agent.position, self.agent.velocity])
+        distTarget = np.array([self._getAgentTargetDist()])
+        ray_collisions = np.array(self.cast_rays_until_collision())
+
+        return np.concatenate([self.agent.velocity, distTarget, ray_collisions.flatten()])
 
     def _check_done(self):
         """
@@ -126,3 +138,53 @@ class PathfindingEnv(gym.Env):
         self.obstacle_manager.generate_random_obstacles(self.number_of_obstacles)
         if self.obstacle_manager.obstacles == []:
             raise ValueError("Generating obstacles failed!")
+
+    def _getAgentTargetDist(self):
+        """Returns the normalized distance from p1 to p2 in 2D space."""
+        agent_Pos = np.array(self.agent.position)
+        target_Pos = np.array(self.target_position)
+        # Compute the Euclidean distance between the points
+        distance = np.linalg.norm(target_Pos - agent_Pos)
+
+        # Define a maximum possible distance (for normalization)
+        # Get the two opposite corners
+        corner1 = self.bounds[0]
+        corner2 = self.bounds[1]
+
+        # Calculate the Euclidean distance between the corners
+        max_distance = np.linalg.norm(corner2 - corner1)
+
+        # Normalize the distance
+        normalized_distance = distance / max_distance
+        
+        return normalized_distance
+
+    def cast_rays_until_collision(self):
+        """Casts rays until they hit an obstacle in a 2D grid."""
+        rays = []
+        angle_step = 2 * np.pi / self.num_lidar_scans  # Divide full circle
+        for i in range(self.num_lidar_scans):
+            angle = i * angle_step  # Compute angle
+            direction = np.array([np.cos(angle), np.sin(angle)])  # Unit vector
+            pos = copy.copy(self.agent.position)  # Start position (float for precision)
+
+            # Move along the ray in small steps
+            for _ in range(int(self.lidar_max_range * 10)):  # Higher steps for precision
+                pos += direction * 0.1  # Small step forward
+
+                # Check if the ray goes out of bounds
+                if (
+                    pos[0] < self.bounds[0][0] or pos[0] >= self.bounds[1][0] or
+                    pos[1] < self.bounds[0][1] or pos[1] >= self.bounds[1][1] 
+                ):
+                    # Apply bounds if provided
+                    if self.bounds is not None:
+                        pos = np.clip(pos, self.bounds[0], self.bounds[1])
+                    rays.append((pos[0], pos[1]))  # Store the hit position
+                    break  # Stop if out of bounds
+
+                if self.obstacle_manager is not None:
+                    if self.obstacle_manager.check_collision_of_point(pos):
+                        rays.append((pos[0], pos[1]))
+                        break
+        return rays
