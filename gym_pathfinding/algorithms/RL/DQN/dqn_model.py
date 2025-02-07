@@ -14,9 +14,9 @@ class DQNModel(nn.Module):
         super(DQNModel, self).__init__()
 
         # Define the layers of the neural network
-        self.layer1 = nn.Linear(input_size, 128)  # First hidden layer
-        self.layer2 = nn.Linear(128, 128)         # Second hidden layer
-        self.layer3 = nn.Linear(128, output_size) # Output layer (Q-values)
+        self.layer1 = nn.Linear(input_size, 128)    # First hidden layer
+        self.layer2 = nn.Linear(128, 128)           # Second hidden layer
+        self.layer3 = nn.Linear(128, output_size)   # Output layer (Q-values)
 
     def forward(self, x):
         """

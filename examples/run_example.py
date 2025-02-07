@@ -3,7 +3,6 @@ from gym_pathfinding.envs.pathfinding_env import PathfindingEnv
 from gym_pathfinding.envs import Renderer
 
 
-
 class RunExample:
     def __init__(self):
         # Initialize environment, visualization, and pathfinding instances

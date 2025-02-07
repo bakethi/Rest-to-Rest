@@ -2,6 +2,7 @@ import gym
 from trainer import Trainer
 from utils import Config, Checkpointer, Plotter
 
+
 class TrainDQN:
     def __init__(self, env_name):
         """
@@ -15,10 +16,22 @@ class TrainDQN:
         self.env = gym.make(env_name)
 
         # Initialize the configuration with default values
-        self.config = Config(batch_size=64, gamma=0.99, epsilon=0.1, learning_rate=1e-3, max_episodes=1000, target_update_frequency=10)
+        self.config = Config(
+            batch_size=64, 
+            gamma=0.99, 
+            epsilon=0.1, 
+            learning_rate=1e-3, 
+            max_episodes=1000, 
+            target_update_frequency=10
+            )
 
         # Initialize the trainer that handles the DQN agent's training
-        self.trainer = Trainer(env=self.env, batch_size=self.config.batch_size, gamma=self.config.gamma, target_update_frequency=self.config.target_update_frequency)
+        self.trainer = Trainer(
+            env=self.env, 
+            batch_size=self.config.batch_size, 
+            gamma=self.config.gamma, 
+            target_update_frequency=self.config.target_update_frequency
+            )
 
         # Initialize utilities for checkpointing and plotting
         self.checkpointer = Checkpointer(save_path="model_checkpoint.pth")

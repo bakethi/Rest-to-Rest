@@ -3,16 +3,16 @@ import numpy as np
 
 class PhysicsObject:
     def __init__(
-    self,
-    position=[0, 0],
-    velocity=None,
-    mass=1.0,
-    drag=0.1,
-    bounds=None, # bounds [x_min, y_min], [x_max, y_max]
-    max_speed=None,
-    bounce_factor=1,
-    obstacleManager=None,
-):  
+        self,
+        position=[0, 0],
+        velocity=None,
+        mass=1.0,
+        drag=0.1,
+        bounds=None,    #bounds [x_min, y_min], [x_max, y_max]
+        max_speed=None,
+        bounce_factor=1,
+        obstacleManager=None,
+    ):
         """
         Initializes the PhysicsObject.
 
@@ -21,7 +21,8 @@ class PhysicsObject:
             velocity (list or np.array, optional): The initial velocity of the object (default is None, meaning zero velocity).
             mass (float, optional): The mass of the object (default is 1.0).
             drag (float, optional): The drag coefficient, which will affect the velocity over time (default is 0.1).
-            bounds (tuple, optional): The bounds for the object in the form ((x_min, y_min), (x_max, y_max)) to keep the object within these limits.
+            bounds (tuple, optional): The bounds for the object in the form ((x_min, y_min), (x_max, y_max)) to keep the 
+            object within these limits.
             max_speed (float, optional): The maximum speed the object can reach. If None, there is no speed limit.
         """
         self.position = np.array(position, dtype=np.float32)
@@ -46,9 +47,9 @@ class PhysicsObject:
         Update the object's position and velocity.
         """
         self.velocity = (self.velocity * (1 - self.drag)) / self.mass
-        
+
         speed = np.linalg.norm(self.velocity)
-        if self.max_speed != None:
+        if self.max_speed is not None:
             if speed > self.max_speed:
                 self.velocity = (self.velocity / speed) * self.max_speed
 
@@ -58,7 +59,7 @@ class PhysicsObject:
         # update position
         self.position += self.velocity
 
-        if self.obstacleManager != None:
+        if self.obstacleManager is not None:
             if self.obstacleManager.check_collision(self):
                 self.velocity *= (self.bounce_factor * -1)
                 self.position += self.velocity

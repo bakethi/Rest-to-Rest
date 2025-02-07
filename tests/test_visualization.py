@@ -27,11 +27,11 @@ class TestVisualization(unittest.TestCase):
     def test_update_rendering(self):
         # Test that the environment updates the rendering after each action
         self.env.reset()
-        self.env.agent.position = (np.array([1.0, 0.0], dtype=np.float32))  # Move the agent
+        self.env.agent.position = np.array([1.0, 0.0], dtype=np.float32)  # Move the agent
         try:
             self.visualization.render(self.agent, self.obstacle_manager, self.target)  # Render updated state
             for i in range(100):
-                self.env.agent.position = (np.array([(1.0+ i), (1.0+ i)], dtype=np.float32))
+                self.env.agent.position = np.array([(1.0 + i), (1.0 + i)], dtype=np.float32)
                 self.visualization.render(self.env.agent, self.obstacle_manager, self.target)
         except Exception as e:
             self.fail(f"Updated rendering failed with exception: {e}")
@@ -95,8 +95,8 @@ class TestVisualization(unittest.TestCase):
         try:
             self.visualization.render(self.agent, self.obstacle_manager, self.target)  # Render updated state
             for i in range(100):
-                self.env.agent.position = (np.array([(1.0+ i), (1.0+ i)], dtype=np.float32))
-                self.env.agent.path_history.append(np.array([(1.0+ i), (1.0+ i)], dtype=np.float32))
+                self.env.agent.position = np.array([(1.0 + i), (1.0 + i)], dtype=np.float32)
+                self.env.agent.path_history.append(np.array([(1.0 + i), (1.0 + i)], dtype=np.float32))
                 self.visualization.render(self.env.agent, self.obstacle_manager, self.target)
         except Exception as e:
             self.fail(f"Updated rendering failed with exception: {e}")

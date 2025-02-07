@@ -37,7 +37,6 @@ class PathfindingEnv(gym.Env):
         )
         self.engine = PhysicsEngine([self.agent])
 
-
         # Target position
         self.target_position = np.array([90.0, 90.0])
 

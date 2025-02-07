@@ -34,7 +34,8 @@ class TestPhysics(unittest.TestCase):
         self.agent.apply_force(np.array([1.0, 0.0]))
         for _ in range(10):
             self.agent.update()  # Update for 1 second each
-        self.assertTrue(np.linalg.norm(self.agent.velocity) > 0.0)  # Velocity should still be positive but less than initial due to drag
+        self.assertTrue(np.linalg.norm(self.agent.velocity) > 0.0)
+        # Velocity should still be positive but less than initial due to drag
 
     def test_velocity_limits(self):
         # Test if velocity exceeds the max speed limit
@@ -49,10 +50,9 @@ class TestPhysics(unittest.TestCase):
         self.agent.position = np.array([1000.0, 1000.0])
         self.agent.update()
         self.assertTrue(
-            np.all(self.agent.position >= self.agent.bounds[0]) 
+            np.all(self.agent.position >= self.agent.bounds[0])
             and np.all(self.agent.position <= self.agent.bounds[1])
         )  # Position should not exceed world bounds
-
 
     def test_physics_engine(self):
         self.agent = PhysicsObject()

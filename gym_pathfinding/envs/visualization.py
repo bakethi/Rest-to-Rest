@@ -63,7 +63,7 @@ class Renderer:
                     self.screen,
                     self.colors["obstacle"],
                     (int(obstacle_screen_pos[0]), int(obstacle_screen_pos[1])),
-                    obstacle_size   
+                    obstacle_size
                 )
             else:
                 # Draw a square obstacle
