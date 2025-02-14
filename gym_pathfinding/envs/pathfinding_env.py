@@ -173,7 +173,7 @@ class PathfindingEnv(gym.Env):
             pos = copy.copy(self.agent.position)  # Start position (float for precision)
 
             # Move along the ray in small steps
-            for _ in range(0, self.lidar_max_range, self.lidar_step_size ):  # Higher steps for precision
+            for _ in np.arange(0, self.lidar_max_range, self.lidar_step_size):  # Higher steps for precision
                 pos += direction * self.lidar_step_size  # Small step forward
 
                 # Check if the ray goes out of bounds

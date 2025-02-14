@@ -44,9 +44,9 @@ class Renderer:
         target_screen_pos = self._world_to_screen(target_position)
         pygame.draw.circle(self.screen, self.colors["target"], target_screen_pos, 10)
 
-        # Draw the agent
+        # Get Agent screen position
         agent_screen_pos = self._world_to_screen(agent.position)
-        pygame.draw.circle(self.screen, self.colors["agent"], agent_screen_pos, 10)
+        
 
         # Draw the obstacles
         for obstacle in obstacle_manager.get_obstacles():
@@ -95,6 +95,9 @@ class Renderer:
 
         # Draw distance to target
         pygame.draw.line(self.screen, self.colors["distance_to_target"], agent_screen_pos, target_screen_pos)
+
+        # Draw the Agent
+        pygame.draw.circle(self.screen, self.colors["agent"], agent_screen_pos, 10)
 
         # Update the display
         pygame.display.flip()
