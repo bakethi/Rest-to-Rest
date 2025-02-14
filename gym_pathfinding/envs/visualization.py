@@ -23,7 +23,9 @@ class Renderer:
             "agent": (0, 255, 0),
             "obstacle": (255, 0, 0),
             "target": (0, 0, 255),
-            "path": (255, 192, 203)
+            "path": (255, 192, 203),
+            "LiDAR": (173, 216, 230),
+            "distance_to_target": (255, 165, 0)
         }
 
     def render(self, agent, obstacle_manager, target_position):
@@ -85,6 +87,14 @@ class Renderer:
                 end_pos = tuple(self._world_to_screen(agent.path_history[i]))
                 if start_pos != end_pos:  # Avoid drawing zero-length lines
                     pygame.draw.line(self.screen, self.colors["path"], start_pos, end_pos, 2)
+
+        # Draw the LiDAR Rays
+        if self.env.ray_collisions is not None:
+            for ray in range(len(self.env.ray_collisions)):
+                pygame.draw.line(self.screen, self.colors["LiDAR"], agent_screen_pos, self._world_to_screen(self.env.ray_collisions[ray]), 2)
+
+        # Draw distance to target
+        pygame.draw.line(self.screen, self.colors["distance_to_target"], agent_screen_pos, target_screen_pos)
 
         # Update the display
         pygame.display.flip()

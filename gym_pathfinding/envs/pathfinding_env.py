@@ -51,6 +51,8 @@ class PathfindingEnv(gym.Env):
         self.renderer = None
         self.num_lidar_scans = num_lidar_scans
         self.lidar_max_range = lidar_max_range
+        self.distTarget = None
+        self.ray_collisions = None
 
     def reset(self):
         """
@@ -92,10 +94,10 @@ class PathfindingEnv(gym.Env):
         Returns:
             np.array: [x, y, vx, vy]
         """
-        distTarget = np.array([self._getAgentTargetDist()])
-        ray_collisions = np.array(self.cast_rays_until_collision())
+        self.distTarget = np.array([self._getAgentTargetDist()])
+        self.ray_collisions = np.array(self.cast_rays_until_collision())
 
-        return np.concatenate([self.agent.velocity, distTarget, ray_collisions.flatten()])
+        return np.concatenate([self.agent.velocity, self.distTarget, self.ray_collisions.flatten()])
 
     def _check_done(self):
         """
