@@ -6,7 +6,13 @@ from gym_pathfinding.envs import Renderer
 class RunExample:
     def __init__(self):
         # Initialize environment, visualization, and pathfinding instances
-        self.env = PathfindingEnv(number_of_obstacles=100, bounds=np.array([[0, 0], [100, 100]]), bounce_factor=1)
+        self.env = PathfindingEnv(
+            number_of_obstacles=100, 
+            bounds=np.array([[0, 0], [100, 100]]), 
+            bounce_factor=1, 
+            num_lidar_scans=10, 
+            lidar_max_range=50,
+            lidar_step_size=1)
         self.visualization = Renderer(self.env)
         self.magnitude = 1
 

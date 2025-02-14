@@ -15,7 +15,8 @@ class PathfindingEnv(gym.Env):
             bounds=np.array([[0, 0], [100, 100]]), 
             bounce_factor=1,
             num_lidar_scans=360,
-            lidar_max_range=600):
+            lidar_max_range=600,
+            lidar_step_size=0.1):
         super(PathfindingEnv, self).__init__()
 
         # Define action and observation spaces
@@ -53,6 +54,7 @@ class PathfindingEnv(gym.Env):
         self.lidar_max_range = lidar_max_range
         self.distTarget = None
         self.ray_collisions = None
+        self.lidar_step_size = lidar_step_size
 
     def reset(self):
         """
@@ -171,8 +173,8 @@ class PathfindingEnv(gym.Env):
             pos = copy.copy(self.agent.position)  # Start position (float for precision)
 
             # Move along the ray in small steps
-            for _ in range(int(self.lidar_max_range * 10)):  # Higher steps for precision
-                pos += direction * 0.1  # Small step forward
+            for _ in range(0, self.lidar_max_range, self.lidar_step_size ):  # Higher steps for precision
+                pos += direction * self.lidar_step_size  # Small step forward
 
                 # Check if the ray goes out of bounds
                 if (
