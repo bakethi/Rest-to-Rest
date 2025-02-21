@@ -105,7 +105,13 @@ class TestVisualization(unittest.TestCase):
         # Test if obstacles are rendered correctly
         print("Testing multiple_obstacles")
         self.env.reset()
-        self.obstacle_manager.generate_random_obstacles(10)
+            # Pass agent and target positions explicitly
+        self.obstacle_manager.generate_random_obstacles(
+            10, 
+            agent_position=self.env.agent.position, 
+            target_position=self.env.target_position, 
+            bounds=self.env.bounds
+        )
         try:
             self.visualization.render(self.agent, self.obstacle_manager, self.target)  # Render the environment with obstacles
             pygame.time.wait(5000)

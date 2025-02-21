@@ -34,7 +34,7 @@ class PathfindingEnv(gym.Env):
 
         # Initialize environment components
         self.obstacle_manager = ObstacleManager()
-        self.generate_random_obstacles()
+
         self.agent = PhysicsObject(
             position=np.array([0.0, 0.0]),
             velocity=np.array([0.0, 0.0]),
@@ -53,6 +53,7 @@ class PathfindingEnv(gym.Env):
         self.lidar_max_range = lidar_max_range
         self.distTarget = None
         self.ray_collisions = None
+        self.generate_random_obstacles()
 
     def reset(self):
         """
@@ -137,9 +138,13 @@ class PathfindingEnv(gym.Env):
         return -np.linalg.norm(self.agent.position - self.target_position)
 
     def generate_random_obstacles(self):
-        self.obstacle_manager.generate_random_obstacles(self.number_of_obstacles)
-        if self.obstacle_manager.obstacles == []:
-            raise ValueError("Generating obstacles failed!")
+        self.obstacle_manager.generate_random_obstacles(
+            self.number_of_obstacles,
+            agent_position=self.agent.position,
+            target_position=self.target_position,
+            bounds=self.bounds
+        )
+
 
     def _getAgentTargetDist(self):
         """Returns the normalized distance from p1 to p2 in 2D space."""
