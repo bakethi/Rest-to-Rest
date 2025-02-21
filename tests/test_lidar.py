@@ -36,34 +36,25 @@ def test_no_obstacles():
         assert bounds[0][1] <= ray[1] <= bounds[1][1]
 
 
-@pytest.mark.parametrize("num_lidar_scans, lidar_max_range, lidar_step_size", [
-    (12, 50, 1),
-    (45, 50, 1),
-    (90, 50, 1),
-    (180, 50, 1),
-    (360, 50, 1),
-    (360, 1, 1),
-    (360, 10, 1),
-    (360, 50, 1),
-    (360, 100, 1),
-    (360, 50, .1),
-    (360, 50, .5),
-    (360, 50, 1),
-    (360, 50, 2),
-    (360, 50, 3),
-    (360, 50, 4),
-    (360, 50, 5),
-    (360, 50, 10),
+@pytest.mark.parametrize("num_lidar_scans, lidar_max_range", [
+    (12, 50),
+    (45, 50),
+    (90, 50),
+    (180, 50),
+    (360, 50),
+    (360, 1),
+    (360, 10),
+    (360, 50),
+    (360, 100),
 ])
-def test_lidar_performance(benchmark, num_lidar_scans, lidar_max_range, lidar_step_size):
+def test_lidar_performance(benchmark, num_lidar_scans, lidar_max_range):
     """Test lidar performance with varying configurations."""
     env = PathfindingEnv(
         number_of_obstacles=100,
         bounds=np.array([[0, 0], [100, 100]]),
         bounce_factor=1,
         num_lidar_scans=num_lidar_scans,
-        lidar_max_range=lidar_max_range,
-        lidar_step_size=lidar_step_size
+        lidar_max_range=lidar_max_range
     )
 
     # Benchmark the function
