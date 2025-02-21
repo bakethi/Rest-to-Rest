@@ -79,6 +79,7 @@ class PhysicsObject:
         if velocity is not None:
             self.velocity = np.array(velocity, dtype=np.float32)
         self.acceleration = np.array([0.0, 0.0], dtype=np.float32)
+        self.path_history = []
 
 
 class PhysicsEngine:

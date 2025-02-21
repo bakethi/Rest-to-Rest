@@ -64,6 +64,7 @@ class PathfindingEnv(gym.Env):
         super().reset(seed=seed)
         self.agent.reset(position=np.array([0.0, 0.0]), velocity=np.array([0.0, 0.0]))
         self.obstacle_manager.reset()
+        self.generate_random_obstacles()
         return self._get_observation(), {}
 
 

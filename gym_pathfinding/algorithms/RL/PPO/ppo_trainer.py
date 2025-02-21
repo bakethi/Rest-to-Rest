@@ -35,6 +35,7 @@ class PPOTrainer:
             # Collect rollout data
             for _ in range(rollout_size):
                 action, log_prob = self.agent.select_action(obs)
+                print(f"Observation Shape: {obs.shape}, Value: {obs}")
                 value = self.value_function(torch.tensor(obs, dtype=torch.float32)).item()
                 next_obs, reward, done, truncated, _ = self.env.step(action)
 
