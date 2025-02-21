@@ -15,7 +15,8 @@ class PathfindingEnv(gym.Env):
             bounds=np.array([[0, 0], [100, 100]]), 
             bounce_factor=1,
             num_lidar_scans=360,
-            lidar_max_range=600):
+            lidar_max_range=600,
+            max_acceleration=5):
         super(PathfindingEnv, self).__init__()
 
         # Renderer (initialized later when render is called)
@@ -24,6 +25,7 @@ class PathfindingEnv(gym.Env):
         self.lidar_max_range = lidar_max_range
         self.distTarget = None
         self.ray_collisions = None
+        self.max_acceleration = max_acceleration
 
         # Define action and observation spaces
         # Actions: Acceleration in x and y (range -1 to 1)
@@ -75,6 +77,7 @@ class PathfindingEnv(gym.Env):
         Returns:
             tuple: (observation, reward, done, info)
         """
+        action = np.clip(action, -self.max_acceleration, self.max_acceleration)  # Enforce limits
         # Apply action to agent
         self.agent.apply_force(action)
         self.engine.update()
