@@ -3,6 +3,7 @@ import numpy as np
 from gym_pathfinding.envs.pathfinding_env import PathfindingEnv
 from gym_pathfinding.utils.obstacles import ObstacleManager
 from gym_pathfinding.utils.pathfinding import is_target_reachable
+from gymnasium.utils.env_checker import check_env
 
 
 class TestPathfindingEnv(unittest.TestCase):
@@ -17,10 +18,10 @@ class TestPathfindingEnv(unittest.TestCase):
 
     def test_step_function(self):
         action = np.array([1.0, 0.0])  # Example action
-        obs, reward, done, _ = self.env.step(action)
+        obs, reward, terminated, _, _ = self.env.step(action)
         self.assertTrue(obs is not None)
         self.assertTrue(isinstance(reward, float))
-        self.assertTrue(isinstance(done, bool))
+        self.assertTrue(isinstance(terminated, bool))
 
 class TestPathfindingEnvSanityCheck(unittest.TestCase):
     def setUp(self):
@@ -84,7 +85,43 @@ class TestPathfindingEnvSanityCheck(unittest.TestCase):
             "Target should NOT be reachable, but it is!"
         )
 
+class TestGymCompatibility(unittest.TestCase):
+    def test_gym_checker(self):
+        env = PathfindingEnv()
+        check_env(env, warn=True)
 
+    def test_action_space(self):
+        env = PathfindingEnv()
+        action = env.action_space.sample()
+        assert env.action_space.contains(action), "action space does not contain action"
+
+    def test_observation_space(self):
+        env = PathfindingEnv()
+        obs, _ = env.reset()
+        assert env.observation_space.contains(obs)
+
+    def test_reset_output(self):
+        """Ensure reset() returns (obs, info) and obs is valid."""
+        env = PathfindingEnv()
+        result = env.reset()
+
+        # Ensure reset() returns a tuple
+        assert isinstance(result, tuple), f"Expected tuple, got {type(result)}"
+        assert len(result) == 2, f"Expected 2-tuple, got length {len(result)}"
+
+        obs, info = result
+        print("\nReturned observation:", obs)
+        print("Observation shape:", obs.shape)
+        print("Expected space shape:", env.observation_space.shape)
+        print("Does observation fit in space?", env.observation_space.contains(obs))
+        # check data type
+        assert obs.dtype == np.float32, f"Observation dtype is {obs.dtype}, expected np.float32"
+
+        # Check observation validity
+        assert env.observation_space.contains(obs), "Observation not within observation space"
+
+        # Ensure info is a dictionary
+        assert isinstance(info, dict), f"Expected dict for info, got {type(info)}"
 
 if __name__ == "__main__":
     unittest.main()

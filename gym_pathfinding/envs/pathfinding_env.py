@@ -18,16 +18,25 @@ class PathfindingEnv(gym.Env):
             lidar_max_range=600):
         super(PathfindingEnv, self).__init__()
 
+        # Renderer (initialized later when render is called)
+        self.renderer = None
+        self.num_lidar_scans = num_lidar_scans
+        self.lidar_max_range = lidar_max_range
+        self.distTarget = None
+        self.ray_collisions = None
+
         # Define action and observation spaces
         # Actions: Acceleration in x and y (range -1 to 1)
         self.action_space = spaces.Box(low=-1.0, high=1.0, shape=(2,), dtype=np.float32)
 
-        # Observations: [x, y, vx, vy] (position and velocity of agent)
+        # Observations: (velocity of agent, distance to the target and the lidar sensor readings)
         self.observation_space = spaces.Box(
-            low=np.array([0, 0, -np.inf, -np.inf], dtype=np.float32),
-            high=np.array([100, 100, np.inf, np.inf], dtype=np.float32),
+            low=np.concatenate(([-np.inf, -np.inf], [0], np.full(self.num_lidar_scans, 0, dtype=np.float32))),  
+            high=np.concatenate(([np.inf, np.inf], [1], np.full(self.num_lidar_scans, 1, dtype=np.float32))),  
             dtype=np.float32
         )
+
+
         self.number_of_obstacles = number_of_obstacles
         self.bounds = bounds
         self.bounce_factor = bounce_factor
@@ -47,23 +56,14 @@ class PathfindingEnv(gym.Env):
         # Target position
         self.target_position = np.array([90.0, 90.0])
 
-        # Renderer (initialized later when render is called)
-        self.renderer = None
-        self.num_lidar_scans = num_lidar_scans
-        self.lidar_max_range = lidar_max_range
-        self.distTarget = None
-        self.ray_collisions = None
         self.generate_random_obstacles()
 
-    def reset(self):
-        """
-        Reset the environment to its initial state.
-        Returns:
-            np.array: Initial observation
-        """
+    def reset(self, seed=None, options=None):
+        super().reset(seed=seed)
         self.agent.reset(position=np.array([0.0, 0.0]), velocity=np.array([0.0, 0.0]))
         self.obstacle_manager.reset()
-        return self._get_observation()
+        return self._get_observation(), {}
+
 
     def step(self, action):
         """
@@ -80,13 +80,16 @@ class PathfindingEnv(gym.Env):
         self.engine.update()
 
         # Check if the episode is done
-        done = self._check_done()
+        terminated = self._check_done()
 
         # Compute reward
-        reward = self._compute_reward(done)
+        reward = self._compute_reward(terminated)
+
+        #add truncated
+        truncated = False
 
         # Return the observation, reward, done flag, and info
-        return self._get_observation(), reward, done, {}
+        return self._get_observation(), reward, terminated, truncated, {}
 
     def _get_observation(self):
         """
@@ -95,10 +98,12 @@ class PathfindingEnv(gym.Env):
         Returns:
             np.array: [x, y, vx, vy]
         """
-        self.distTarget = np.array([self._getAgentTargetDist()])
-        self.ray_collisions = np.array(self.cast_rays_until_collision())
+        self.distTarget = np.array([self._getAgentTargetDist()], dtype=np.float32)
+        self.ray_collisions = np.array(self.cast_rays_until_collision(), dtype=np.float32)
+        distances = np.linalg.norm(self.ray_collisions - self.agent.position, axis=1)
+        normalized_distances = np.clip(distances / self.lidar_max_range, 0, 1).astype(np.float32)
 
-        return np.concatenate([self.agent.velocity, self.distTarget, self.ray_collisions.flatten()])
+        return np.concatenate([self.agent.velocity, self.distTarget, normalized_distances.flatten()])
 
     def _check_done(self):
         """
@@ -127,15 +132,16 @@ class PathfindingEnv(gym.Env):
         Returns:
             float: The computed reward.
         """
-        if done:
-            # Positive reward for reaching the target
-            if np.linalg.norm(self.agent.position - self.target_position) < 1.0:
-                return 100.0
-            # Negative reward for collision
-            return -100.0
+        reward = -np.linalg.norm(self.agent.position - self.target_position) * 0.1  # Scale-down distance penalty
 
-        # Negative reward proportional to the distance to the target
-        return -np.linalg.norm(self.agent.position - self.target_position)
+        if done:
+            if np.linalg.norm(self.agent.position - self.target_position) < 1.0:
+                reward += 100.0  # Large positive reward for reaching the target
+            else:
+                reward -= 100.0  # Heavy penalty for hitting obstacles
+
+        return reward
+
 
     def generate_random_obstacles(self):
         self.obstacle_manager.generate_random_obstacles(
@@ -245,3 +251,4 @@ class PathfindingEnv(gym.Env):
             return None  # No valid intersection
 
         return origin + t_near * direction
+
