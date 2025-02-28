@@ -165,8 +165,8 @@ class PathfindingEnv(gym.Env):
 
         # Define a maximum possible distance (for normalization)
         # Get the two opposite corners
-        corner1 = self.bounds[0]
-        corner2 = self.bounds[1]
+        corner1 = np.array(self.bounds[0], dtype=np.float32)
+        corner2 = np.array(self.bounds[1], dtype=np.float32)
 
         # Calculate the Euclidean distance between the corners
         max_distance = np.linalg.norm(corner2 - corner1)
