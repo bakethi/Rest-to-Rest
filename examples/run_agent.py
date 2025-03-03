@@ -16,7 +16,7 @@ env = PathfindingEnv(
 )
 
 # Initialize the renderer (if visualization is needed)
-renderer = Renderer(env, record=True, video_path="/home/bake/Projects/Rest-to-Rest/Videos/inference_video.gif")
+renderer = Renderer(env, record=True, video_path="/home/bake/Projects/Rest-to-Rest/Videos/inference_video.mp4")
 
 # Reset the environment
 obs, _ = env.reset()
