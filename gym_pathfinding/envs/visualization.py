@@ -1,8 +1,10 @@
 import pygame
+import numpy as np
+import imageio
 
 
 class Renderer:
-    def __init__(self, env, width=600, height=600, scale=6.0):
+    def __init__(self, env, video_path, width=600, height=600, scale=6.0, record=False):
         """
         Initialize the Pygame renderer.
 
@@ -12,6 +14,9 @@ class Renderer:
             scale (float): Scale factor for world to screen coordinates.
         """
         pygame.init()
+        self.record = record
+        self.frames = [] if record else None
+        self.video_path = video_path
         self.env = env
         self.width = width
         self.height = height
@@ -99,6 +104,12 @@ class Renderer:
         # Draw the Agent
         pygame.draw.circle(self.screen, self.colors["agent"], agent_screen_pos, 10)
 
+        # Save frame if recording
+        if self.record:
+            frame = pygame.surfarray.array3d(pygame.display.get_surface())
+            frame = np.transpose(frame, (1, 0, 2))  # Convert to correct format
+            self.frames.append(frame)
+
         # Update the display
         pygame.display.flip()
 
@@ -118,9 +129,19 @@ class Renderer:
         screen_x = int(position[0] * self.scale)
         screen_y = int(self.height - position[1] * self.scale)  # Flip y-axis
         return screen_x, screen_y
+    
+    def save_video(self):
+        """
+        Save the recorded frames as a video.
+        """
+        if self.record and self.frames:
+            imageio.mimsave(self.video_path, self.frames, fps=30)
+            print(f"Video saved to {self.video_path}")
 
     def close(self):
         """
-        Close the Pygame window.
+        Close the Pygame window and save the video if recording.
         """
+        if self.record:
+            self.save_video()
         pygame.quit()
