@@ -1,11 +1,18 @@
 import gymnasium as gym
 from stable_baselines3 import PPO
+from stable_baselines3.common.logger import configure
 from gym_pathfinding.envs.pathfinding_env import PathfindingEnv
-from gym_pathfinding.algorithms.RL.PPO import PPOTrainer
-from gym_pathfinding.envs.visualization import Renderer
 import datetime
+import os
 
-# Create the environment
+# 🔹 Generate a timestamp for logging
+timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+log_dir = f"./logs/ppo_pathfinding_{timestamp}"  # TensorBoard log directory
+
+# Ensure the log directory exists
+os.makedirs(log_dir, exist_ok=True)
+
+# 🔹 Create the environment
 env = PathfindingEnv(
     number_of_obstacles=10, 
     bounds=[[0, 0], [100, 100]], 
@@ -15,12 +22,12 @@ env = PathfindingEnv(
     random_start_target=True
 )
 
-# Wrap the environment (Optional but useful for logging)
+# 🔹 Wrap the environment for logging statistics
 env = gym.wrappers.RecordEpisodeStatistics(env)
 
-# Instantiate the PPO model
+# 🔹 Instantiate the PPO model with TensorBoard logging enabled
 model = PPO(
-    "MlpPolicy",  # Uses a multi-layer perceptron (MLP) for function approximation
+    "MlpPolicy",  
     env,  
     learning_rate=3e-4,  
     n_steps=2048,  
@@ -29,16 +36,19 @@ model = PPO(
     gamma=0.99,  
     clip_range=0.2,  
     verbose=1,
+    tensorboard_log=log_dir,  # 🔹 Enable TensorBoard logging
     device='cpu'
 )
 
-# Train the model
-model.learn(total_timesteps=100000)
+# 🔹 Configure logger for more detailed tracking
+new_logger = configure(log_dir, ["stdout", "tensorboard"])
+model.set_logger(new_logger)
 
-# Generate timestamp for the filename
-timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+# 🔹 Train the model with TensorBoard logging
+model.learn(total_timesteps=100000, tb_log_name="PPO")
 
-# Save the trained model
+# 🔹 Save the trained model
 model.save(f"models/ppo_pathfinding_{timestamp}")
 
-print("Training complete and model saved!")
+print(f"✅ Training complete and model saved! Logs available at: {log_dir}")
+
