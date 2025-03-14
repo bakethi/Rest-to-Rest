@@ -9,14 +9,14 @@ from stable_baselines3 import PPO
 from gym_pathfinding.envs.pathfinding_env import PathfindingEnv
 
 # Load the trained model
-model = PPO.load("/home/bake/Projects/Rest-to-Rest/models/ppo_pathfinding.zip")
+model = PPO.load("/home/bake/Projects/Rest-to-Rest/models/ppo_pathfinding_2025-03-14_13-52-03.zip")
 
 # Define environment sizes and obstacle density percentages
-environment_sizes = [100, 100, 100, 100, 100]  # Different world sizes
-obstacle_percentages = [1, 1, 1, 1, 1]  # Percentage of the environment covered in obstacles
+environment_sizes = [25, 50, 100, 150, 200]  # Different world sizes
+obstacle_percentages = [.1, .5, 1, 2, 5]  # Percentage of the environment covered in obstacles
 step_scale_factor = 3  # Scaling factor for max steps
 
-num_trials = 1  # Number of trials per setting
+num_trials = 1000  # Number of trials per setting
 results = []
 
 # Ensure results directory exists
@@ -56,7 +56,7 @@ for size in environment_sizes:
                 lidar_max_range=50,
                 terminate_on_collision=False
             )
-            
+
             # 🔹 Compute `max_steps_per_episode` dynamically AFTER environment is initialized
             agent_position = env.agent.position
             target_position = env.target_position
