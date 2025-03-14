@@ -4,7 +4,7 @@ from gym_pathfinding.envs.pathfinding_env import PathfindingEnv
 from gym_pathfinding.envs.visualization import Renderer  # If you want to visualize the environment
 
 # Load the trained model
-model = PPO.load("/home/bake/Projects/Rest-to-Rest/models/ppo_pathfinding.zip")  # Make sure this path matches your saved model
+model = PPO.load("/home/bake/Projects/Rest-to-Rest/models/ppo_pathfinding_2025-03-14_13-43-28.zip")  # Make sure this path matches your saved model
 
 # Create the environment
 env = PathfindingEnv(

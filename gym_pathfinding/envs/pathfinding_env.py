@@ -63,11 +63,8 @@ class PathfindingEnv(gym.Env):
         self.engine = PhysicsEngine([self.agent])
 
         # Target position
-        if self.random_start_target:
-            self.generate_target_agent_pos()
-        else:
-            self.agent.position=np.array([0.0, 0.0])
-            self.target_position = np.array([90.0, 90.0])
+        self.generate_target_agent_pos()
+
 
         self.generate_random_obstacles()
 
@@ -75,6 +72,7 @@ class PathfindingEnv(gym.Env):
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
         self.agent.reset(position=np.array([0.0, 0.0]), velocity=np.array([0.0, 0.0]))
+        self.generate_target_agent_pos()
         self.obstacle_manager.reset()
         self.generate_random_obstacles()
         return self._get_observation(), {}
@@ -279,18 +277,23 @@ class PathfindingEnv(gym.Env):
 
     def generate_target_agent_pos(self):
         """Randomizes agent and target positions while ensuring a scaled min distance between them."""
-        env_width = self.bounds[1][0] - self.bounds[0][0]
-        env_height = self.bounds[1][1] - self.bounds[0][1]
-        # Compute minimum distance as a fraction of the environment diagonal
-        min_distance = self.scaling_factor * np.linalg.norm([env_width, env_height])
-        while True:
-            self.target_position = np.array([
-                                            np.random.randint(self.bounds[0][0], self.bounds[1][0]),  # Random x-coordinate
-                                            np.random.randint(self.bounds[0][1], self.bounds[1][1])   # Random y-coordinate
-                                            ])
-            self.agent.position = np.array([
-                                            np.random.randint(self.bounds[0][0], self.bounds[1][0]),  # Random x-coordinate
-                                            np.random.randint(self.bounds[0][1], self.bounds[1][1])   # Random y-coordinate
-                                            ])
-            if np.linalg.norm(self.target_position - self.agent.position) > min_distance:
-                break
+        # Target position
+        if self.random_start_target:
+            env_width = self.bounds[1][0] - self.bounds[0][0]
+            env_height = self.bounds[1][1] - self.bounds[0][1]
+            # Compute minimum distance as a fraction of the environment diagonal
+            min_distance = self.scaling_factor * np.linalg.norm([env_width, env_height])
+            while True:
+                self.target_position = np.array([
+                                                np.random.randint(self.bounds[0][0], self.bounds[1][0]),  # Random x-coordinate
+                                                np.random.randint(self.bounds[0][1], self.bounds[1][1])   # Random y-coordinate
+                                                ], dtype=np.float64)
+                self.agent.position = np.array([
+                                                np.random.randint(self.bounds[0][0], self.bounds[1][0]),  # Random x-coordinate
+                                                np.random.randint(self.bounds[0][1], self.bounds[1][1])   # Random y-coordinate
+                                                ], dtype=np.float64)
+                if np.linalg.norm(self.target_position - self.agent.position) > min_distance:
+                    break
+        else:
+            self.agent.position=np.array([0.0, 0.0])
+            self.target_position = np.array([90.0, 90.0])

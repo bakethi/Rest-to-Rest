@@ -37,7 +37,7 @@ model = PPO(
     clip_range=0.2,  
     verbose=1,
     tensorboard_log=log_dir,  # 🔹 Enable TensorBoard logging
-    device='cpu'
+    device='cpu',
 )
 
 # 🔹 Configure logger for more detailed tracking
@@ -45,7 +45,7 @@ new_logger = configure(log_dir, ["stdout", "tensorboard"])
 model.set_logger(new_logger)
 
 # 🔹 Train the model with TensorBoard logging
-model.learn(total_timesteps=100000, tb_log_name="PPO")
+model.learn(total_timesteps=5000000,tb_log_name="PPO")
 
 # 🔹 Save the trained model
 model.save(f"models/ppo_pathfinding_{timestamp}")
