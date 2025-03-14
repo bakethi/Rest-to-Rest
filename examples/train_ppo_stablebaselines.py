@@ -3,6 +3,7 @@ from stable_baselines3 import PPO
 from gym_pathfinding.envs.pathfinding_env import PathfindingEnv
 from gym_pathfinding.algorithms.RL.PPO import PPOTrainer
 from gym_pathfinding.envs.visualization import Renderer
+import datetime
 
 # Create the environment
 env = PathfindingEnv(
@@ -10,7 +11,8 @@ env = PathfindingEnv(
     bounds=[[0, 0], [100, 100]], 
     bounce_factor=1, 
     num_lidar_scans=24, 
-    lidar_max_range=50
+    lidar_max_range=50,
+    random_start_target=True
 )
 
 # Wrap the environment (Optional but useful for logging)
@@ -33,7 +35,10 @@ model = PPO(
 # Train the model
 model.learn(total_timesteps=100000)
 
+# Generate timestamp for the filename
+timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
 # Save the trained model
-model.save("models/ppo_pathfinding")
+model.save(f"models/ppo_pathfinding_{timestamp}")
 
 print("Training complete and model saved!")

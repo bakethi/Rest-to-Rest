@@ -16,10 +16,16 @@ class PathfindingEnv(gym.Env):
             bounce_factor=1,
             num_lidar_scans=360,
             lidar_max_range=600,
-            max_acceleration=5):
+            max_acceleration=5,
+            terminate_on_collision=True,
+            scaling_factor=0.2,
+            random_start_target=False):
         super(PathfindingEnv, self).__init__()
 
         # Renderer (initialized later when render is called)
+        self.random_start_target=random_start_target
+        self.scaling_factor=scaling_factor
+        self.terminate_on_collision = terminate_on_collision
         self.renderer = None
         self.num_lidar_scans = num_lidar_scans
         self.lidar_max_range = lidar_max_range
@@ -46,6 +52,7 @@ class PathfindingEnv(gym.Env):
         # Initialize environment components
         self.obstacle_manager = ObstacleManager()
 
+
         self.agent = PhysicsObject(
             position=np.array([0.0, 0.0]),
             velocity=np.array([0.0, 0.0]),
@@ -56,9 +63,14 @@ class PathfindingEnv(gym.Env):
         self.engine = PhysicsEngine([self.agent])
 
         # Target position
-        self.target_position = np.array([90.0, 90.0])
+        if self.random_start_target:
+            self.generate_target_agent_pos()
+        else:
+            self.agent.position=np.array([0.0, 0.0])
+            self.target_position = np.array([90.0, 90.0])
 
         self.generate_random_obstacles()
+
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
@@ -86,14 +98,23 @@ class PathfindingEnv(gym.Env):
         # Check if the episode is done
         terminated = self._check_done()
 
+        # Check if a collision occurred
+        collision_occurred = self.obstacle_manager.check_collision(self.agent)
+
         # Compute reward
         reward = self._compute_reward(terminated)
 
         #add truncated
         truncated = False
 
+
+        # Return observation, reward, done flag, and info dictionary
+        info = {
+            "collision": collision_occurred
+        }
+
         # Return the observation, reward, done flag, and info
-        return self._get_observation(), reward, terminated, truncated, {}
+        return self._get_observation(), reward, terminated, truncated, info
 
     def _get_observation(self):
         """
@@ -121,7 +142,7 @@ class PathfindingEnv(gym.Env):
             return True
 
         # Check if agent collides with any obstacles
-        if self.obstacle_manager.check_collision(self.agent):
+        if self.terminate_on_collision and self.obstacle_manager.check_collision(self.agent):
             return True
 
         return False
@@ -256,3 +277,20 @@ class PathfindingEnv(gym.Env):
 
         return origin + t_near * direction
 
+    def generate_target_agent_pos(self):
+        """Randomizes agent and target positions while ensuring a scaled min distance between them."""
+        env_width = self.bounds[1][0] - self.bounds[0][0]
+        env_height = self.bounds[1][1] - self.bounds[0][1]
+        # Compute minimum distance as a fraction of the environment diagonal
+        min_distance = self.scaling_factor * np.linalg.norm([env_width, env_height])
+        while True:
+            self.target_position = np.array([
+                                            np.random.randint(self.bounds[0][0], self.bounds[1][0]),  # Random x-coordinate
+                                            np.random.randint(self.bounds[0][1], self.bounds[1][1])   # Random y-coordinate
+                                            ])
+            self.agent.position = np.array([
+                                            np.random.randint(self.bounds[0][0], self.bounds[1][0]),  # Random x-coordinate
+                                            np.random.randint(self.bounds[0][1], self.bounds[1][1])   # Random y-coordinate
+                                            ])
+            if np.linalg.norm(self.target_position - self.agent.position) > min_distance:
+                break

@@ -4,7 +4,7 @@ import imageio
 
 
 class Renderer:
-    def __init__(self, env, video_path, width=600, height=600, scale=6.0, record=False):
+    def __init__(self, env, video_path=None, width=600, height=600, scale=6.0, record=False):
         """
         Initialize the Pygame renderer.
 

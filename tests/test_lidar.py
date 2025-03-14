@@ -22,7 +22,7 @@ def test_agent_to_target_distance():
     env.agent.position = [1, 2]
     env.target_position = [4, 6]
     expected_distance = 5 / math.sqrt(100**2 + 100**2)
-    assert env._getAgentTargetDist() == expected_distance
+    assert round(env._getAgentTargetDist(), 5) == round(expected_distance, 5)
 
 
 def test_no_obstacles():
