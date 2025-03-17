@@ -6,7 +6,7 @@ from .policy import PPOPolicy
 class PPOAgent:
     def __init__(self, env, action_dim, lr=3e-4):
         # Get observation dimension dynamically
-        obs_dim = 2 + 1 + env.num_lidar_scans  # Velocity (2) + Distance (1) + LiDAR readings
+        obs_dim = 2 + 1 + 1 + env.num_lidar_scans  # Velocity (2) + Distance (1) + LiDAR readings
         self.policy = PPOPolicy(input_dim=obs_dim, output_dim=action_dim)
         self.optimizer = torch.optim.Adam(self.policy.parameters(), lr=lr)
 

@@ -39,8 +39,8 @@ class PathfindingEnv(gym.Env):
 
         # Observations: (velocity of agent, distance to the target and the lidar sensor readings)
         self.observation_space = spaces.Box(
-            low=np.concatenate(([-np.inf, -np.inf], [0], np.full(self.num_lidar_scans, 0, dtype=np.float32))),  
-            high=np.concatenate(([np.inf, np.inf], [1], np.full(self.num_lidar_scans, 1, dtype=np.float32))),  
+            low=np.concatenate(([-np.inf, -np.inf], [0], [-1], np.full(self.num_lidar_scans, 0, dtype=np.float32))),  
+            high=np.concatenate(([np.inf, np.inf], [1], [1], np.full(self.num_lidar_scans, 1, dtype=np.float32))),  
             dtype=np.float32
         )
 
@@ -100,7 +100,7 @@ class PathfindingEnv(gym.Env):
         collision_occurred = self.obstacle_manager.check_collision(self.agent)
 
         # Compute reward
-        reward = self._compute_reward(terminated)
+        reward = self._compute_reward(terminated, collision_occurred)
 
         #add truncated
         truncated = False
@@ -125,8 +125,9 @@ class PathfindingEnv(gym.Env):
         self.ray_collisions = np.array(self.cast_rays_until_collision(), dtype=np.float32)
         distances = np.linalg.norm(self.ray_collisions - self.agent.position, axis=1)
         normalized_distances = np.clip(distances / self.lidar_max_range, 0, 1).astype(np.float32)
+        angle_to_target = np.array([self._get_agent_target_angle()], dtype=np.float32)
 
-        return np.concatenate([self.agent.velocity, self.distTarget, normalized_distances.flatten()])
+        return np.concatenate([self.agent.velocity, self.distTarget, angle_to_target, normalized_distances.flatten()])
 
     def _check_done(self):
         """
@@ -145,7 +146,7 @@ class PathfindingEnv(gym.Env):
 
         return False
 
-    def _compute_reward(self, done):
+    def _compute_reward(self, done, collision_occurred):
         """
         Compute the reward for the current step.
 
@@ -160,8 +161,10 @@ class PathfindingEnv(gym.Env):
         if done:
             if np.linalg.norm(self.agent.position - self.target_position) < 1.0:
                 reward += 100.0  # Large positive reward for reaching the target
-            else:
-                reward -= 100.0  # Heavy penalty for hitting obstacles
+        
+        if collision_occurred:
+            reward -= 100
+
 
         return reward
 
@@ -297,3 +300,12 @@ class PathfindingEnv(gym.Env):
         else:
             self.agent.position=np.array([0.0, 0.0])
             self.target_position = np.array([90.0, 90.0])
+
+    def _get_agent_target_angle(self):
+        """
+        Calculate and normalize the angle between the agent and the target.
+        Returns a value between -1 and 1.
+        """
+        delta_pos = self.target_position - self.agent.position
+        angle = np.arctan2(delta_pos[1], delta_pos[0])  # Compute angle in radians
+        return angle / np.pi  # Normalize to [-1, 1]

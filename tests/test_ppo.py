@@ -16,7 +16,7 @@ class TestPPOTrainer(unittest.TestCase):
     def test_trainer_initialization(self):
         """Ensure the PPO trainer initializes correctly."""
         self.assertIsInstance(self.trainer, PPOTrainer)
-        self.assertEqual(self.trainer.agent.policy.fc1.in_features, 2 + 1 + self.env.num_lidar_scans,
+        self.assertEqual(self.trainer.agent.policy.fc1.in_features, 2 + 1 + 1 + self.env.num_lidar_scans,
                          "Incorrect input dimension in the policy network.")
 
     def test_rollout_collection(self):
@@ -73,7 +73,7 @@ class TestPPOTrainer(unittest.TestCase):
             env = PathfindingEnv(num_lidar_scans=lidar_scans)
             trainer = PPOTrainer(env=env)
 
-            obs_dim = 2 + 1 + lidar_scans
+            obs_dim = 2 + 1 + 1 + lidar_scans
             self.assertEqual(trainer.agent.policy.fc1.in_features, obs_dim,
                              f"Trainer input size mismatch for LiDAR scans {lidar_scans}.")
 
@@ -86,7 +86,7 @@ class TestPPOAgent(unittest.TestCase):
     def setUp(self):
         """Initialize environment and PPO agent before each test."""
         self.env = PathfindingEnv(num_lidar_scans=180)  # Dynamic LiDAR size
-        self.obs_dim = 2 + 1 + self.env.num_lidar_scans  # Velocity (2) + Distance (1) + LiDAR scans
+        self.obs_dim = 2 + 1 + 1 + self.env.num_lidar_scans  # Velocity (2) + Distance (1) + LiDAR scans
         self.action_dim = 2  # Acceleration (x, y)
         self.agent = PPOAgent(env=self.env, action_dim=self.action_dim)
 
@@ -131,7 +131,7 @@ class TestPPOAgent(unittest.TestCase):
         """Ensure the agent can handle different LiDAR scan configurations."""
         for lidar_scans in [90, 180, 360, 720]:
             env = PathfindingEnv(num_lidar_scans=lidar_scans)
-            obs_dim = 2 + 1 + lidar_scans
+            obs_dim = 2 + 1 + 1 + lidar_scans
             agent = PPOAgent(env=env, action_dim=self.action_dim)
 
             self.assertEqual(agent.policy.fc1.in_features, obs_dim, f"Policy input size mismatch for LiDAR scans {lidar_scans}.")
@@ -145,7 +145,7 @@ class TestPPOPolicy(unittest.TestCase):
     def setUp(self):
         """Initialize the policy network dynamically from the environment."""
         self.env = PathfindingEnv(num_lidar_scans=180)  # Change LiDAR scans for testing
-        self.obs_dim = 2 + 1 + self.env.num_lidar_scans
+        self.obs_dim = 2 + 1 + 1 + self.env.num_lidar_scans
         self.action_dim = 2
         self.policy = PPOPolicy(input_dim=self.obs_dim, output_dim=self.action_dim)
 
@@ -160,7 +160,7 @@ class TestPPOPolicy(unittest.TestCase):
         """Test policy behavior when LiDAR input size changes."""
         for lidar_scans in [90, 180, 360, 720]:
             self.env.num_lidar_scans = lidar_scans
-            obs_dim = 2 + 1 + lidar_scans
+            obs_dim = 2 + 1 + 1 + lidar_scans
             policy = PPOPolicy(input_dim=obs_dim, output_dim=self.action_dim)
             obs = torch.randn(obs_dim)
             mean, std = policy(obs)

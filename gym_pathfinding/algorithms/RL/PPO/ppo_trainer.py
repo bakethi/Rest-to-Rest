@@ -7,7 +7,7 @@ from .ppo_agent import PPOAgent
 
 class PPOTrainer:
     def __init__(self, env, gamma=0.99, clip_epsilon=0.2, update_epochs=10):
-        obs_dim = 2 + 1 + env.num_lidar_scans  # Automatically adjust observation size
+        obs_dim = 2 + 1 + 1 + env.num_lidar_scans  # Automatically adjust observation size
         self.env = env
         action_dim = 2
         self.agent = PPOAgent(env, action_dim)
