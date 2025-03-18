@@ -4,15 +4,17 @@ from gym_pathfinding.envs.pathfinding_env import PathfindingEnv
 from gym_pathfinding.envs.visualization import Renderer  # If you want to visualize the environment
 
 # Load the trained model
-model = PPO.load("/home/bake/Projects/Rest-to-Rest/models/ppo_pathfinding_2025-03-14_13-52-03.zip")  # Make sure this path matches your saved model
+model = PPO.load("/home/bake/Projects/Rest-to-Rest/models/ppo_pathfinding_2025-03-17_13-58-44_penalty_for_standing_still.zip")  # Make sure this path matches your saved model
 
 # Create the environment
 env = PathfindingEnv(
-    number_of_obstacles=100, 
+    number_of_obstacles=50, 
     bounds=[[0, 0], [100, 100]], 
     bounce_factor=1, 
     num_lidar_scans=24, 
-    lidar_max_range=50
+    lidar_max_range=50,
+    random_start_target=True,
+    terminate_on_collision=False
 )
 
 # Initialize the renderer (if visualization is needed)

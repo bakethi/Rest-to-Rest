@@ -9,7 +9,8 @@ from stable_baselines3 import PPO
 from gym_pathfinding.envs.pathfinding_env import PathfindingEnv
 
 # Load the trained model
-model = PPO.load("/home/bake/Projects/Rest-to-Rest/models/ppo_pathfinding_2025-03-14_13-52-03.zip")
+model_name = "ppo_pathfinding_2025-03-17_13-58-44_penalty_for_standing_still"
+model = PPO.load(f"/home/bake/Projects/Rest-to-Rest/models/{model_name}.zip")
 
 # Define environment sizes and obstacle density percentages
 environment_sizes = [25, 50, 100, 150, 200]  # Different world sizes
@@ -54,7 +55,8 @@ for size in environment_sizes:
                 bounce_factor=1, 
                 num_lidar_scans=24, 
                 lidar_max_range=50,
-                terminate_on_collision=False
+                terminate_on_collision=False,
+                random_start_target=True
             )
 
             # 🔹 Compute `max_steps_per_episode` dynamically AFTER environment is initialized
@@ -106,7 +108,7 @@ df = pd.DataFrame(results, columns=["Environment Size", "Obstacle %", "Normalize
 
 # Generate timestamp for the filename
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-csv_filename = f"{results_dir}run_{timestamp}.csv"
+csv_filename = f"{results_dir}run_{timestamp}_model_{model_name}.csv"
 
 # Save to CSV
 df.to_csv(csv_filename, index=False)

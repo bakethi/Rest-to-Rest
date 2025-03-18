@@ -19,10 +19,16 @@ class PathfindingEnv(gym.Env):
             max_acceleration=5,
             terminate_on_collision=True,
             scaling_factor=0.2,
-            random_start_target=False):
+            random_start_target=False,
+            goal_radius=5.0,
+            max_collisions = None
+            ):
         super(PathfindingEnv, self).__init__()
 
         # Renderer (initialized later when render is called)
+        self.number_of_collisions = 0
+        self.max_collisions = max_collisions
+        self.goal_radius = goal_radius
         self.random_start_target=random_start_target
         self.scaling_factor=scaling_factor
         self.terminate_on_collision = terminate_on_collision
@@ -72,6 +78,7 @@ class PathfindingEnv(gym.Env):
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
         self.agent.reset(position=np.array([0.0, 0.0]), velocity=np.array([0.0, 0.0]))
+        self.number_of_collisions = 0
         self.generate_target_agent_pos()
         self.obstacle_manager.reset()
         self.generate_random_obstacles()
@@ -93,14 +100,14 @@ class PathfindingEnv(gym.Env):
         self.agent.apply_force(action)
         self.engine.update()
 
-        # Check if the episode is done
-        terminated = self._check_done()
-
         # Check if a collision occurred
         collision_occurred = self.obstacle_manager.check_collision(self.agent)
 
+        if collision_occurred:
+            self.number_of_collisions += 1
+
         # Compute reward
-        reward = self._compute_reward(terminated, collision_occurred)
+        reward = self._compute_reward(collision_occurred)
 
         #add truncated
         truncated = False
@@ -110,6 +117,10 @@ class PathfindingEnv(gym.Env):
         info = {
             "collision": collision_occurred
         }
+
+        # Check if the episode is done
+        terminated = self._check_done()
+
 
         # Return the observation, reward, done flag, and info
         return self._get_observation(), reward, terminated, truncated, info
@@ -137,16 +148,20 @@ class PathfindingEnv(gym.Env):
             bool: True if done, False otherwise
         """
         # Check if agent reaches the target
-        if np.linalg.norm(self.agent.position - self.target_position) < 1.0:
+        if np.linalg.norm(self.agent.position - self.target_position) < self.goal_radius:
             return True
 
         # Check if agent collides with any obstacles
         if self.terminate_on_collision and self.obstacle_manager.check_collision(self.agent):
             return True
+        
+        if self.max_collisions is not None:
+            if self.number_of_collisions >= self.max_collisions and self.obstacle_manager.check_collision(self.agent):
+                return True
 
         return False
 
-    def _compute_reward(self, done, collision_occurred):
+    def _compute_reward(self, collision_occurred):
         """
         Compute the reward for the current step.
 
@@ -157,13 +172,17 @@ class PathfindingEnv(gym.Env):
             float: The computed reward.
         """
         reward = -np.linalg.norm(self.agent.position - self.target_position) * 0.1  # Scale-down distance penalty
-
-        if done:
-            if np.linalg.norm(self.agent.position - self.target_position) < 1.0:
-                reward += 100.0  # Large positive reward for reaching the target
         
         if collision_occurred:
             reward -= 100
+
+        # 🚀 ADD: Small penalty if the agent doesn't move
+        if np.linalg.norm(self.agent.velocity) < 0.01:
+            reward -= 1  # Penalize staying still
+
+        # ✅ If the agent reached the target, give it the final reward BEFORE termination
+        if np.linalg.norm(self.agent.position - self.target_position) < self.goal_radius:
+            reward += 100.0  # Ensure success reward is given
 
 
         return reward
