@@ -21,11 +21,15 @@ class PathfindingEnv(gym.Env):
             scaling_factor=0.2,
             random_start_target=False,
             goal_radius=5.0,
-            max_collisions = None
+            max_collisions = None,
+            obstacle_min_size = 1.0,
+            obstacle_max_size = 5.0
             ):
         super(PathfindingEnv, self).__init__()
 
         # Renderer (initialized later when render is called)
+        self.obstacle_min_size = obstacle_min_size
+        self.obstacle_max_size = obstacle_max_size
         self.number_of_collisions = 0
         self.max_collisions = max_collisions
         self.goal_radius = goal_radius
@@ -193,7 +197,9 @@ class PathfindingEnv(gym.Env):
             self.number_of_obstacles,
             agent_position=self.agent.position,
             target_position=self.target_position,
-            bounds=self.bounds
+            bounds=self.bounds,
+            min_size=self.obstacle_min_size,
+            max_size=self.obstacle_max_size
         )
 
 

@@ -4,7 +4,7 @@ import imageio
 
 
 class Renderer:
-    def __init__(self, env, video_path=None, width=600, height=600, scale=6.0, record=False):
+    def __init__(self, env, video_path=None, width=600, height=600, scale=1.0, record=False):
         """
         Initialize the Pygame renderer.
 
@@ -59,7 +59,7 @@ class Renderer:
             obstacle_screen_pos = self._world_to_screen(obstacle["position"])
 
             # Scale the obstacle size
-            obstacle_size = int(obstacle["size"] * self.scale)
+            obstacle_size = int(obstacle["size"] * (self.width / (self.env.bounds[1][0] - self.env.bounds[0][0])))
 
             # Get obstacle type
             obstacle_type = obstacle.get("type", "square")  # Default to "square" if type is missing
@@ -118,17 +118,17 @@ class Renderer:
 
     def _world_to_screen(self, position):
         """
-        Convert world coordinates to screen coordinates.
-
-        Args:
-            position (np.array): World coordinates [x, y].
-
-        Returns:
-            tuple: Screen coordinates (x, y).
+        Convert world coordinates (0 to 100) into screen coordinates (0 to width/height).
         """
-        screen_x = int(position[0] * self.scale)
-        screen_y = int(self.height - position[1] * self.scale)  # Flip y-axis
+        world_min = self.env.bounds[0]  # [0, 0]
+        world_max = self.env.bounds[1]  # [100, 100]
+
+        # Normalize the world coordinates to the screen size
+        screen_x = int((position[0] - world_min[0]) / (world_max[0] - world_min[0]) * self.width)
+        screen_y = int(self.height - (position[1] - world_min[1]) / (world_max[1] - world_min[1]) * self.height)  # Flip y
+
         return screen_x, screen_y
+
     
     def save_video(self):
         """

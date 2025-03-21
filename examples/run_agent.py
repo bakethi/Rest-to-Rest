@@ -3,8 +3,9 @@ from stable_baselines3 import PPO
 from gym_pathfinding.envs.pathfinding_env import PathfindingEnv
 from gym_pathfinding.envs.visualization import Renderer  # If you want to visualize the environment
 
+model_name = "ppo_pathfinding_2025-03-17_13-58-44_penalty_for_standing_still"
 # Load the trained model
-model = PPO.load("/home/bake/Projects/Rest-to-Rest/models/ppo_pathfinding_2025-03-17_13-58-44_penalty_for_standing_still.zip")  # Make sure this path matches your saved model
+model = PPO.load(f"/home/bake/Projects/Rest-to-Rest/models/{model_name}.zip")  # Make sure this path matches your saved model
 
 # Create the environment
 env = PathfindingEnv(
@@ -14,11 +15,14 @@ env = PathfindingEnv(
     num_lidar_scans=24, 
     lidar_max_range=50,
     random_start_target=True,
-    terminate_on_collision=False
+    terminate_on_collision=False,
+    obstacle_max_size=20,
+    obstacle_min_size=10
 )
 
+
 # Initialize the renderer (if visualization is needed)
-renderer = Renderer(env, record=True, video_path="/home/bake/Projects/Rest-to-Rest/Videos/inference_video.mp4")
+renderer = Renderer(env, record=True, video_path=f"/home/bake/Projects/Rest-to-Rest/Videos/inference_video_{model_name}.mp4")
 
 # Reset the environment
 obs, _ = env.reset()

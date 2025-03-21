@@ -2,15 +2,11 @@ import numpy as np
 from .pathfinding import is_target_reachable
 
 class ObstacleManager:
-    def __init__(self, world_bounds=np.array([100.0, 100.0])):
+    def __init__(self):
         """
         Initialize the obstacle manager.
-
-        Args:
-            world_bounds (np.array): The size of the world in [width, height].
         """
         self.obstacles = []
-        self.world_bounds = np.array(world_bounds, dtype=np.float32)
 
     def add_obstacle(self, position, size, shape_type="square"):
         """
@@ -54,7 +50,7 @@ class ObstacleManager:
                 while not valid_position:
                     position = np.random.uniform(
                         low=[0, 0],
-                        high=self.world_bounds,
+                        high=bounds[1],
                         size=(2,)
                     )
                     size = np.random.uniform(min_size, max_size)
