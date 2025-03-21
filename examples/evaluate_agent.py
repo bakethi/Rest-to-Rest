@@ -12,6 +12,8 @@ from gym_pathfinding.envs.pathfinding_env import PathfindingEnv
 model_name = "ppo_pathfinding_2025-03-17_13-58-44_penalty_for_standing_still"
 model = PPO.load(f"/home/bake/Projects/Rest-to-Rest/models/{model_name}.zip")
 
+timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
 # Define environment sizes and obstacle density percentages
 environment_sizes = [25, 50, 100, 150, 200]  # Different world sizes
 obstacle_percentages = [.1, .5, 1, 2, 5]  # Percentage of the environment covered in obstacles
@@ -98,6 +100,17 @@ for size in environment_sizes:
         avg_collisions = total_collisions / num_trials  # Compute average collisions per trial
         results.append([size, obstacle_percent, avg_steps, success_rate, avg_collisions])
 
+        # Convert results into a DataFrame
+        df = pd.DataFrame(results, columns=["Environment Size", "Obstacle %", "Normalized Steps", "Success Rate", "Avg Collisions"])
+
+        # Generate timestamp for the filename
+
+        csv_filename = f"{results_dir}run_{timestamp}_model_{model_name}.csv"
+
+        # Save to CSV
+        df.to_csv(csv_filename, index=False)
+        print(f"\n📂 Results saved to {csv_filename}")
+
         # Update the outer progress bar
         outer_loop.update(1)
 
@@ -107,7 +120,7 @@ outer_loop.close()  # Close environment/obstacle progress bar
 df = pd.DataFrame(results, columns=["Environment Size", "Obstacle %", "Normalized Steps", "Success Rate", "Avg Collisions"])
 
 # Generate timestamp for the filename
-timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
 csv_filename = f"{results_dir}run_{timestamp}_model_{model_name}.csv"
 
 # Save to CSV
