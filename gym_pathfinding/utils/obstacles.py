@@ -40,7 +40,7 @@ class ObstacleManager:
         Raises:
             ValueError: If a valid environment cannot be generated after multiple attempts.
         """
-        max_attempts = 100  # Prevent infinite loops
+        max_attempts = 10  # Prevent infinite loops
         attempts = 0
 
         while attempts < max_attempts:

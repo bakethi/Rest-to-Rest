@@ -50,45 +50,49 @@ for size in environment_sizes:
         )
 
         for trial in range(num_trials):
-            # Create an environment with a dynamic number of obstacles
-            env = PathfindingEnv(
-                number_of_obstacles=num_obstacles,
-                bounds=[[0, 0], [size, size]], 
-                bounce_factor=1, 
-                num_lidar_scans=24, 
-                lidar_max_range=50,
-                terminate_on_collision=False,
-                random_start_target=True
-            )
+            try:
+                # Create an environment with a dynamic number of obstacles
+                env = PathfindingEnv(
+                    number_of_obstacles=num_obstacles,
+                    bounds=[[0, 0], [size, size]], 
+                    bounce_factor=1, 
+                    num_lidar_scans=24, 
+                    lidar_max_range=50,
+                    terminate_on_collision=False,
+                    random_start_target=True
+                )
 
-            # 🔹 Compute `max_steps_per_episode` dynamically AFTER environment is initialized
-            agent_position = env.agent.position
-            target_position = env.target_position
-            euclidean_dist = np.linalg.norm(target_position - agent_position)
-            max_steps_per_episode = int(step_scale_factor * euclidean_dist)
+                # 🔹 Compute `max_steps_per_episode` dynamically AFTER environment is initialized
+                agent_position = env.agent.position
+                target_position = env.target_position
+                euclidean_dist = np.linalg.norm(target_position - agent_position)
+                max_steps_per_episode = int(step_scale_factor * euclidean_dist)
 
-            obs, _ = env.reset()
-            done = False
-            truncated = False
-            steps = 0
-            episode_collisions = 0
+                obs, _ = env.reset()
+                done = False
+                truncated = False
+                steps = 0
+                episode_collisions = 0
 
-            while not done and not truncated and steps < max_steps_per_episode:
-                action, _ = model.predict(obs)
-                obs, _, done, truncated, info = env.step(action)
-                steps += 1
+                while not done and not truncated and steps < max_steps_per_episode:
+                    action, _ = model.predict(obs)
+                    obs, _, done, truncated, info = env.step(action)
+                    steps += 1
 
-                # Count collisions
-                if info["collision"]:  
-                    episode_collisions += 1
+                    # Count collisions
+                    if info["collision"]:  
+                        episode_collisions += 1
 
 
-            # Success is counted only if the goal is reached (not truncated)
-            if done and not truncated:
-                total_successes += 1
+                # Success is counted only if the goal is reached (not truncated)
+                if done and not truncated:
+                    total_successes += 1
 
-            total_steps.append(steps / size)  # Normalize steps by environment size
-            total_collisions += episode_collisions  # Track total collisions
+                total_steps.append(steps / size)  # Normalize steps by environment size
+                total_collisions += episode_collisions  # Track total collisions
+
+            except ValueError as e:
+                print(f"Env creation not possible: {e}")
 
             trial_progress.update(1)  # Update trial progress bar
 
@@ -96,7 +100,11 @@ for size in environment_sizes:
 
         # Compute statistics
         avg_steps = np.mean(total_steps)
-        success_rate = (total_successes / num_trials) * 100
+        if total_successes != 0:
+            success_rate = (total_successes / num_trials) * 100
+        else:
+            success_rate = 0
+            
         avg_collisions = total_collisions / num_trials  # Compute average collisions per trial
         results.append([size, obstacle_percent, avg_steps, success_rate, avg_collisions])
 
