@@ -6,7 +6,7 @@ import datetime
 import os
 
 # 🔹 Generate a timestamp for logging
-feature_name = "penalty_for_standing_still"
+feature_name = "12_50"
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 log_dir = f"./logs/ppo_pathfinding_{timestamp}_{feature_name}"  # TensorBoard log directory
 
@@ -18,7 +18,7 @@ env = PathfindingEnv(
     number_of_obstacles=10, 
     bounds=[[0, 0], [100, 100]], 
     bounce_factor=1, 
-    num_lidar_scans=24, 
+    num_lidar_scans=12, 
     lidar_max_range=50,
     random_start_target=True,
     terminate_on_collision=False,
