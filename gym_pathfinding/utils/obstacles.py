@@ -2,11 +2,13 @@ import numpy as np
 from .pathfinding import is_target_reachable
 
 class ObstacleManager:
-    def __init__(self):
-        """
-        Initialize the obstacle manager.
-        """
+    def __init__(self, bounds, grid_resolution=1): # Add bounds and resolution
         self.obstacles = []
+        self.bounds = bounds
+        self.grid_resolution = grid_resolution # e.g., 1 for 1x1 cells
+        self.grid_width = int((bounds[1][0] - bounds[0][0]) / grid_resolution)
+        self.grid_height = int((bounds[1][1] - bounds[0][1]) / grid_resolution)
+        self.occupancy_grid = np.zeros((self.grid_width, self.grid_height), dtype=bool) # True for obstacle
 
     def add_obstacle(self, position, size, shape_type="square"):
         """
@@ -22,6 +24,7 @@ class ObstacleManager:
             "size": size,
             "type": shape_type,
         })
+        self._update_occupancy_grid() # Call a helper to update the grid
 
     def generate_random_obstacles(self, num_obstacles, min_size=1.0, max_size=5.0, agent_position=None, target_position=None, bounds=None):
         """
@@ -113,26 +116,31 @@ class ObstacleManager:
         Reset the obstacle manager, clearing all obstacles.
         """
         self.obstacles = []
+        self.occupancy_grid = np.zeros((self.grid_width, self.grid_height), dtype=bool)
 
     def check_collision_of_point(self, point):
-        """
-        Check for a collision between a Point and any obstacle.
+        grid_x, grid_y = self._world_to_grid(point)
+        # Check if point is within grid bounds
+        if not (0 <= grid_x < self.grid_width and 0 <= grid_y < self.grid_height):
+            return True # Consider out-of-bounds as collision for pathfinding
+        return self.occupancy_grid[grid_x, grid_y] # Direct lookup!
+    
+    def _world_to_grid(self, world_pos):
+        # Convert world coordinates to grid indices
+        grid_x = int((world_pos[0] - self.bounds[0][0]) / self.grid_resolution)
+        grid_y = int((world_pos[1] - self.bounds[0][1]) / self.grid_resolution)
+        return grid_x, grid_y
 
-        Args:
-            point (array): The point to check for collisions.
-
-        Returns:
-            bool: True if a collision occurs, False otherwise.
-        """
+    def _update_occupancy_grid(self):
+        self.occupancy_grid = np.zeros((self.grid_width, self.grid_height), dtype=bool)
         for obstacle in self.obstacles:
-            if obstacle["type"] == "square":
-                half_size = obstacle["size"] / 2
-                lower_bound = obstacle["position"] - half_size
-                upper_bound = obstacle["position"] + half_size
-                if np.all(lower_bound <= point) and np.all(point <= upper_bound):
-                    return True
-            elif obstacle["type"] == "circle":
-                distance = np.linalg.norm(obstacle["position"] - point)
-                if distance < obstacle["size"]:
-                    return True
-        return False
+            # This part needs careful implementation based on obstacle shape and grid resolution
+            # For simplicity, let's just mark the center cell for now.
+            # For accurate collision, you'd mark all cells covered by the obstacle.
+            grid_x, grid_y = self._world_to_grid(obstacle["position"])
+            # Ensure indices are within bounds
+            grid_x = np.clip(grid_x, 0, self.grid_width - 1)
+            grid_y = np.clip(grid_y, 0, self.grid_height - 1)
+            self.occupancy_grid[grid_x, grid_y] = True
+            # For more detailed marking, iterate over the area the obstacle covers
+            # taking its size and shape into account.

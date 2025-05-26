@@ -60,7 +60,7 @@ class PathfindingEnv(gym.Env):
         self.bounce_factor = bounce_factor
 
         # Initialize environment components
-        self.obstacle_manager = ObstacleManager()
+        self.obstacle_manager = ObstacleManager(self.bounds)
 
 
         self.agent = PhysicsObject(

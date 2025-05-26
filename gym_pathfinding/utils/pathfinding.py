@@ -1,45 +1,66 @@
 import numpy as np
-from queue import Queue
+import heapq # For the priority queue
+
+def heuristic(a, b):
+    # Manhattan distance for a grid, assuming discrete integer coordinates
+    # You might need to cast positions to int/tuple for grid-based A*
+    return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 def is_target_reachable(agent_position, target_position, obstacle_manager, bounds):
-    """
-    Use a simple flood-fill algorithm (BFS) to check if there is a valid path
-    from the agent's start position to the target.
-
-    Args:
-        agent_position (np.array): The agent's starting position.
-        target_position (np.array): The target position.
-        obstacle_manager (ObstacleManager): The obstacle manager that checks collisions.
-        bounds (np.array): The boundaries of the environment.
-
-    Returns:
-        bool: True if the target is reachable, False otherwise.
-    """
-    queue = Queue()
-    visited = set()
+    # Ensure positions are integers for grid-based A*
+    start_node = tuple(map(int, agent_position))
+    target_node = tuple(map(int, target_position))
     
-    start = tuple(agent_position)
-    target = tuple(target_position)
-    
-    queue.put(start)
-    visited.add(start)
+    # Priority queue: (f_score, g_score, node)
+    open_set = []
+    heapq.heappush(open_set, (heuristic(start_node, target_node), 0, start_node))
 
-    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Up, Down, Left, Right
+    # For reconstructing path (not strictly needed for just reachability, but good practice)
+    # came_from = {} 
 
-    while not queue.empty():
-        current = queue.get()
-        
-        if current == target:
-            return True  # Path found
+    # g_score: cost from start to current node
+    g_score = {start_node: 0}
 
-        for direction in directions:
-            neighbor = (current[0] + direction[0], current[1] + direction[1])
+    # f_score: g_score + heuristic_score
+    f_score = {start_node: heuristic(start_node, target_node)}
 
-            if bounds[0][0] <= neighbor[0] <= bounds[1][0] and \
-               bounds[0][1] <= neighbor[1] <= bounds[1][1]:  # Check bounds
+    # Visited nodes
+    closed_set = set()
 
-                if not obstacle_manager.check_collision_of_point(neighbor) and neighbor not in visited:
-                    visited.add(neighbor)
-                    queue.put(neighbor)
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)] # 4-directional movement
 
-    return False  # No path found
+    while open_set:
+        current_f, current_g, current_node = heapq.heappop(open_set)
+
+        if current_node == target_node:
+            return True # Path found
+
+        if current_node in closed_set:
+            continue
+        closed_set.add(current_node)
+
+        for d_x, d_y in directions:
+            neighbor = (current_node[0] + d_x, current_node[1] + d_y)
+
+            # Check bounds
+            if not (bounds[0][0] <= neighbor[0] <= bounds[1][0] and \
+                    bounds[0][1] <= neighbor[1] <= bounds[1][1]):
+                continue
+
+            # Check for collision with obstacles.
+            # IMPORTANT: This assumes obstacles are aligned with the grid for point collision.
+            # If obstacles are continuous shapes, this check might need to be more sophisticated.
+            if obstacle_manager.check_collision_of_point(neighbor): # Reusing existing collision check
+                continue
+
+            # Cost to reach neighbor from current node is 1 (for unweighted grid)
+            tentative_g_score = current_g + 1
+
+            if tentative_g_score < g_score.get(neighbor, float('inf')):
+                # This path to neighbor is better than any previous one. Record it.
+                # came_from[neighbor] = current_node # If you need to reconstruct path
+                g_score[neighbor] = tentative_g_score
+                f_score[neighbor] = tentative_g_score + heuristic(neighbor, target_node)
+                heapq.heappush(open_set, (f_score[neighbor], g_score[neighbor], neighbor))
+
+    return False # No path found
