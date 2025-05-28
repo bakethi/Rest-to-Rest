@@ -6,7 +6,7 @@ import datetime
 import os
 
 # 🔹 Generate a timestamp for logging
-feature_name = "12_50"
+feature_name = "24_50_2percent_obstacles"
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 log_dir = f"./logs/ppo_pathfinding_{timestamp}_{feature_name}"  # TensorBoard log directory
 
@@ -15,10 +15,10 @@ os.makedirs(log_dir, exist_ok=True)
 
 # 🔹 Create the environment
 env = PathfindingEnv(
-    number_of_obstacles=10, 
+    number_of_obstacles=200, 
     bounds=[[0, 0], [100, 100]], 
     bounce_factor=1, 
-    num_lidar_scans=12, 
+    num_lidar_scans=24, 
     lidar_max_range=50,
     random_start_target=True,
     terminate_on_collision=False,
