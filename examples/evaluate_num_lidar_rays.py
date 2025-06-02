@@ -55,6 +55,7 @@ for model_info in models_to_test:
         total_steps = []
         total_successes = 0
         total_collisions = 0
+        total_truncated = 0 # Initialize counter for truncated runs
         num_obstacles = int((environment_size * environment_size) * (obstacle_percentage / 100))
 
         # Inner progress bar (Tracking Trials)
@@ -99,6 +100,9 @@ for model_info in models_to_test:
 
                 if done and not truncated:
                     total_successes += 1
+                
+                if truncated: # Check if the episode was truncated
+                    total_truncated += 1
 
                 total_steps.append(steps / environment_size)
                 total_collisions += episode_collisions
@@ -112,6 +116,7 @@ for model_info in models_to_test:
         avg_steps = np.mean(total_steps) if total_steps else 0
         success_rate = (total_successes / num_trials) * 100 if num_trials > 0 else 0
         avg_collisions = total_collisions / num_trials if num_trials > 0 else 0
+        truncated_runs_percentage = (total_truncated / num_trials) * 100 if num_trials > 0 else 0 # Percentage of truncated runs
 
         all_results.append([
             model_name,
@@ -121,7 +126,8 @@ for model_info in models_to_test:
             obstacle_percentage,
             avg_steps,
             success_rate,
-            avg_collisions
+            avg_collisions,
+            truncated_runs_percentage # Add truncated runs percentage to results
         ])
 
 # Convert all collected results into a DataFrame
@@ -133,7 +139,8 @@ df = pd.DataFrame(all_results, columns=[
     "Obstacle %",
     "Normalized Steps",
     "Success Rate",
-    "Avg Collisions"
+    "Avg Collisions",
+    "Truncated Runs (%)" # Add new column name
 ])
 
 # Generate timestamp for the filename
