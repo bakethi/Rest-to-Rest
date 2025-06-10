@@ -6,7 +6,7 @@ import datetime
 import os
 
 # 🔹 Generate a timestamp for logging
-feature_name = "24_50_SAC" # Changed feature name for SAC
+feature_name = "24_50" # Changed feature name for SAC
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 log_dir = f"./logs/sac_pathfinding_{timestamp}_{feature_name}" # Changed log directory to reflect SAC
 

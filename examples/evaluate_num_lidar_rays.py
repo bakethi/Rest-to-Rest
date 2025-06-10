@@ -86,23 +86,25 @@ for model_info in models_to_test:
 
                 obs, _ = env.reset()
                 done = False
-                truncated = False
+                truncated_env_flag = False # Store the truncated flag from env.step
                 steps = 0
                 episode_collisions = 0
 
-                while not done and not truncated and steps < max_steps_per_episode:
+                while not done and not truncated_env_flag and steps < max_steps_per_episode:
                     action, _ = model.predict(obs)
-                    obs, _, done, truncated, info = env.step(action)
+                    obs, _, done, truncated_env_flag, info = env.step(action)
                     steps += 1
 
                     if info["collision"]:
                         episode_collisions += 1
 
-                if done and not truncated:
-                    total_successes += 1
-                
-                if truncated: # Check if the episode was truncated
+                # Correctly determine if the episode was truncated by reaching the step limit
+                # An episode is truncated if it reached max_steps_per_episode AND it's not 'done' (i.e., target reached)
+                if steps >= max_steps_per_episode and not done:
                     total_truncated += 1
+                
+                if done and not (steps >= max_steps_per_episode): # Only count as success if goal reached and not truncated
+                    total_successes += 1
 
                 total_steps.append(steps / environment_size)
                 total_collisions += episode_collisions
