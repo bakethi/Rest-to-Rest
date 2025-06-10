@@ -39,11 +39,11 @@ model = SAC(
     policy_kwargs=dict(net_arch=[128, 128]),
     learning_rate=3e-4,
     buffer_size=100000, # SAC specific: Size of the replay buffer
-    learning_starts=100, # SAC specific: Number of steps before learning starts
+    learning_starts=10000, # SAC specific: Number of steps before learning starts
     batch_size=256, # SAC specific: Batch size for training
     tau=0.005, # SAC specific: Soft update coefficient (for target networks)
     gamma=0.99,
-    train_freq=(1, "episode"), # SAC specific: Train after every episode
+    train_freq=(1, "step"), # SAC specific: Train after every episode
     gradient_steps=1, # SAC specific: Number of gradient steps after each rollout
     ent_coef="auto", # SAC specific: Entropy regularization coefficient
     verbose=1,
