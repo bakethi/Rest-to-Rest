@@ -10,7 +10,7 @@ from gym_pathfinding.envs.pathfinding_env import PathfindingEnv
 
 # Load the trained SAC model
 # IMPORTANT: Replace "sac_pathfinding_YOUR_TIMESTAMP_YOUR_FEATURE_NAME" with the actual name of your saved SAC model
-model_name = "sac_pathfinding_2025-06-04_07-10-14_24_50" # Placeholder for SAC model name
+model_name = "sac_pathfinding_2025-06-10_07-43-11_24_50" # Placeholder for SAC model name
 try:
     model = SAC.load(f"/home/bake/Projects/Rest-to-Rest/models/{model_name}.zip") # Changed PPO.load to SAC.load
 except Exception as e:
