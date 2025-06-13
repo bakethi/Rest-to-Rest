@@ -33,7 +33,7 @@ class Renderer:
             "distance_to_target": (255, 165, 0)
         }
 
-    def render(self, agent, obstacle_manager, target_position):
+    def render(self, agent=None, obstacle_manager=None, target_position=None, intruders=None):
         """
         Render the environment.
 
@@ -52,38 +52,44 @@ class Renderer:
         # Get Agent screen position
         agent_screen_pos = self._world_to_screen(agent.position)
         
+        for intruder in intruders:
+            # Draw the intruder's physics object (e.g., as a red circle)
+            intruder_pos = (int(intruder.physics.position[0]), int(intruder.physics.position[1]))
+            intruder_radius = int(intruder.physics.size / 2)
+            pygame.draw.circle(self.screen, (255, 0, 0), intruder_pos, intruder_radius)
 
         # Draw the obstacles
-        for obstacle in obstacle_manager.get_obstacles():
-            # Convert world coordinates to screen coordinates
-            obstacle_screen_pos = self._world_to_screen(obstacle["position"])
+        if obstacle_manager:
+            for obstacle in obstacle_manager.get_obstacles():
+                # Convert world coordinates to screen coordinates
+                obstacle_screen_pos = self._world_to_screen(obstacle["position"])
 
-            # Scale the obstacle size
-            obstacle_size = int(obstacle["size"] * (self.width / (self.env.bounds[1][0] - self.env.bounds[0][0])))
+                # Scale the obstacle size
+                obstacle_size = int(obstacle["size"] * (self.width / (self.env.bounds[1][0] - self.env.bounds[0][0])))
 
-            # Get obstacle type
-            obstacle_type = obstacle.get("type", "square")  # Default to "square" if type is missing
+                # Get obstacle type
+                obstacle_type = obstacle.get("type", "square")  # Default to "square" if type is missing
 
-            if obstacle_type == "circle":
-                # Draw a circle obstacle
-                pygame.draw.circle(
-                    self.screen,
-                    self.colors["obstacle"],
-                    (int(obstacle_screen_pos[0]), int(obstacle_screen_pos[1])),
-                    obstacle_size
-                )
-            else:
-                # Draw a square obstacle
-                pygame.draw.rect(
-                    self.screen,
-                    self.colors["obstacle"],
-                    pygame.Rect(
-                        obstacle_screen_pos[0] - obstacle_size // 2,
-                        obstacle_screen_pos[1] - obstacle_size // 2,
-                        obstacle_size,
-                        obstacle_size,
-                    ),
-                )
+                if obstacle_type == "circle":
+                    # Draw a circle obstacle
+                    pygame.draw.circle(
+                        self.screen,
+                        self.colors["obstacle"],
+                        (int(obstacle_screen_pos[0]), int(obstacle_screen_pos[1])),
+                        obstacle_size
+                    )
+                else:
+                    # Draw a square obstacle
+                    pygame.draw.rect(
+                        self.screen,
+                        self.colors["obstacle"],
+                        pygame.Rect(
+                            obstacle_screen_pos[0] - obstacle_size // 2,
+                            obstacle_screen_pos[1] - obstacle_size // 2,
+                            obstacle_size,
+                            obstacle_size,
+                        ),
+                    )
 
         # Draw the path taken by the agent
         if len(agent.path_history) > 1:
