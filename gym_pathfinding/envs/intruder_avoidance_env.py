@@ -207,7 +207,7 @@ class IntruderAvoidanceEnv(gym.Env):
 
         # 3. Collision Penalty: A large penalty for hitting obstacles/walls.
         if collision_occurred:
-            reward -= 10
+            reward -= 100
         # 5. Goal Bonus: A large reward for reaching the target.
         if distance_to_target < self.goal_radius:
             reward += 100.0

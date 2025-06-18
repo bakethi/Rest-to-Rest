@@ -7,7 +7,7 @@ import os
 
 # --- 1. Configuration for Continuous Training ---
 # Use a static feature name and paths so the script can find the model on restart.
-feature_name = "24_50_velo_shaping"
+feature_name = "24_50_no_intruders"
 LOG_DIR = f"./logs/ppo_intruder_{feature_name}"
 MODEL_PATH = f"models/ppo_intruder_{feature_name}.zip"
 
@@ -24,7 +24,7 @@ os.makedirs("models", exist_ok=True)
 
 # --- 2. Environment Setup (Same as before) ---
 env = IntruderAvoidanceEnv(
-    number_of_intruders=10, 
+    number_of_intruders=0, 
     bounds=[[0, 0], [100, 100]], 
     # bounce_factor is part of the Intruder class now, not the env
     num_lidar_scans=24, 
