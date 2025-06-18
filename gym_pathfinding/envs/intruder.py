@@ -2,67 +2,64 @@ import numpy as np
 from .physics import PhysicsObject
 
 class Intruder:
-    def __init__(self, initial_position, bounds, max_speed=5.0, change_direction_interval=2.0):
+    def __init__(self, initial_position, bounds, max_speed=5.0, change_direction_interval=6.0, size=3.0):
         """
-        Initializes an Intruder.
-
-        Args:
-            initial_position (np.array): The starting position.
-            bounds (np.array): The environment boundaries.
-            max_speed (float): The maximum speed of the intruder.
-            change_direction_interval (float): Time in seconds between changing direction.
+        Initializes an Intruder with goal-oriented movement.
         """
-        # Each intruder has its own physics object
         self.physics = PhysicsObject(
             position=initial_position,
             max_speed=max_speed,
             bounds=bounds,
-            bounce_factor=-1 # Make intruders bounce off walls
+            bounce_factor=-1,
+            size=size # Make size part of the constructor
         )
-        self.physics.size = 10 # Example size for collision detection
+        self.bounds = bounds
 
         # --- Intruder "Brain" Attributes ---
         self.change_direction_interval = change_direction_interval
-        self.time_since_last_change = 0.0
-        self.movement_force = 1.0 # The force with which the intruder pushes itself
-        self.direction = np.array([0.0, 0.0])
+        self.time_since_last_change = change_direction_interval
+        self.movement_force = 1.0
+        self.target_point = None
+        
+        # +++ ADD: Define a small radius to consider the target "reached" +++
+        self.arrival_radius = 5.0
 
     def update(self, agent_position, dt):
         """
         Updates the intruder's behavior and physics.
-
-        Args:
-            agent_position (np.array): The current position of the main agent.
-            dt (float): The time step for the physics update.
         """
-        # 1. Update the "brain" timer
         self.time_since_last_change += dt
 
-        # 2. Decide on a new direction if the timer is up
-        if self.time_since_last_change >= self.change_direction_interval:
-            self.time_since_last_change = 0.0  # Reset timer
+        # --- THIS IS THE MODIFIED DECISION LOGIC ---
+        
+        # 1. Check if the intruder has reached its current target
+        has_reached_target = False
+        if self.target_point is not None:
+            distance_to_target = np.linalg.norm(self.target_point - self.physics.position)
+            if distance_to_target < self.arrival_radius:
+                has_reached_target = True
+        
+        # 2. Decide on a new target if the timer is up OR the target has been reached
+        if self.time_since_last_change >= self.change_direction_interval or has_reached_target:
+            self.time_since_last_change = 0.0
             
-            # This is the logic for deciding the direction
-            # 80% chance to move in a random direction
+            # 80% chance to pick a random destination in the environment
             if np.random.rand() < 0.8:
-                # Choose a random angle and create a direction vector
-                random_angle = np.random.uniform(0, 2 * np.pi)
-                self.direction = np.array([np.cos(random_angle), np.sin(random_angle)])
+                self.target_point = np.random.uniform(low=self.bounds[0], high=self.bounds[1])
             
-            # 20% chance to move towards the agent
+            # 20% chance to target the agent's position at this moment in time
             else:
-                # Calculate direction vector towards the agent
-                direction_to_agent = agent_position - self.physics.position
-                # Normalize the vector to get a unit direction
-                norm = np.linalg.norm(direction_to_agent)
-                if norm > 0:
-                    self.direction = direction_to_agent / norm
-                else:
-                    # If somehow on top of the agent, move randomly
-                    self.direction = np.array([1.0, 0.0])
+                self.target_point = agent_position
 
-        # 3. Apply force to move in the chosen direction
-        self.physics.apply_force(self.direction * self.movement_force)
+        # 3. Always calculate direction and apply force towards the current target_point
+        if self.target_point is not None:
+            direction_to_target = self.target_point - self.physics.position
+            norm = np.linalg.norm(direction_to_target)
+            
+            # Only apply force if not already at the target to prevent jittering
+            if norm > self.arrival_radius:
+                direction = direction_to_target / norm
+                self.physics.apply_force(direction * self.movement_force)
         
         # 4. Update the physics simulation for this intruder
         self.physics.update(dt)

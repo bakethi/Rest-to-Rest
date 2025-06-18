@@ -28,7 +28,8 @@ class IntruderAvoidanceEnv(gym.Env):
             dt = 0.1,
             max_intruder_speed = 5,
             change_direction_interval = 3,
-            agent_size = 10
+            agent_size = 10,
+            intruder_size = 3
             ):
         super(IntruderAvoidanceEnv, self).__init__()
 
@@ -51,6 +52,7 @@ class IntruderAvoidanceEnv(gym.Env):
         self.max_intruder_speed = max_intruder_speed
         self.change_direction_interval = change_direction_interval
         self.agent_size = agent_size
+        self.intruder_size = intruder_size
 
         # Define action and observation spaces
         # Actions: Acceleration in x and y (range -1 to 1)
@@ -106,9 +108,11 @@ class IntruderAvoidanceEnv(gym.Env):
                 initial_position=intruder_start_pos,
                 bounds=self.bounds,
                 max_speed=self.max_intruder_speed,
-                change_direction_interval=3.0 # Example: changes direction every 3 seconds
+                change_direction_interval=self.change_direction_interval, 
+                size=self.intruder_size
             )
             self.intruders.append(new_intruder)
+        
         return self._get_observation(), {}
 
 
@@ -194,27 +198,19 @@ class IntruderAvoidanceEnv(gym.Env):
 
     def _compute_reward(self, collision_occurred):
         """
-        Compute the reward for the current step.
-
-        Args:
-            done (bool): Whether the episode is done.
-
-        Returns:
-            float: The computed reward.
+        Computes a robust reward for the pathfinding task.
         """
-        reward = -np.linalg.norm(self.agent.position - self.target_position) * 0.1  # Scale-down distance penalty
-        
+        distance_to_target = np.linalg.norm(self.agent.position - self.target_position)
+
+        # 1. Main incentive: A penalty for being far from the target.
+        reward = -distance_to_target 
+
+        # 3. Collision Penalty: A large penalty for hitting obstacles/walls.
         if collision_occurred:
-            reward -= 100
-
-        # 🚀 ADD: Small penalty if the agent doesn't move
-        if np.linalg.norm(self.agent.velocity) < 0.01:
-            reward -= 1  # Penalize staying still
-
-        # ✅ If the agent reached the target, give it the final reward BEFORE termination
-        if np.linalg.norm(self.agent.position - self.target_position) < self.goal_radius:
-            reward += 100.0  # Ensure success reward is given
-
+            reward -= 10
+        # 5. Goal Bonus: A large reward for reaching the target.
+        if distance_to_target < self.goal_radius:
+            reward += 100.0
 
         return reward
 

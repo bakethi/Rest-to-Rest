@@ -52,11 +52,17 @@ class Renderer:
         # Get Agent screen position
         agent_screen_pos = self._world_to_screen(agent.position)
         
-        for intruder in intruders:
-            # Draw the intruder's physics object (e.g., as a red circle)
-            intruder_pos = (int(intruder.physics.position[0]), int(intruder.physics.position[1]))
-            intruder_radius = int(intruder.physics.size / 2)
-            pygame.draw.circle(self.screen, (255, 0, 0), intruder_pos, intruder_radius)
+        if intruders is not None:
+                for intruder in intruders:
+                    # 1. Convert world position to screen position
+                    intruder_screen_pos = self._world_to_screen(intruder.physics.position)
+                    
+                    # 2. Scale the intruder's radius to match the screen size
+                    world_width = self.env.bounds[1][0] - self.env.bounds[0][0]
+                    screen_radius = int(intruder.physics.size / 2 * (self.width / world_width))
+
+                    # 3. Draw the intruder using the corrected screen coordinates and radius
+                    pygame.draw.circle(self.screen, self.colors["obstacle"], intruder_screen_pos, screen_radius)
 
         # Draw the obstacles
         if obstacle_manager:
