@@ -1,55 +1,67 @@
 import gymnasium as gym
 from stable_baselines3 import PPO
 from stable_baselines3.common.logger import configure
+# +++ 1. IMPORT THE CALLBACK +++
+from stable_baselines3.common.callbacks import CheckpointCallback
 from gym_pathfinding.envs.intruder_avoidance_env import IntruderAvoidanceEnv
 import datetime
 import os
 
-# --- 1. Configuration for Continuous Training ---
-# Use a static feature name and paths so the script can find the model on restart.
-feature_name = "24_50_no_intruders"
+# --- Configuration ---
+feature_name = "24_50_PBRS_Training_2"
 LOG_DIR = f"./logs/ppo_intruder_{feature_name}"
-MODEL_PATH = f"models/ppo_intruder_{feature_name}.zip"
+# This will be the directory where checkpoints are saved
+CHECKPOINT_DIR = f"./models/checkpoints_{feature_name}/" 
 
-# The number of steps to train for in each session of the loop.
-TRAINING_STEPS_PER_SESSION = 50_000
-
-# The total number of training sessions to run.
-# For an infinite loop, you can change this to a `while True:` loop.
-NUM_SESSIONS = 10  # This will result in 40 * 50,000 = 2,000,000 total steps
+# The number of steps between each checkpoint save
+CHECKPOINT_FREQ = 500_000 
+# Total number of steps to train for
+TOTAL_TIMESTEPS = 5_000_000 
 
 # Ensure the log and model directories exist
 os.makedirs(LOG_DIR, exist_ok=True)
-os.makedirs("models", exist_ok=True)
+os.makedirs(CHECKPOINT_DIR, exist_ok=True)
 
-# --- 2. Environment Setup (Same as before) ---
+# --- Environment Setup (Same as your script) ---
 env = IntruderAvoidanceEnv(
-    number_of_intruders=0, 
+    change_direction_interval=6,
+    number_of_intruders=5, 
     bounds=[[0, 0], [100, 100]], 
-    # bounce_factor is part of the Intruder class now, not the env
-    num_lidar_scans=24, 
-    lidar_max_range=50,
-    random_start_target=True,
     max_intruder_speed=1,
-    intruder_size=3
+    intruder_size=3,
+    terminate_on_collision=True,
+    gamma= 0.99,
+    r_collision_reward= None,
+    d_safe= 15.0,
+    k_bubble= 50.0,
+    k_decay_safe= 0.1,
+    C_collision= 100.0,
+    k_pos= 0.5,
+    k_action= 0.001,
+    w_safe= 0.3,
+    w_pos= 0.7 
 )
-
-# +++ THIS IS THE ADDED LINE +++
-# This wrapper will automatically terminate and reset the episode after 1000 steps.
-# This forces the agent to see a new scenario more often. You can tune this value.
 env = gym.wrappers.TimeLimit(env, max_episode_steps=1000)
-
 env = gym.wrappers.RecordEpisodeStatistics(env)
 print("Observation Space:", env.observation_space.shape)
 
-# --- 3. Load Existing Model or Create New One ---
-if os.path.exists(MODEL_PATH):
-    print("--- Loading existing model and continuing training ---")
-    # Load the previously saved model
-    model = PPO.load(MODEL_PATH, env=env)
+# --- Find the latest checkpoint to load from ---
+# This part is optional but useful for continuous training. It finds the last saved model.
+latest_checkpoint = None
+if os.path.exists(CHECKPOINT_DIR) and len(os.listdir(CHECKPOINT_DIR)) > 0:
+    # Get all the .zip files in the directory
+    checkpoints = [f for f in os.listdir(CHECKPOINT_DIR) if f.endswith('.zip')]
+    if checkpoints:
+        # Sort by the number of steps (extracted from the filename)
+        checkpoints.sort(key=lambda x: int(x.split('_')[2]))
+        latest_checkpoint = os.path.join(CHECKPOINT_DIR, checkpoints[-1])
+
+# --- Load Existing Model or Create New One ---
+if latest_checkpoint:
+    print(f"--- Loading from latest checkpoint: {latest_checkpoint} ---")
+    model = PPO.load(latest_checkpoint, env=env)
 else:
-    print("--- No model found, creating new model ---")
-    # If no model exists, create a new one using your parameters
+    print("--- No checkpoint found, creating new model ---")
     model = PPO(
         "MlpPolicy",  
         env,  
@@ -65,24 +77,28 @@ else:
         device='cpu',
     )
 
-# Configure logger to save to the continuous log directory
+# --- 2. SETUP THE CHECKPOINT CALLBACK ---
+# This will save a checkpoint every CHECKPOINT_FREQ steps
+checkpoint_callback = CheckpointCallback(
+  save_freq=CHECKPOINT_FREQ,
+  save_path=CHECKPOINT_DIR,
+  name_prefix=f"ppo_intruder_{feature_name}"
+)
+
+# Configure logger
 new_logger = configure(LOG_DIR, ["stdout", "tensorboard"])
 model.set_logger(new_logger)
 
-# --- 4. The Continuous Training Loop ---
-for session in range(NUM_SESSIONS):
-    print(f"--- Starting Training Session {session + 1}/{NUM_SESSIONS} ---")
+# --- 3. TRAIN WITH THE CALLBACK ---
+# The model will now train for the total number of steps, and the
+# callback will handle saving checkpoints automatically.
+print("--- Starting Training ---")
+model.learn(
+    total_timesteps=TOTAL_TIMESTEPS,
+    reset_num_timesteps=False,
+    tb_log_name="PPO",
+    # Pass the callback here
+    callback=checkpoint_callback 
+)
     
-    # The key to continuous training is `reset_num_timesteps=False`.
-    # This ensures the logs and total timesteps continue to increase across each `learn()` call.
-    model.learn(
-        total_timesteps=TRAINING_STEPS_PER_SESSION,
-        reset_num_timesteps=False,  # This is the most important parameter
-        tb_log_name="PPO"
-    )
-    
-    # Save the model after each training session
-    print(f"--- Session {session + 1} Complete. Saving model to {MODEL_PATH} ---")
-    model.save(MODEL_PATH)
-    
-print(f"✅ All {NUM_SESSIONS} training sessions complete. Final model saved at {MODEL_PATH}")
+print(f"✅ Training complete. Checkpoints are saved in {CHECKPOINT_DIR}")
