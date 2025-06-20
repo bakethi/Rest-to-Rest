@@ -15,12 +15,12 @@ class IntruderAvoidanceEnv(gym.Env):
             number_of_intruders=1, 
             bounds=np.array([[0, 0], [100, 100]]), 
             bounce_factor=1,
-            num_lidar_scans=36,
-            lidar_max_range=60,
+            num_lidar_scans=24,
+            lidar_max_range=50,
             max_acceleration=5,
-            terminate_on_collision=True,
+            terminate_on_collision=False,
             scaling_factor=0.2,
-            random_start_target=False,
+            random_start_target=True,
             goal_radius=5.0,
             max_collisions = None,
             obstacle_min_size = 1.0,
@@ -29,13 +29,16 @@ class IntruderAvoidanceEnv(gym.Env):
             max_intruder_speed = 5,
             change_direction_interval = 3,
             agent_size = 10,
-            intruder_size = 3
+            intruder_size = 3,
+            number_of_obstacles = 0,
+            terminate_on_target_reached = False
             ):
         super(IntruderAvoidanceEnv, self).__init__()
 
         # Renderer (initialized later when render is called)
         self.obstacle_min_size = obstacle_min_size
         self.obstacle_max_size = obstacle_max_size
+        self.number_of_obstacles = number_of_obstacles
         self.number_of_collisions = 0
         self.max_collisions = max_collisions
         self.goal_radius = goal_radius
@@ -53,6 +56,7 @@ class IntruderAvoidanceEnv(gym.Env):
         self.change_direction_interval = change_direction_interval
         self.agent_size = agent_size
         self.intruder_size = intruder_size
+        self.terminate_on_target_reached = terminate_on_target_reached
 
         # Define action and observation spaces
         # Actions: Acceleration in x and y (range -1 to 1)
@@ -183,7 +187,7 @@ class IntruderAvoidanceEnv(gym.Env):
             bool: True if done, False otherwise
         """
         # Check if agent reaches the target
-        if np.linalg.norm(self.agent.position - self.target_position) < self.goal_radius:
+        if np.linalg.norm(self.agent.position - self.target_position) < self.goal_radius and self.terminate_on_target_reached:
             return True
 
         # Check if agent collides with any obstacles
@@ -208,16 +212,13 @@ class IntruderAvoidanceEnv(gym.Env):
         # 3. Collision Penalty: A large penalty for hitting obstacles/walls.
         if collision_occurred:
             reward -= 100
-        # 5. Goal Bonus: A large reward for reaching the target.
-        if distance_to_target < self.goal_radius:
-            reward += 100.0
 
         return reward
 
 
     def generate_random_obstacles(self):
         self.obstacle_manager.generate_random_obstacles(
-            self.number_of_intruders,
+            self.number_of_obstacles,
             agent_position=self.agent.position,
             target_position=self.target_position,
             bounds=self.bounds,

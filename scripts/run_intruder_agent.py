@@ -3,7 +3,7 @@ from stable_baselines3 import PPO, SAC
 from gym_pathfinding.envs.intruder_avoidance_env import IntruderAvoidanceEnv
 from gym_pathfinding.envs.visualization import Renderer  # If you want to visualize the environment
 
-model_name = "ppo_intruder_24_50_velo_shaping"
+model_name = "ppo_intruder_24_50_no_intruders"
 # Load the trained model
 model = PPO.load(f"/home/bake/Projects/Rest-to-Rest/models/{model_name}.zip")  # Make sure this path matches your saved model
 
@@ -36,8 +36,6 @@ for _ in range(num_steps):
 
     # Take a step in the environment
     obs, reward, done, truncated, info = env.step(action)
-    print("Observation: ", obs)
-    print("Reward: ", reward)
 
     # Render the environment
     renderer.render(env.agent, env.obstacle_manager, env.target_position, env.intruders)
