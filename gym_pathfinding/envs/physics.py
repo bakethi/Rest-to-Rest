@@ -9,9 +9,10 @@ class PhysicsObject:
         mass=1.0,
         drag=0.1,
         bounds=None,    # bounds [x_min, y_min], [x_max, y_max]
-        max_speed=None,
+        max_speed=20.0,
         bounce_factor=1,
         obstacleManager=None,
+        size = 3,
     ):
         """
         Initializes the PhysicsObject.
@@ -35,6 +36,7 @@ class PhysicsObject:
         self.path_history = [self.position]
         self.bounce_factor = bounce_factor
         self.obstacleManager = obstacleManager
+        self.size = size
 
     def apply_force(self, force):
         """
@@ -42,33 +44,34 @@ class PhysicsObject:
         """
         self.velocity += np.array(force, dtype=np.float32)
 
-    def update(self):
-        """
-        Update the object's position and velocity.
-        """
-        self.velocity = (self.velocity * (1 - self.drag)) / self.mass
+    def update(self, dt):
+        # Apply drag, scaled by dt for consistency
+        self.velocity *= (1 - self.drag * dt)
 
+        # Update velocity with acceleration, scaled by dt
+        self.velocity += self.acceleration * dt
+
+        # Limit speed (this part doesn't need dt)
         speed = np.linalg.norm(self.velocity)
-        if self.max_speed is not None:
-            if speed > self.max_speed:
-                self.velocity = (self.velocity / speed) * self.max_speed
+        if speed > self.max_speed:
+            self.velocity = (self.velocity / speed) * self.max_speed
 
-        # Set values near zero to zero
-        self.velocity[np.abs(self.velocity) < 0.01] = 0
+        # Update position, scaled by dt
+        self.position += self.velocity * dt
 
-        # update position
-        self.position += self.velocity
+        # Reset acceleration for the next step
+        self.acceleration = np.zeros(2)
 
-        if self.obstacleManager is not None:
-            if self.obstacleManager.check_collision(self):
-                self.velocity *= (self.bounce_factor * -1)
-                self.position += self.velocity
-
-        # Apply bounds if provided
+        # Bounds checking (this also doesn't need dt)
         if self.bounds is not None:
+            if not (self.bounds[0][0] <= self.position[0] <= self.bounds[1][0]):
+                self.velocity[0] *= self.bounce_factor
+            if not (self.bounds[0][1] <= self.position[1] <= self.bounds[1][1]):
+                self.velocity[1] *= self.bounce_factor
             self.position = np.clip(self.position, self.bounds[0], self.bounds[1])
 
-        self.path_history.append(self.position)
+        self.path_history.append(self.position.copy())
+
 
     def reset(self, position=None, velocity=None):
         """
@@ -92,9 +95,9 @@ class PhysicsEngine:
         """
         self.objects.append(obj)
 
-    def update(self):
+    def update(self, dt):
         """
         Update all managed objects.
         """
         for obj in self.objects:
-            obj.update()
+            obj.update(dt)
