@@ -27,3 +27,47 @@ env = IntruderAvoidanceEnv(
     C_collision= 100.0,
     terminate_on_collision=True,
 )
+
+Training3:
+# The number of steps between each checkpoint save
+CHECKPOINT_FREQ = 500_000
+# +++ ADDED: The number of steps between each evaluation +++
+EVAL_FREQ = 25_000 
+# Total number of steps to train for
+TOTAL_TIMESTEPS = 5_000_000
+train_env = IntruderAvoidanceEnv(
+    change_direction_interval=6,
+    number_of_intruders=5, 
+    bounds=[[0, 0], [100, 100]], 
+    max_intruder_speed=1,
+    intruder_size=3,
+    terminate_on_collision=True,
+    gamma= 0.99,
+    r_collision_reward= None,
+    d_safe= 15.0,
+    k_bubble= 50.0,
+    k_decay_safe= 0.1,
+    C_collision= 100.0,
+    k_pos= 0.5,
+    k_action= 0.001,
+    w_safe= 0.3,
+    w_pos= 0.7 
+)
+eval_env = IntruderAvoidanceEnv(
+    change_direction_interval=6,
+    number_of_intruders=20, 
+    bounds=[[0, 0], [100, 100]], 
+    max_intruder_speed=3,
+    intruder_size=3,
+    terminate_on_collision=True,
+    gamma= 0.99,
+    r_collision_reward= None,
+    d_safe= 15.0,
+    k_bubble= 50.0,
+    k_decay_safe= 0.1,
+    C_collision= 100.0,
+    k_pos= 0.5,
+    k_action= 0.001,
+    w_safe= 0.3,
+    w_pos= 0.7 
+)
