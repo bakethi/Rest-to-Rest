@@ -9,7 +9,7 @@ from stable_baselines3 import PPO
 from gym_pathfinding.envs.intruder_avoidance_env import IntruderAvoidanceEnv
 
 # Load the trained model
-model_name = "ppo_intruder_24_50_simple_reward"
+model_name = "checkpoints_24_50_PBRS_Training_2/ppo_intruder_24_50_PBRS_Training_2_500000_steps"
 model = PPO.load(f"/home/bake/Projects/Rest-to-Rest/models/{model_name}.zip")
 
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")

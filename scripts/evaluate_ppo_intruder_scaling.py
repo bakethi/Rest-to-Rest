@@ -10,7 +10,7 @@ from gym_pathfinding.envs.intruder_avoidance_env import IntruderAvoidanceEnv
 # --- 1. CONFIGURATION ---
 
 # Point to the directory containing all your saved model checkpoints
-CHECKPOINT_DIR = "./models/checkpoints_24_50_PBRS_Training_2/" 
+CHECKPOINT_DIR = "models/best_model_24_50_PBRS_Training_3" 
 
 # +++ ADDED: Define the number of intruders to test against +++
 numbers_of_intruders = [5, 10, 20, 40]
