@@ -6,8 +6,8 @@ import re
 import os # Recommended for handling paths
 
 # --- Configuration ---
-csv_file_path = "results/evaluation_run_2025-06-21_15-49-21.csv"
-save_dir = "plots/intruder_plots/Training_2"
+csv_file_path = "results/evaluation_run_2025-06-24_07-48-46.csv"
+save_dir = "plots/intruder_plots/Training_3"
 
 # Create the save directory if it doesn't exist
 os.makedirs(save_dir, exist_ok=True)
@@ -26,7 +26,7 @@ def extract_steps(model_name):
     match = re.search(r'_(\d+)_steps\.zip$', model_name)
     if match:
         return int(match.group(1))
-    return 0
+    return "New Model"
 
 df['Training Steps'] = df['Model Checkpoint'].apply(extract_steps)
 
