@@ -4,6 +4,7 @@ import gymnasium as gym
 import torch
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
+from stable_baselines3.common.vec_env import SubprocVecEnv
 import argparse
 import random
 
@@ -67,7 +68,11 @@ def train_agent(args):
         return env
 
     # 3. Create the vectorized environment
-    vec_env = make_vec_env(make_env, n_envs=args.n_envs)
+    vec_env = make_vec_env(
+        make_env,
+        n_envs=args.n_envs,
+        vec_env_cls=SubprocVecEnv
+    )
 
     # 4. Define the PPO model
     policy_kwargs = dict(activation_fn=torch.nn.ReLU,
@@ -77,7 +82,8 @@ def train_agent(args):
         "MlpPolicy",
         vec_env,
         policy_kwargs=policy_kwargs,
-        verbose=0
+        verbose=0,
+        device='cpu'
     )
 
     # 5. Train the model

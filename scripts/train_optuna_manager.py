@@ -60,7 +60,7 @@ def objective(trial: optuna.Trial) -> float:
         print(f"Evaluation command: {' '.join(eval_command)}")
 
         # Run the evaluation script
-        result = subprocess.run(eval_command, check=True)
+        result = subprocess.run(eval_command, check=True, capture_output=True, text=True)
 
         # --- 4. Parse the KPI from the evaluation script's output ---
         json_output_str = re.search(r"---JSON_OUTPUT_START---(.*)---JSON_OUTPUT_END---", result.stdout, re.DOTALL)
