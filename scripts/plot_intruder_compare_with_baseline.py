@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import os
 
 base_model_csv_path = "results/evaluation_run_2025-06-21_15-49-21.csv"
-new_model_csv_path = "results/evaluation_run_2025-06-24_07-48-46.csv"
-training_number = "Training_3"
+new_model_csv_path = "optuna_trials/trial_205/evaluation_details.csv"
+training_number = "Training_4"
 save_dir = f"plots/intruder_plots/{training_number}"
 
 # Create the save directory if it doesn't exist
@@ -26,7 +26,7 @@ df_500k = df_base[df_base['Model Checkpoint'].str.contains('_500000_steps.zip')]
 
 # 2. Add a 'Model' column to each dataframe to identify the models
 df_500k['Model'] = '500k Steps Baseline'
-df_new['Model'] = 'Best Model'
+df_new['Model'] = 'Best Optuna Model'
 
 # 3. Concatenate the two dataframes
 df_comparison = pd.concat([df_500k, df_new], ignore_index=True)
