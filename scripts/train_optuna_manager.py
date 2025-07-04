@@ -15,7 +15,8 @@ def objective(trial: optuna.Trial) -> float:
     4. Returning the KPI.
     """
     # Create a unique directory for this trial's artifacts (model, logs)
-    trial_dir = f"optuna_trials/trial_{trial.number}"
+    # After - A much more robust approach
+    trial_dir = f"optuna_trials/{trial.study.study_name}/trial_{trial.number}"
     os.makedirs(trial_dir, exist_ok=True)
     model_path = os.path.join(trial_dir, "agent.zip")
     eval_log_path = os.path.join(trial_dir, "evaluation_details.csv")
@@ -68,10 +69,10 @@ def objective(trial: optuna.Trial) -> float:
             raise ValueError("Could not find JSON output block in evaluation script stdout.")
             
         kpi_data = json.loads(json_output_str.group(1))
-        kpi_value = kpi_data['kpi']
+        objective_values = kpi_data['values']
 
-        print(f"✅ Trial {trial.number} finished. KPI: {kpi_value}")
-        return kpi_value
+        print(f"✅ Trial {trial.number} finished with values: {objective_values}")
+        return tuple(objective_values)
 
     except subprocess.CalledProcessError as e:
         print(f"❌ Trial {trial.number} failed in a subprocess.")
@@ -85,8 +86,8 @@ def objective(trial: optuna.Trial) -> float:
 # --- Main script execution ---
 if __name__ == "__main__":
     study = optuna.create_study(
-        study_name="IntruderAvoidance-PBRS-Tuning",
-        direction="minimize",
+        study_name="IntruderAvoidance-PBRS-MultiObjective", # New name is recommended
+        directions=["minimize", "minimize"], # Specify a direction for EACH objective
         storage="sqlite:///pbrs_tuning.db",
         load_if_exists=True
     )

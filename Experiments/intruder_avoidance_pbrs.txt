@@ -71,3 +71,29 @@ eval_env = IntruderAvoidanceEnv(
     w_safe= 0.3,
     w_pos= 0.7 
 )
+
+Training4:
+Optuna Optimization
+# --- CONFIGURATION (remains the same) ---
+NUMBERS_OF_INTRUDERS = [5, 10, 20, 40]
+INTRUDER_SIZES = [3, 6, 9]
+INTRUDER_SPEEDS = [1, 2, 3]
+CHANGE_DIRECTION_INTERVALS = [6, 9, 12]
+NUM_SAMPLED_CONDITIONS = 24
+NUM_TRIALS_PER_CONDITION = 15
+MAX_STEPS_PER_EPISODE = 1000
+W_COLLISION = 100.0
+W_DEVIATION = 1.0
+
+    pbrs_params = {
+        "d_safe": trial.suggest_float("d_safe", 10.0, 40.0),
+        "k_bubble": trial.suggest_float("k_bubble", 10.0, 200.0),
+        "C_collision": trial.suggest_float("C_collision", 500.0, 2000.0),
+        "k_pos": trial.suggest_float("k_pos", 0.001, 0.1, log=True),
+        "k_action": trial.suggest_float("k_action", 0.001, 0.1, log=True),
+        "w_safe": trial.suggest_float("w_safe", 0.1, 0.9),
+        "w_pos": trial.suggest_float("w_pos", 0.1, 0.9)
+    }
+
+Training5:
+Multi-Objective Optimization

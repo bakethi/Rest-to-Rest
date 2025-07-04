@@ -106,10 +106,17 @@ def evaluate_model(model_path: str, log_file: str = None):
     overall_avg_deviation = df["Avg Deviation"].mean()
     final_kpi = (W_COLLISION * overall_avg_collisions) + (W_DEVIATION * overall_avg_deviation)
     print(f"\n--- Model Evaluation Summary ---")
-    print(f"Overall Avg Collisions: {overall_avg_collisions:.6f}")
-    print(f"Overall Avg Deviation:  {overall_avg_deviation:.4f}")
-    print(f"Final Weighted KPI:     {final_kpi:.4f}")
-    output_data = {"kpi": final_kpi, "details": {"overall_avg_collisions": overall_avg_collisions, "overall_avg_deviation": overall_avg_deviation}}
+    print(f"Objective 1 (Collisions): {overall_avg_collisions:.6f}")
+    print(f"Objective 2 (Deviation):  {overall_avg_deviation:.4f}")
+
+    # The JSON output now contains a list of the two objective values.
+    output_data = {
+        "values": [overall_avg_collisions, overall_avg_deviation], 
+        "details": {
+            "overall_avg_collisions": overall_avg_collisions,
+            "overall_avg_deviation": overall_avg_deviation
+        }
+    }
     print("\n---JSON_OUTPUT_START---")
     print(json.dumps(output_data))
     print("---JSON_OUTPUT_END---")
