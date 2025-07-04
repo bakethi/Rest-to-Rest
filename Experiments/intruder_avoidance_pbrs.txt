@@ -1,0 +1,73 @@
+Training1:
+TRAINING_STEPS_PER_SESSION = 50_000
+NUM_SESSIONS = 10 
+
+    number_of_intruders=5, 
+    bounds=[[0, 0], [100, 100]], 
+    max_intruder_speed=1,
+    intruder_size=3,
+    gamma= 0.99,            # Discount factor of the MDP
+    # Safety Objective
+    r_collision_reward= None, # Collision radius for reward (defaults to agent+intruder size)
+    d_safe= 15.0,           # Radius of the "safety bubble" (meters)
+    k_bubble= 50.0,        # Penalty magnitude for entering the safety bubble
+    k_decay_safe= 0.1,      # Penalty decay rate inside the bubble
+    C_collision= 1000.0,    # Large terminal penalty for a collision
+    # Position-Holding Objective
+    k_pos= 0.5,           # Scaling constant for position penalty
+    # Control Effort Objective
+    k_action= 0.001,         # Scaling constant for action magnitude penalty
+    # Aggregation Weights
+    w_safe= 0.3,            # Weight for the safety potential
+    w_pos= 0.7 
+
+Training2:
+env = IntruderAvoidanceEnv(
+    change_direction_interval=6,
+    C_collision= 100.0,
+    terminate_on_collision=True,
+)
+
+Training3:
+# The number of steps between each checkpoint save
+CHECKPOINT_FREQ = 500_000
+# +++ ADDED: The number of steps between each evaluation +++
+EVAL_FREQ = 25_000 
+# Total number of steps to train for
+TOTAL_TIMESTEPS = 5_000_000
+train_env = IntruderAvoidanceEnv(
+    change_direction_interval=6,
+    number_of_intruders=5, 
+    bounds=[[0, 0], [100, 100]], 
+    max_intruder_speed=1,
+    intruder_size=3,
+    terminate_on_collision=True,
+    gamma= 0.99,
+    r_collision_reward= None,
+    d_safe= 15.0,
+    k_bubble= 50.0,
+    k_decay_safe= 0.1,
+    C_collision= 100.0,
+    k_pos= 0.5,
+    k_action= 0.001,
+    w_safe= 0.3,
+    w_pos= 0.7 
+)
+eval_env = IntruderAvoidanceEnv(
+    change_direction_interval=6,
+    number_of_intruders=20, 
+    bounds=[[0, 0], [100, 100]], 
+    max_intruder_speed=3,
+    intruder_size=3,
+    terminate_on_collision=True,
+    gamma= 0.99,
+    r_collision_reward= None,
+    d_safe= 15.0,
+    k_bubble= 50.0,
+    k_decay_safe= 0.1,
+    C_collision= 100.0,
+    k_pos= 0.5,
+    k_action= 0.001,
+    w_safe= 0.3,
+    w_pos= 0.7 
+)

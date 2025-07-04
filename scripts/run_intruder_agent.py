@@ -3,7 +3,7 @@ from stable_baselines3 import PPO, SAC
 from gym_pathfinding.envs.intruder_avoidance_env import IntruderAvoidanceEnv
 from gym_pathfinding.envs.visualization import Renderer  # If you want to visualize the environment
 
-model_name = "ppo_intruder_24_50_no_intruders"
+model_name = "ppo_intruder_24_50_PBRS_Training_2"
 # Load the trained model
 model = PPO.load(f"/home/bake/Projects/Rest-to-Rest/models/{model_name}.zip")  # Make sure this path matches your saved model
 
@@ -19,7 +19,8 @@ env = IntruderAvoidanceEnv(
     obstacle_max_size=5,
     obstacle_min_size=1, 
     intruder_size=3,
-    max_intruder_speed=1
+    max_intruder_speed=1,
+    change_direction_interval=6,
 )
 
 

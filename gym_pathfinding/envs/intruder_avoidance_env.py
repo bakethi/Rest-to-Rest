@@ -8,12 +8,13 @@ import copy
 
 
 class IntruderAvoidanceEnv(gym.Env):
-    metadata = {"render.modes": ["human"]}
+    metadata = {"render_modes": ["human"]}
 
     def __init__(
-            self, 
-            number_of_intruders=1, 
-            bounds=np.array([[0, 0], [100, 100]]), 
+            self,
+            # --- Existing Parameters ---
+            number_of_intruders=1,
+            bounds=np.array([[0, 0], [100, 100]]),
             bounce_factor=1,
             num_lidar_scans=24,
             lidar_max_range=50,
@@ -31,16 +32,30 @@ class IntruderAvoidanceEnv(gym.Env):
             agent_size = 10,
             intruder_size = 3,
             number_of_obstacles = 0,
-            terminate_on_target_reached = False
+            terminate_on_target_reached = False,
+
+            # --- PBRS Reward Hyperparameters (from Section 6.2) ---
+            gamma: float = 0.99,            # Discount factor of the MDP
+            # Safety Objective
+            r_collision_reward: float = None, # Collision radius for reward (defaults to agent+intruder size)
+            d_safe: float = 20.0,           # Radius of the "safety bubble" (meters)
+            k_bubble: float = 100.0,        # Penalty magnitude for entering the safety bubble
+            k_decay_safe: float = 0.1,      # Penalty decay rate inside the bubble
+            C_collision: float = 1000.0,    # Large terminal penalty for a collision
+            # Position-Holding Objective
+            k_pos: float = 0.005,           # Scaling constant for position penalty
+            # Control Effort Objective
+            k_action: float = 0.01,         # Scaling constant for action magnitude penalty
+            # Aggregation Weights
+            w_safe: float = 0.6,            # Weight for the safety potential
+            w_pos: float = 0.4              # Weight for the position-holding potential
             ):
         super(IntruderAvoidanceEnv, self).__init__()
-
-        # Renderer (initialized later when render is called)
-        self.obstacle_min_size = obstacle_min_size
-        self.obstacle_max_size = obstacle_max_size
-        self.number_of_obstacles = number_of_obstacles
-        self.number_of_collisions = 0
-        self.max_collisions = max_collisions
+        
+        # --- Store all existing parameters ---
+        self.number_of_intruders = number_of_intruders
+        self.bounds = bounds
+        # ... (all your other self.variable = variable assignments)
         self.goal_radius = goal_radius
         self.random_start_target=random_start_target
         self.scaling_factor=scaling_factor
@@ -57,42 +72,41 @@ class IntruderAvoidanceEnv(gym.Env):
         self.agent_size = agent_size
         self.intruder_size = intruder_size
         self.terminate_on_target_reached = terminate_on_target_reached
+        self.number_of_obstacles = number_of_obstacles
+        self.max_collisions = max_collisions
+        self.obstacle_min_size = obstacle_min_size
+        self.obstacle_max_size = obstacle_max_size
 
-        # Define action and observation spaces
-        # Actions: Acceleration in x and y (range -1 to 1)
+        # --- Store PBRS Reward Hyperparameters ---
+        self.gamma = gamma
+        # If r_collision_reward is not specified, calculate it from agent/intruder sizes
+        self.r_collision_reward = r_collision_reward if r_collision_reward is not None else (self.agent_size / 2 + self.intruder_size / 2)
+        self.d_safe = d_safe
+        self.k_bubble = k_bubble
+        self.k_decay_safe = k_decay_safe
+        self.C_collision = C_collision
+        self.k_pos = k_pos
+        self.k_action = k_action
+        self.w_safe = w_safe
+        self.w_pos = w_pos
+
+        # --- Initialize other components as before ---
         self.action_space = spaces.Box(low=-1.0, high=1.0, shape=(2,), dtype=np.float32)
-
-        # Observations: (velocity of agent, distance to the target and the lidar sensor readings)
         self.observation_space = spaces.Box(
-            low=np.concatenate(([-np.inf, -np.inf], [0], [-1], np.full(self.num_lidar_scans, 0, dtype=np.float32))),  
-            high=np.concatenate(([np.inf, np.inf], [1], [1], np.full(self.num_lidar_scans, 1, dtype=np.float32))),  
+            low=np.concatenate(([-np.inf, -np.inf], [0], [-1], np.full(self.num_lidar_scans, 0, dtype=np.float32))),
+            high=np.concatenate(([np.inf, np.inf], [1], [1], np.full(self.num_lidar_scans, 1, dtype=np.float32))),
             dtype=np.float32
         )
-
-
-        self.number_of_intruders = number_of_intruders
-        self.bounds = bounds
-        self.bounce_factor = bounce_factor
-
-        # Initialize environment components
         self.obstacle_manager = ObstacleManager(self.bounds)
-
-
         self.agent = PhysicsObject(
-            position=np.array([0.0, 0.0]),
-            velocity=np.array([0.0, 0.0]),
-            obstacleManager=self.obstacle_manager,
-            bounds=self.bounds,
-            bounce_factor=self.bounce_factor,
-            size = self.agent_size
+            position=np.array([0.0, 0.0]), velocity=np.array([0.0, 0.0]),
+            obstacleManager=self.obstacle_manager, bounds=self.bounds,
+            bounce_factor=bounce_factor, size=self.agent_size
         )
         self.engine = PhysicsEngine([self.agent])
-
-        # Target position
         self.generate_target_agent_pos()
-
-
         self.generate_random_obstacles()
+        self.intruders = []
 
 
     def reset(self, seed=None, options=None):
@@ -123,45 +137,40 @@ class IntruderAvoidanceEnv(gym.Env):
     def step(self, action):
         """
         Apply the given action and advance the environment by one step.
-
-        Args:
-            action (np.array): Acceleration in x and y.
-
-        Returns:
-            tuple: (observation, reward, done, info)
         """
-        action = np.clip(action, -self.max_acceleration, self.max_acceleration)  # Enforce limits
-        # Apply action to agent
-        self.agent.apply_force(action)
+        # --- Store state `s` for PBRS calculation BEFORE the physics step ---
+        state_before_step = {
+            'agent_pos': np.copy(self.agent.position),
+            'intruder_pos_list': [np.copy(intruder.physics.position) for intruder in self.intruders]
+        }
+
+        # Apply action and update physics
+        scaled_action = action * self.max_acceleration
+        self.agent.apply_force(scaled_action)
         self.engine.update(self.dt)
 
-        # --- UPDATE ALL INTRUDERS ---
+        # Update all intruders
         for intruder in self.intruders:
             intruder.update(self.agent.position, self.dt)
 
-        # Check if a collision occurred
+        # Check for collisions
         collision_occurred = self._check_intruder_collisions()
-
         if collision_occurred:
             self.number_of_collisions += 1
 
-        # Compute reward
-        reward = self._compute_reward(collision_occurred)
+        # --- Compute reward using PBRS ---
+        reward = self._compute_reward(
+            state_before_step,
+            scaled_action,
+            collision_occurred
+        )
 
-        #add truncated
-        truncated = False
-
-
-        # Return observation, reward, done flag, and info dictionary
-        info = {
-            "collision": collision_occurred
-        }
-
-        # Check if the episode is done
+        # Check for termination and truncation
         terminated = self._check_done()
+        truncated = False # You can define your own truncation conditions if needed
 
+        info = {"collision": collision_occurred}
 
-        # Return the observation, reward, done flag, and info
         return self._get_observation(), reward, terminated, truncated, info
 
     def _get_observation(self):
@@ -193,27 +202,49 @@ class IntruderAvoidanceEnv(gym.Env):
         # Check if agent collides with any obstacles
         if self.terminate_on_collision and self.obstacle_manager.check_collision(self.agent):
             return True
+        if self.terminate_on_collision and self._check_intruder_collisions():
+            return True
         
         if self.max_collisions is not None:
             if self.number_of_collisions >= self.max_collisions and self.obstacle_manager.check_collision(self.agent):
                 return True
+            if self.number_of_collisions >= self.max_collisions and self._check_intruder_collisions():
+                return True
 
         return False
 
-    def _compute_reward(self, collision_occurred):
+    def _compute_reward(self, old_state: dict, action: np.ndarray, collision_occurred: bool) -> float:
         """
-        Computes a robust reward for the pathfinding task.
+        Calculates the reward for a given transition using the PBRS framework.
         """
-        distance_to_target = np.linalg.norm(self.agent.position - self.target_position)
-
-        # 1. Main incentive: A penalty for being far from the target.
-        reward = -distance_to_target 
-
-        # 3. Collision Penalty: A large penalty for hitting obstacles/walls.
+        # 1. Primary Objective: Large penalty for collision (terminal state)
         if collision_occurred:
-            reward -= 100
+            return -self.C_collision
 
-        return reward
+        # --- Get potential of the state BEFORE the action (`s`) ---
+        phi_current = self._total_potential(
+            agent_pos=old_state['agent_pos'],
+            intruder_pos_list=old_state['intruder_pos_list']
+        )
+
+        # --- Get potential of the state AFTER the action (`s'`) ---
+        new_intruder_pos_list = [intruder.physics.position for intruder in self.intruders]
+        phi_next = self._total_potential(
+            agent_pos=self.agent.position,
+            intruder_pos_list=new_intruder_pos_list
+        )
+
+        # 2. Potential-Based Shaping Reward (F)
+        shaping_reward = self.gamma * phi_next - phi_current
+
+        # 3. Tertiary Objective: Control Effort Penalty (R_effort)
+        effort_penalty = -self.k_action * np.sum(action**2)
+
+        # 4. Aggregate the final reward
+        total_reward = shaping_reward + effort_penalty
+        
+        return total_reward
+
 
 
     def generate_random_obstacles(self):
@@ -367,3 +398,27 @@ class IntruderAvoidanceEnv(gym.Env):
             if distance < (self.agent.size / 2 + intruder.physics.size / 2):
                 return True
         return False
+    
+    def _potential_pos(self, agent_pos: np.ndarray) -> float:
+        """Calculates the potential based on negative squared Euclidean distance to the target."""
+        dist_sq = np.sum((agent_pos - self.target_position)**2)
+        return -self.k_pos * dist_sq
+
+    def _potential_safe(self, agent_pos: np.ndarray, intruder_pos_list: list) -> float:
+        """
+        Calculates the potential based on the "safety bubble" concept for all intruders.
+        The potential is a sum of large negative values for each intruder inside its bubble.
+        """
+        total_safe_potential = 0.0
+        for intruder_pos in intruder_pos_list:
+            dist = np.linalg.norm(agent_pos - intruder_pos)
+            if dist < self.d_safe:
+                # Potential is the negative of the penalty function
+                total_safe_potential += -self.k_bubble * np.exp(-self.k_decay_safe * (dist - self.r_collision_reward))
+        return total_safe_potential
+
+    def _total_potential(self, agent_pos: np.ndarray, intruder_pos_list: list) -> float:
+        """Calculates the total potential of a state as the weighted sum of individual potentials."""
+        phi_pos = self._potential_pos(agent_pos)
+        phi_safe = self._potential_safe(agent_pos, intruder_pos_list)
+        return self.w_pos * phi_pos + self.w_safe * phi_safe
