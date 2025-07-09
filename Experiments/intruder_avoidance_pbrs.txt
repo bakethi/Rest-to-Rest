@@ -97,3 +97,5 @@ W_DEVIATION = 1.0
 
 Training5:
 Multi-Objective Optimization
+
+Training6 - new baseline with avg. parameters from the study:

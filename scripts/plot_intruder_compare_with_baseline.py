@@ -3,41 +3,73 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import os
 
-base_model_csv_path = "results/evaluation_run_2025-06-21_15-49-21.csv"
-new_model_csv_path = "optuna_trials/trial_205/evaluation_details.csv"
-training_number = "Training_4"
-save_dir = f"plots/intruder_plots/{training_number}"
+# --- 1. DEFINE ALL MODEL PATHS ---
 
-# Create the save directory if it doesn't exist
+# --- Baseline Model ---
+base_model_csv_path = "results/baseline_average_params_evaluation.csv"
+
+# --- Single-Objective Model ---
+single_objective_model_csv_path = "optuna_trials/IntruderAvoidance-PBRS-Tuning/trial_205/evaluation_details.csv"
+
+# --- Multi-Objective Models from the Pareto Front ---
+multi_obj_base_path = "optuna_trials/IntruderAvoidance-PBRS-MultiObjective/"
+
+# *** CORRECTED: Swapped paths to match your analysis ***
+# Trial 155 is the safest (lowest collision rate)
+# Trial 20 is the most efficient (lowest deviation)
+mo_model_safe_csv_path = os.path.join(multi_obj_base_path, "trial_155/evaluation_details.csv")
+mo_model_balanced_csv_path = os.path.join(multi_obj_base_path, "trial_167/evaluation_details.csv") 
+mo_model_efficient_csv_path = os.path.join(multi_obj_base_path, "trial_20/evaluation_details.csv")
+
+
+# --- Output Configuration ---
+training_number = "Training_5" # Updated version number
+save_dir = f"plots/intruder_plots/{training_number}"
 os.makedirs(save_dir, exist_ok=True)
 
-# --- Data Loading ---
-df_base = pd.read_csv(base_model_csv_path)
-df_new = pd.read_csv(new_model_csv_path)
 
-# (Good Practice) Clean up column names to remove leading/trailing whitespace
-df_base.columns = df_base.columns.str.strip()
-df_new.columns = df_new.columns.str.strip()
+# --- 2. DATA LOADING AND PRE-PROCESSING ---
+try:
+    # Load all data sources
+    df_base = pd.read_csv(base_model_csv_path)
+    df_single_obj = pd.read_csv(single_objective_model_csv_path)
+    df_mo_safe = pd.read_csv(mo_model_safe_csv_path)
+    df_mo_balanced = pd.read_csv(mo_model_balanced_csv_path)
+    df_mo_efficient = pd.read_csv(mo_model_efficient_csv_path)
+
+    all_dfs = [df_base, df_single_obj, df_mo_safe, df_mo_balanced, df_mo_efficient]
+    
+    # Clean column names
+    for df in all_dfs:
+        df.columns = df.columns.str.strip()
+
+    # Add a descriptive 'Model' column to each DataFrame
+    # *** This section is now correct because the DataFrames were loaded correctly above ***
+    df_base['Model'] = 'Baseline (Avg. Params)'
+    df_single_obj['Model'] = 'Single-Objective Optuna'
+    df_mo_safe['Model'] = 'Multi-Obj (Safest)'
+    df_mo_balanced['Model'] = 'Multi-Obj (Balanced)'
+    df_mo_efficient['Model'] = 'Multi-Obj (Most Efficient)'
+
+    df_comparison = pd.concat(all_dfs, ignore_index=True)
+
+    print("✅ Successfully loaded and combined data for 5 models with corrected labels.")
+
+except FileNotFoundError as e:
+    print(f"❌ Error: Could not find a CSV file. Please check the paths.")
+    print(f"Missing file: {e.filename}")
+    exit()
 
 
-# --- Pre-processing ---
-# 1. Filter the base model dataframe to only include the 500k steps model
-df_500k = df_base[df_base['Model Checkpoint'].str.contains('_500000_steps.zip')]
+# --- 3. PLOTTING (This section remains unchanged) ---
+# The rest of the script is correct. It will now generate plots with the right data associated with each label.
 
-# 2. Add a 'Model' column to each dataframe to identify the models
-df_500k['Model'] = '500k Steps Baseline'
-df_new['Model'] = 'Best Optuna Model'
-
-# 3. Concatenate the two dataframes
-df_comparison = pd.concat([df_500k, df_new], ignore_index=True)
-
-
-# --- Plotting ---
 sns.set_theme(style="whitegrid")
 
-# Plot 1: Collisions vs. Intruder Speed, comparing models
+# Plot 1: Collisions vs. Intruder Speed
+print("Generating Plot 1: Collisions vs. Speed...")
 plt.figure(figsize=(12, 8))
-g = sns.FacetGrid(df_comparison, col="Intruder Size", hue="Model", palette="viridis", height=5)
+g = sns.FacetGrid(df_comparison, col="Intruder Size", hue="Model", palette="tab10", height=5)
 g.map(sns.lineplot, "Intruder Speed", "Avg Collisions per Step", marker="o", alpha=0.9)
 g.add_legend()
 g.fig.suptitle("Model Comparison: Collisions vs. Intruder Speed", y=1.03)
@@ -45,9 +77,10 @@ g.set_axis_labels("Intruder Speed", "Avg Collisions per Step")
 plt.savefig(f"{save_dir}/plot1_collisions_vs_speed_comparison.png", bbox_inches='tight')
 plt.close()
 
-# Plot 2: Deviation vs. Intruder Speed, comparing models
+# Plot 2: Deviation vs. Intruder Speed
+print("Generating Plot 2: Deviation vs. Speed...")
 plt.figure(figsize=(12, 8))
-g = sns.FacetGrid(df_comparison, col="Intruder Size", hue="Model", palette="plasma", height=5)
+g = sns.FacetGrid(df_comparison, col="Intruder Size", hue="Model", palette="tab10", height=5)
 g.map(sns.lineplot, "Intruder Speed", "Avg Deviation", marker="o", alpha=0.9)
 g.add_legend()
 g.fig.suptitle("Model Comparison: Path Deviation vs. Intruder Speed", y=1.03)
@@ -55,15 +88,16 @@ g.set_axis_labels("Intruder Speed", "Avg Deviation from Target")
 plt.savefig(f"{save_dir}/plot2_deviation_vs_speed_comparison.png", bbox_inches='tight')
 plt.close()
 
-
-# Plot 3: Bar plot comparing models based on Intruder Speed
+# ... (Plots 3, 4, and 5 also remain the same) ...
+# Plot 3: Bar plot comparing models
+print("Generating Plot 3: Bar Plot Comparison...")
 plt.figure(figsize=(15, 8))
 sns.barplot(
     data=df_comparison,
     x="Intruder Speed",
     y="Avg Collisions per Step",
     hue="Model",
-    palette="coolwarm"
+    palette="muted"
 )
 plt.title("Model Comparison: Collisions vs. Intruder Speed")
 plt.xlabel("Intruder Speed")
@@ -72,7 +106,8 @@ plt.legend(title="Model")
 plt.savefig(f"{save_dir}/plot3_model_comparison_bar.png", bbox_inches='tight')
 plt.close()
 
-# Plot 4: Scatter plot for Safety vs. Deviation trade-off, comparing models
+# Plot 4: Scatter plot for Safety vs. Deviation trade-off
+print("Generating Plot 4: Trade-off Scatter Plot...")
 plt.figure(figsize=(12, 8))
 sns.scatterplot(
     data=df_comparison,
@@ -80,7 +115,7 @@ sns.scatterplot(
     y="Avg Collisions per Step",
     hue="Model",
     style="Intruder Speed",
-    palette="flare",
+    palette="deep",
     s=150,
     alpha=0.8
 )
@@ -91,9 +126,44 @@ plt.legend(title="Model and Intruder Speed")
 plt.savefig(f"{save_dir}/plot4_tradeoff_scatter_comparison.png", bbox_inches='tight')
 plt.close()
 
+# Plot 5 - Aggregated Trade-off Scatter Plot
+print("Aggregating data for the summary trade-off plot...")
+df_aggregated = df_comparison.groupby('Model').agg({
+    'Avg Collisions per Step': 'mean',
+    'Avg Deviation': 'mean'
+}).reset_index()
 
-print("Generated 4 plot files: ")
-print(f"1. {save_dir}/plot1_collisions_vs_speed_comparison.png")
-print(f"2. {save_dir}/plot2_deviation_vs_speed_comparison.png")
-print(f"3. {save_dir}/plot3_model_comparison_bar.png")
-print(f"4. {save_dir}/plot4_tradeoff_scatter_comparison.png")
+print("Aggregated Data:")
+print(df_aggregated)
+
+print("Generating Plot 5: Aggregated Trade-off Scatter Plot...")
+plt.figure(figsize=(10, 8))
+ax = sns.scatterplot(
+    data=df_aggregated,
+    x="Avg Deviation",
+    y="Avg Collisions per Step",
+    hue="Model",
+    palette="viridis",
+    s=250,
+    alpha=0.9,
+    legend='full'
+)
+
+for i in range(df_aggregated.shape[0]):
+    plt.text(
+        x=df_aggregated['Avg Deviation'][i] + 0.3,
+        y=df_aggregated['Avg Collisions per Step'][i],
+        s=df_aggregated['Model'][i].replace('Multi-Obj ', ''),
+        fontdict=dict(color='black', size=10)
+    )
+
+plt.title("Overall Safety vs. Efficiency Trade-off (Aggregated)")
+plt.xlabel("Overall Avg. Deviation from Target (Lower is Better)")
+plt.ylabel("Overall Avg. Collisions per Step (Lower is Better)")
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles, labels, title="Model Type", bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.savefig(f"{save_dir}/plot5_tradeoff_scatter_AGGREGATED.png", bbox_inches='tight')
+plt.close()
+
+
+print("\n✅ Successfully generated 5 plot files with corrected model labels.")
