@@ -19,8 +19,9 @@ def objective(trial: optuna.Trial) -> float:
     # After - A much more robust approach
     trial_dir = f"optuna_trials/{trial.study.study_name}/trial_{trial.number}"
     os.makedirs(trial_dir, exist_ok=True)
-    model_path = os.path.join(trial_dir, "agent.zip")
-    eval_log_path = os.path.join(trial_dir, "evaluation_details.csv")
+    model_path = os.path.abspath(os.path.join(trial_dir, "agent.zip"))
+    eval_log_path = os.path.abspath(os.path.join(trial_dir, "evaluation_details.csv"))
+
 
     # --- 1. Suggest PBRS hyperparameters for the environment ---
     # The names of these suggestions MUST match the argparse names in train.py

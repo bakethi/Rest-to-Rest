@@ -1,0 +1,9 @@
+# .rsync-exclude
+# This file lists patterns to ignore during rsync
+
+# Python virtual environment
+.venv/
+
+# Python cache files
+__pycache__/
+*.pyc
