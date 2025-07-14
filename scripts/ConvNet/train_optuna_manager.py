@@ -37,7 +37,7 @@ def objective(trial: optuna.Trial) -> float:
     
     # --- 2. Build and run the training command ---
     train_command = [
-        'python', 'scripts/ConvNet/train_optuna.py',
+        'python', '-u', 'scripts/ConvNet/train_optuna.py',
         '--save_path', model_path,
         '--total_timesteps', '2000000',
     ]
@@ -56,7 +56,7 @@ def objective(trial: optuna.Trial) -> float:
 
         # --- 3. Build and run the evaluation command ---
         eval_command = [
-            'python', 'scripts/ConvNet/evaluate_intruder_for_optuna.py',
+            'python', '-u', 'scripts/ConvNet/evaluate_intruder_for_optuna.py',
             '--model_path', model_path,
             '--log_file', eval_log_path
         ]
@@ -78,12 +78,14 @@ def objective(trial: optuna.Trial) -> float:
 
     except subprocess.CalledProcessError as e:
         print(f"❌ Trial {trial.number} failed in a subprocess.")
-        print(f"STDOUT: {e.stdout}")
-        print(f"STDERR: {e.stderr}")
-        return float('inf') # Return a large number for failed trials
+        print(f"--- STDOUT ---\n{e.stdout}") # Print captured output
+        print(f"--- STDERR ---\n{e.stderr}") # Print captured error
+        # --- ✅ FIX #2: Return a tuple for multi-objective studies ---
+        return float('inf'), float('inf')
     except (ValueError, json.JSONDecodeError) as e:
         print(f"❌ Trial {trial.number} failed during KPI parsing: {e}")
-        return float('inf')
+        # --- ✅ FIX #2 (continued) ---
+        return float('inf'), float('inf')
 
 # --- Main script execution ---
 if __name__ == "__main__":

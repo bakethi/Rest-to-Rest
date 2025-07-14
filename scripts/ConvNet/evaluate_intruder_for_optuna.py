@@ -80,9 +80,11 @@ def evaluate_model(model_path: str, log_file: str = None):
         print(json.dumps({"kpi": float('inf'), "error": "Model not found"}))
         return
 
-    # +++ FIX #2: We no longer load the model here in the main process +++
-    # print(f"\n--- Loading model: {os.path.basename(model_path)} ---")
-    # model = PPO.load(model_path) # <-- REMOVE THIS LINE
+    # Use the number of CPUs allocated by SLURM, or default to all available cores if not in a SLURM job.
+    try:
+        num_cores = int(os.environ["SLURM_CPUS_PER_TASK"])
+    except KeyError:
+        num_cores = os.cpu_count()
 
     all_combinations = [(n, s, sp, i) for n in NUMBERS_OF_INTRUDERS for s in INTRUDER_SIZES for sp in INTRUDER_SPEEDS for i in CHANGE_DIRECTION_INTERVALS]
     param_combinations = random.sample(all_combinations, min(NUM_SAMPLED_CONDITIONS, len(all_combinations)))
@@ -91,8 +93,8 @@ def evaluate_model(model_path: str, log_file: str = None):
     pool_args = [(model_path, *params) for params in param_combinations]
     all_results_data = []
 
-    print(f"--- Evaluating on {len(param_combinations)} conditions in parallel using {os.cpu_count()} cores ---")
-    with multiprocessing.Pool(os.cpu_count()) as pool:
+    print(f"--- Evaluating on {len(param_combinations)} conditions in parallel using {num_cores} cores ---")
+    with multiprocessing.Pool(num_cores) as pool:
         for result in tqdm(pool.imap_unordered(run_single_condition, pool_args), total=len(pool_args), desc="  Evaluating Conditions"):
             if result:
                 all_results_data.append(result)
