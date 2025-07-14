@@ -1,0 +1,74 @@
+--- Starting Optuna Worker 6 for study 'IntruderAvoidance-CNN-Parallel' ---
+Error: gym_pathfinding not installed. Please run 'pip install -e .' from your project root.
+Error: gym_pathfinding not installed. Please run 'pip install -e .' from your project root.
+Error: gym_pathfinding not installed. Please run 'pip install -e .' from your project root.
+Error: gym_pathfinding not installed. Please run 'pip install -e .' from your project root.
+Error: gym_pathfinding not installed. Please run 'pip install -e .' from your project root.
+Error: gym_pathfinding not installed. Please run 'pip install -e .' from your project root.
+Error: gym_pathfinding not installed. Please run 'pip install -e .' from your project root.
+Error: gym_pathfinding not installed. Please run 'pip install -e .' from your project root.
+Error: gym_pathfinding not installed. Please run 'pip install -e .' from your project root.
+Error: gym_pathfinding not installed. Please run 'pip install -e .' from your project root.
+
+--- Starting Trial 3 ---
+Parameters: {'d_safe': 11.352797366923129, 'k_bubble': 64.46473743481316, 'C_collision': 1762.6721047358562, 'k_pos': 0.08022102152518225, 'k_action': 0.0067851383524590875, 'w_safe': 0.15145020446400298, 'w_pos': 0.8666989394193351}
+Training command: python scripts/ConvNet/train_optuna.py --save_path optuna_trials/IntruderAvoidance-CNN-Parallel/trial_3/agent.zip --total_timesteps 2000000 --d_safe 11.352797366923129 --k_bubble 64.46473743481316 --C_collision 1762.6721047358562 --k_pos 0.08022102152518225 --k_action 0.0067851383524590875 --w_safe 0.15145020446400298 --w_pos 0.8666989394193351
+Evaluation command: python scripts/ConvNet/evaluate_intruder_for_optuna.py --model_path optuna_trials/IntruderAvoidance-CNN-Parallel/trial_3/agent.zip --log_file optuna_trials/IntruderAvoidance-CNN-Parallel/trial_3/evaluation_details.csv
+❌ Trial 3 failed during KPI parsing: Could not find JSON output block in evaluation script stdout.
+
+--- Starting Trial 9 ---
+Parameters: {'d_safe': 33.25732191403294, 'k_bubble': 80.32703986504447, 'C_collision': 1415.886441985152, 'k_pos': 0.05099778819229309, 'k_action': 0.005661196507319402, 'w_safe': 0.2913057485051139, 'w_pos': 0.2490108221855179}
+Training command: python scripts/ConvNet/train_optuna.py --save_path optuna_trials/IntruderAvoidance-CNN-Parallel/trial_9/agent.zip --total_timesteps 2000000 --d_safe 33.25732191403294 --k_bubble 80.32703986504447 --C_collision 1415.886441985152 --k_pos 0.05099778819229309 --k_action 0.005661196507319402 --w_safe 0.2913057485051139 --w_pos 0.2490108221855179
+Evaluation command: python scripts/ConvNet/evaluate_intruder_for_optuna.py --model_path optuna_trials/IntruderAvoidance-CNN-Parallel/trial_9/agent.zip --log_file optuna_trials/IntruderAvoidance-CNN-Parallel/trial_9/evaluation_details.csv
+❌ Trial 9 failed during KPI parsing: Could not find JSON output block in evaluation script stdout.
+
+--- Starting Trial 12 ---
+Parameters: {'d_safe': 38.13019823946422, 'k_bubble': 76.64230574538838, 'C_collision': 1574.522779732772, 'k_pos': 0.001065732516121029, 'k_action': 0.061482125384573996, 'w_safe': 0.8999617027618431, 'w_pos': 0.7815519136454658}
+Training command: python scripts/ConvNet/train_optuna.py --save_path optuna_trials/IntruderAvoidance-CNN-Parallel/trial_12/agent.zip --total_timesteps 2000000 --d_safe 38.13019823946422 --k_bubble 76.64230574538838 --C_collision 1574.522779732772 --k_pos 0.001065732516121029 --k_action 0.061482125384573996 --w_safe 0.8999617027618431 --w_pos 0.7815519136454658
+Evaluation command: python scripts/ConvNet/evaluate_intruder_for_optuna.py --model_path optuna_trials/IntruderAvoidance-CNN-Parallel/trial_12/agent.zip --log_file optuna_trials/IntruderAvoidance-CNN-Parallel/trial_12/evaluation_details.csv
+❌ Trial 12 failed during KPI parsing: Could not find JSON output block in evaluation script stdout.
+
+--- Starting Trial 18 ---
+Parameters: {'d_safe': 27.669972722875563, 'k_bubble': 32.847650579384656, 'C_collision': 1181.130964820944, 'k_pos': 0.010979040113834106, 'k_action': 0.013689278242056957, 'w_safe': 0.6064767933315621, 'w_pos': 0.55187915435796}
+Training command: python scripts/ConvNet/train_optuna.py --save_path optuna_trials/IntruderAvoidance-CNN-Parallel/trial_18/agent.zip --total_timesteps 2000000 --d_safe 27.669972722875563 --k_bubble 32.847650579384656 --C_collision 1181.130964820944 --k_pos 0.010979040113834106 --k_action 0.013689278242056957 --w_safe 0.6064767933315621 --w_pos 0.55187915435796
+Evaluation command: python scripts/ConvNet/evaluate_intruder_for_optuna.py --model_path optuna_trials/IntruderAvoidance-CNN-Parallel/trial_18/agent.zip --log_file optuna_trials/IntruderAvoidance-CNN-Parallel/trial_18/evaluation_details.csv
+❌ Trial 18 failed during KPI parsing: Could not find JSON output block in evaluation script stdout.
+
+--- Starting Trial 23 ---
+Parameters: {'d_safe': 31.60429570573253, 'k_bubble': 149.93486110922626, 'C_collision': 1721.3896784940973, 'k_pos': 0.005895387824095853, 'k_action': 0.028564163651424553, 'w_safe': 0.46676617492280237, 'w_pos': 0.6382720636859976}
+Training command: python scripts/ConvNet/train_optuna.py --save_path optuna_trials/IntruderAvoidance-CNN-Parallel/trial_23/agent.zip --total_timesteps 2000000 --d_safe 31.60429570573253 --k_bubble 149.93486110922626 --C_collision 1721.3896784940973 --k_pos 0.005895387824095853 --k_action 0.028564163651424553 --w_safe 0.46676617492280237 --w_pos 0.6382720636859976
+Evaluation command: python scripts/ConvNet/evaluate_intruder_for_optuna.py --model_path optuna_trials/IntruderAvoidance-CNN-Parallel/trial_23/agent.zip --log_file optuna_trials/IntruderAvoidance-CNN-Parallel/trial_23/evaluation_details.csv
+❌ Trial 23 failed during KPI parsing: Could not find JSON output block in evaluation script stdout.
+
+--- Starting Trial 29 ---
+Parameters: {'d_safe': 22.697840679820885, 'k_bubble': 199.56257110475988, 'C_collision': 738.0551198599064, 'k_pos': 0.07253139144618488, 'k_action': 0.02439006093714745, 'w_safe': 0.8090424529238093, 'w_pos': 0.4984684281423535}
+Training command: python scripts/ConvNet/train_optuna.py --save_path optuna_trials/IntruderAvoidance-CNN-Parallel/trial_29/agent.zip --total_timesteps 2000000 --d_safe 22.697840679820885 --k_bubble 199.56257110475988 --C_collision 738.0551198599064 --k_pos 0.07253139144618488 --k_action 0.02439006093714745 --w_safe 0.8090424529238093 --w_pos 0.4984684281423535
+Evaluation command: python scripts/ConvNet/evaluate_intruder_for_optuna.py --model_path optuna_trials/IntruderAvoidance-CNN-Parallel/trial_29/agent.zip --log_file optuna_trials/IntruderAvoidance-CNN-Parallel/trial_29/evaluation_details.csv
+❌ Trial 29 failed during KPI parsing: Could not find JSON output block in evaluation script stdout.
+
+--- Starting Trial 33 ---
+Parameters: {'d_safe': 26.676071518214574, 'k_bubble': 81.39777213499087, 'C_collision': 1494.441129148518, 'k_pos': 0.01841026549007042, 'k_action': 0.007106404889038301, 'w_safe': 0.28073585008532265, 'w_pos': 0.12061310420263816}
+Training command: python scripts/ConvNet/train_optuna.py --save_path optuna_trials/IntruderAvoidance-CNN-Parallel/trial_33/agent.zip --total_timesteps 2000000 --d_safe 26.676071518214574 --k_bubble 81.39777213499087 --C_collision 1494.441129148518 --k_pos 0.01841026549007042 --k_action 0.007106404889038301 --w_safe 0.28073585008532265 --w_pos 0.12061310420263816
+Evaluation command: python scripts/ConvNet/evaluate_intruder_for_optuna.py --model_path optuna_trials/IntruderAvoidance-CNN-Parallel/trial_33/agent.zip --log_file optuna_trials/IntruderAvoidance-CNN-Parallel/trial_33/evaluation_details.csv
+❌ Trial 33 failed during KPI parsing: Could not find JSON output block in evaluation script stdout.
+
+--- Starting Trial 38 ---
+Parameters: {'d_safe': 33.66355538790157, 'k_bubble': 51.670796610134346, 'C_collision': 1243.9469081032773, 'k_pos': 0.011811301803786275, 'k_action': 0.001948405356779266, 'w_safe': 0.41994768803553517, 'w_pos': 0.6545389139621363}
+Training command: python scripts/ConvNet/train_optuna.py --save_path optuna_trials/IntruderAvoidance-CNN-Parallel/trial_38/agent.zip --total_timesteps 2000000 --d_safe 33.66355538790157 --k_bubble 51.670796610134346 --C_collision 1243.9469081032773 --k_pos 0.011811301803786275 --k_action 0.001948405356779266 --w_safe 0.41994768803553517 --w_pos 0.6545389139621363
+Evaluation command: python scripts/ConvNet/evaluate_intruder_for_optuna.py --model_path optuna_trials/IntruderAvoidance-CNN-Parallel/trial_38/agent.zip --log_file optuna_trials/IntruderAvoidance-CNN-Parallel/trial_38/evaluation_details.csv
+❌ Trial 38 failed during KPI parsing: Could not find JSON output block in evaluation script stdout.
+
+--- Starting Trial 44 ---
+Parameters: {'d_safe': 22.957608317269685, 'k_bubble': 163.75914352046436, 'C_collision': 745.0648390495751, 'k_pos': 0.0042491773202876565, 'k_action': 0.0026423111602119896, 'w_safe': 0.3521870088131144, 'w_pos': 0.4226069836545705}
+Training command: python scripts/ConvNet/train_optuna.py --save_path optuna_trials/IntruderAvoidance-CNN-Parallel/trial_44/agent.zip --total_timesteps 2000000 --d_safe 22.957608317269685 --k_bubble 163.75914352046436 --C_collision 745.0648390495751 --k_pos 0.0042491773202876565 --k_action 0.0026423111602119896 --w_safe 0.3521870088131144 --w_pos 0.4226069836545705
+Evaluation command: python scripts/ConvNet/evaluate_intruder_for_optuna.py --model_path optuna_trials/IntruderAvoidance-CNN-Parallel/trial_44/agent.zip --log_file optuna_trials/IntruderAvoidance-CNN-Parallel/trial_44/evaluation_details.csv
+❌ Trial 44 failed during KPI parsing: Could not find JSON output block in evaluation script stdout.
+
+--- Starting Trial 49 ---
+Parameters: {'d_safe': 13.68904813361743, 'k_bubble': 122.45626930575443, 'C_collision': 783.8776405139884, 'k_pos': 0.0017282311254391163, 'k_action': 0.03050594667945657, 'w_safe': 0.2537627528527646, 'w_pos': 0.41931979385813456}
+Training command: python scripts/ConvNet/train_optuna.py --save_path optuna_trials/IntruderAvoidance-CNN-Parallel/trial_49/agent.zip --total_timesteps 2000000 --d_safe 13.68904813361743 --k_bubble 122.45626930575443 --C_collision 783.8776405139884 --k_pos 0.0017282311254391163 --k_action 0.03050594667945657 --w_safe 0.2537627528527646 --w_pos 0.41931979385813456
+Evaluation command: python scripts/ConvNet/evaluate_intruder_for_optuna.py --model_path optuna_trials/IntruderAvoidance-CNN-Parallel/trial_49/agent.zip --log_file optuna_trials/IntruderAvoidance-CNN-Parallel/trial_49/evaluation_details.csv
+❌ Trial 49 failed during KPI parsing: Could not find JSON output block in evaluation script stdout.
+
+--- Worker finished 10 trials ---
+--- Worker 6 finished. ---

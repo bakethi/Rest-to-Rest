@@ -1,0 +1,3 @@
+python: can't open file '/home/bake/Rest-to-Rest/scripts/train_optuna_manager.py': [Errno 2] No such file or directory
+slurmstepd-s_004_m: error: common_file_write_uints: write value '4081969' to '/sys/fs/cgroup/cgroup.procs' failed: Device or resource busy
+slurmstepd-s_004_m: error: Unable to move pid 4081969 to init root cgroup /sys/fs/cgroup

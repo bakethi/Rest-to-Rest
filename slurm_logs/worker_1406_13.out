@@ -1,0 +1,17 @@
+--- Starting Optuna Worker 13 for study 'IntruderAvoidance-CNN-Parallel' ---
+--- Training model for 2000000 timesteps ---
+--- Saving model to /home/bake/Rest-to-Rest/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_479/agent.zip ---
+--- Training model for 2000000 timesteps ---
+--- Saving model to /home/bake/Rest-to-Rest/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_481/agent.zip ---
+--- Training model for 2000000 timesteps ---
+--- Saving model to /home/bake/Rest-to-Rest/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_485/agent.zip ---
+--- Training model for 2000000 timesteps ---
+--- Saving model to /home/bake/Rest-to-Rest/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_490/agent.zip ---
+--- Training model for 2000000 timesteps ---
+--- Saving model to /home/bake/Rest-to-Rest/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_495/agent.zip ---
+--- Training model for 2000000 timesteps ---
+--- Saving model to /home/bake/Rest-to-Rest/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_500/agent.zip ---
+--- Training model for 2000000 timesteps ---
+--- Saving model to /home/bake/Rest-to-Rest/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_505/agent.zip ---
+--- Training model for 2000000 timesteps ---
+--- Saving model to /home/bake/Rest-to-Rest/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_510/agent.zip ---
