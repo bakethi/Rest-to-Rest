@@ -46,7 +46,7 @@ def run_single_condition(args):
     all_trial_avg_deviations = []
 
     # The rest of this function remains exactly the same
-    for trial_num, _ in range(NUM_TRIALS_PER_CONDITION):
+    for trial_num in range(NUM_TRIALS_PER_CONDITION):
         print(f"[Worker PID: {os.getpid()}] Starting simulation trial {trial_num + 1}/{NUM_TRIALS_PER_CONDITION}...")
         try:
             env = IntruderAvoidanceEnv(
