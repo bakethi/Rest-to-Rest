@@ -36,7 +36,7 @@ def run_single_condition(args):
         }
     }
     # +++ Each worker now loads its own copy of the model +++
-    model = PPO.load(model_path, custom_objects=custom_objects)
+    model = PPO.load(model_path, custom_objects=custom_objects, device='cpu')
     
     total_collisions_for_setting = 0
     all_trial_avg_deviations = []
