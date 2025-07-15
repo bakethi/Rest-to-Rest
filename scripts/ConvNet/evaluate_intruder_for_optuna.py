@@ -28,6 +28,8 @@ W_DEVIATION = 1.0
 
 # +++ FIX #1: The worker function now accepts `model_path` instead of `model` +++
 def run_single_condition(args):
+    # --- ✅ ADDED PRINT #1: See if the worker process starts ---
+    print(f"[Worker PID: {os.getpid()}] Starting evaluation for condition: {args[1:]}")
     model_path, num_intruders, size, speed, interval = args
     # Tell SB3 where to find the LidarCNN class when loading the model
     custom_objects = {
@@ -36,13 +38,16 @@ def run_single_condition(args):
         }
     }
     # +++ Each worker now loads its own copy of the model +++
+    print(f"[Worker PID: {os.getpid()}] Loading model from {os.path.basename(model_path)}...")
     model = PPO.load(model_path, custom_objects=custom_objects, device='cpu')
+    print(f"[Worker PID: {os.getpid()}] Model loaded successfully.")
     
     total_collisions_for_setting = 0
     all_trial_avg_deviations = []
 
     # The rest of this function remains exactly the same
-    for _ in range(NUM_TRIALS_PER_CONDITION):
+    for trial_num, _ in range(NUM_TRIALS_PER_CONDITION):
+        print(f"[Worker PID: {os.getpid()}] Starting simulation trial {trial_num + 1}/{NUM_TRIALS_PER_CONDITION}...")
         try:
             env = IntruderAvoidanceEnv(
                 number_of_intruders=num_intruders,
@@ -70,7 +75,7 @@ def run_single_condition(args):
             if episode_deviations:
                 all_trial_avg_deviations.append(np.mean(episode_deviations))
         except Exception as e:
-            print(f"Error during single trial evaluation: {e}")
+            print(f"[Worker PID: {os.getpid()}] Error during simulation: {e}")
             continue
     
     # ... (rest of the metric calculation and return) ...
@@ -78,6 +83,7 @@ def run_single_condition(args):
     total_steps_in_setting = NUM_TRIALS_PER_CONDITION * MAX_STEPS_PER_EPISODE
     avg_collisions = total_collisions_for_setting / total_steps_in_setting if total_steps_in_setting > 0 else 0
     avg_deviation = np.mean(all_trial_avg_deviations) if all_trial_avg_deviations else 0
+    print(f"[Worker PID: {os.getpid()}] Finished condition. Returning results.")
     return {"Number of Intruders": num_intruders, "Intruder Size": size, "Intruder Speed": speed, "Direction Change Interval": interval, "Avg Collisions per Step": avg_collisions, "Avg Deviation": avg_deviation}
 
 
@@ -99,8 +105,10 @@ def evaluate_model(model_path: str, log_file: str = None):
     pool_args = [(model_path, *params) for params in param_combinations]
     all_results_data = []
 
+    print("\n--- Main process is now creating the multiprocessing pool. ---")
     print(f"--- Evaluating on {len(param_combinations)} conditions in parallel using {num_cores} cores ---")
     with multiprocessing.Pool(num_cores) as pool:
+        print("--- Multiprocessing pool created successfully. Mapping jobs to workers. ---")
         for result in tqdm(pool.imap_unordered(run_single_condition, pool_args), total=len(pool_args), desc="  Evaluating Conditions"):
             if result:
                 all_results_data.append(result)
