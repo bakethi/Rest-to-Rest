@@ -8,6 +8,7 @@ import random
 from tqdm import tqdm
 from stable_baselines3 import PPO
 import multiprocessing
+from LidarCNN import LidarCNN
 
 try:
     from gym_pathfinding.envs.intruder_avoidance_env import IntruderAvoidanceEnv
@@ -28,9 +29,14 @@ W_DEVIATION = 1.0
 # +++ FIX #1: The worker function now accepts `model_path` instead of `model` +++
 def run_single_condition(args):
     model_path, num_intruders, size, speed, interval = args
-    
+    # Tell SB3 where to find the LidarCNN class when loading the model
+    custom_objects = {
+        "policy": {
+            "features_extractor_class": LidarCNN
+        }
+    }
     # +++ Each worker now loads its own copy of the model +++
-    model = PPO.load(model_path)
+    model = PPO.load(model_path, custom_objects=custom_objects)
     
     total_collisions_for_setting = 0
     all_trial_avg_deviations = []
