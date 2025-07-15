@@ -4,8 +4,8 @@
 #SBATCH --output=slurm_logs/worker_%A_%a.out
 #SBATCH --error=slurm_logs/worker_%A_%a.err
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=4
-#SBATCH --mem=16G             # Kept at 16G, increase if you run out of memory
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=32G             # Kept at 16G, increase if you run out of memory
 #SBATCH --time=24:00:00
 
 # --- ✅ HPC-SPECIFIC DIRECTIVES ---
