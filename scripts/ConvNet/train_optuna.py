@@ -77,13 +77,17 @@ def train_agent(args):
         activation_fn=torch.nn.ReLU,
         net_arch=dict(pi=[256, 256], vf=[256, 256]) # This MLP gets features from your CNN
     )
-                         
+
+        # --- ✅ FIX: Automatically detect and use the GPU ---
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"--- Using device: {device} ---")
+
     model = PPO(
         "MlpPolicy",  # Still MlpPolicy, but it will now use your custom features_extractor
         vec_env,
         policy_kwargs=policy_kwargs,
         verbose=0,
-        device='cpu' # Change to 'cuda' if you have a GPU
+        device=device 
     )
 
     print(f"--- Training model for {args.total_timesteps} timesteps ---")

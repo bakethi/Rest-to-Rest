@@ -34,12 +34,19 @@ def objective(trial: optuna.Trial) -> float:
         "w_safe": trial.suggest_float("w_safe", 0.1, 0.9),
         "w_pos": trial.suggest_float("w_pos", 0.1, 0.9)
     }
+
+        # Get the number of CPUs from the SLURM environment variable
+    try:
+        n_envs = int(os.environ["SLURM_CPUS_PER_TASK"])
+    except KeyError:
+        n_envs = 4 # Default to 4 if not in a SLURM job
     
     # --- 2. Build and run the training command ---
     train_command = [
         'python', '-u', 'scripts/ConvNet/train_optuna.py',
         '--save_path', model_path,
         '--total_timesteps', '2000000',
+        '--n_envs', str(n_envs),
     ]
     # Dynamically add the hyperparameter arguments
     for key, value in pbrs_params.items():
