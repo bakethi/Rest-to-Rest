@@ -7,7 +7,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=32G             # Kept at 16G, increase if you run out of memory
 #SBATCH --time=24:00:00
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:ampere:1
 
 # --- ✅ HPC-SPECIFIC DIRECTIVES ---
 # These are required for your cluster
