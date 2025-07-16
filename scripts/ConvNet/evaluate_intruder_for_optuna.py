@@ -26,21 +26,25 @@ MAX_STEPS_PER_EPISODE = 1000
 W_COLLISION = 100.0
 W_DEVIATION = 1.0
 
-# +++ FIX #1: The worker function now accepts `model_path` instead of `model` +++
-def run_single_condition(args):
-    # --- ✅ ADDED PRINT #1: See if the worker process starts ---
-    print(f"[Worker PID: {os.getpid()}] Starting evaluation for condition: {args[1:]}")
-    model_path, num_intruders, size, speed, interval = args
-    # Tell SB3 where to find the LidarCNN class when loading the model
+# This function runs ONCE per worker process.
+# We use global variables to store the model so it's accessible to the worker task.
+def init_worker(model_path):
+    global worker_model
+    print(f"[Worker PID: {os.getpid()}] Initializing and loading model...")
+    
     custom_objects = {
         "policy": {
             "features_extractor_class": LidarCNN
         }
     }
-    # +++ Each worker now loads its own copy of the model +++
-    print(f"[Worker PID: {os.getpid()}] Loading model from {os.path.basename(model_path)}...")
-    model = PPO.load(model_path, custom_objects=custom_objects, device='cpu')
-    print(f"[Worker PID: {os.getpid()}] Model loaded successfully.")
+    worker_model = PPO.load(model_path, custom_objects=custom_objects, device='cpu')
+    print(f"[Worker PID: {os.getpid()}] Model loaded and ready.")
+
+# +++ FIX #1: The worker function now accepts `model_path` instead of `model` +++
+def run_single_condition(args):
+    # --- ✅ ADDED PRINT #1: See if the worker process starts ---
+    print(f"[Worker PID: {os.getpid()}] Starting evaluation for condition: {args[1:]}")
+    num_intruders, size, speed, interval = args
     
     total_collisions_for_setting = 0
     all_trial_avg_deviations = []
@@ -62,7 +66,7 @@ def run_single_condition(args):
 
             # Correctly run the episode loop
             for _ in range(MAX_STEPS_PER_EPISODE):
-                action, _ = model.predict(obs, deterministic=True)
+                action, _ = worker_model.predict(obs, deterministic=True)
                 obs, _, done, truncated, info = env.step(action)
                 current_deviation = np.linalg.norm(env.agent.position - env.target_position)
                 episode_deviations.append(current_deviation)
@@ -78,8 +82,6 @@ def run_single_condition(args):
             print(f"[Worker PID: {os.getpid()}] Error during simulation: {e}")
             continue
     
-    # ... (rest of the metric calculation and return) ...
-    # This part is unchanged
     total_steps_in_setting = NUM_TRIALS_PER_CONDITION * MAX_STEPS_PER_EPISODE
     avg_collisions = total_collisions_for_setting / total_steps_in_setting if total_steps_in_setting > 0 else 0
     avg_deviation = np.mean(all_trial_avg_deviations) if all_trial_avg_deviations else 0
@@ -102,13 +104,12 @@ def evaluate_model(model_path: str, log_file: str = None):
     param_combinations = random.sample(all_combinations, min(NUM_SAMPLED_CONDITIONS, len(all_combinations)))
 
     # +++ FIX #3: The pool arguments now contain the `model_path` string +++
-    pool_args = [(model_path, *params) for params in param_combinations]
+    pool_args = param_combinations
     all_results_data = []
 
     print("\n--- Main process is now creating the multiprocessing pool. ---")
     print(f"--- Evaluating on {len(param_combinations)} conditions in parallel using {num_cores} cores ---")
-    with multiprocessing.Pool(num_cores) as pool:
-        print("--- Multiprocessing pool created successfully. Mapping jobs to workers. ---")
+    with multiprocessing.Pool(processes=num_cores, initializer=init_worker, initargs=(model_path,)) as pool:
         for result in tqdm(pool.imap_unordered(run_single_condition, pool_args), total=len(pool_args), desc="  Evaluating Conditions"):
             if result:
                 all_results_data.append(result)
