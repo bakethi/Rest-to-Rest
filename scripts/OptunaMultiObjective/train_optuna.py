@@ -25,7 +25,7 @@ class RandomizedEnvWrapper(gym.Wrapper):
         super().__init__(env)
         # --- Define the curriculum ranges here ---
         self.num_intruders_range = [5, 20]  # Train with 5 to 20 intruders
-        self.intruder_speed_range = [0.8, 2.0]   # Train with speeds between 0.8 and 2.0
+        self.intruder_speed_range = [0.5, 1.0]   # Train with speeds between 0.8 and 2.0
 
     def reset(self, **kwargs):
         # Pick random values for the curriculum

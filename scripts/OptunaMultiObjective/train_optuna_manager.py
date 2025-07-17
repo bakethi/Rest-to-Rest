@@ -35,7 +35,7 @@ def objective(trial: optuna.Trial) -> float:
     
     # --- 2. Build and run the training command ---
     train_command = [
-        'python', 'scripts/train_optuna.py',
+        'python', 'scripts/OptunaMultiObjective/train_optuna.py',
         '--save_path', model_path,
         '--total_timesteps', '2000000',
     ]
@@ -54,7 +54,7 @@ def objective(trial: optuna.Trial) -> float:
 
         # --- 3. Build and run the evaluation command ---
         eval_command = [
-            'python', 'scripts/evaluate_intruder_for_optuna.py',
+            'python', 'scripts/OptunaMultiObjective/evaluate_intruder_for_optuna.py',
             '--model_path', model_path,
             '--log_file', eval_log_path
         ]
@@ -86,7 +86,7 @@ def objective(trial: optuna.Trial) -> float:
 # --- Main script execution ---
 if __name__ == "__main__":
     study = optuna.create_study(
-        study_name="IntruderAvoidance-PBRS-MultiObjective", # New name is recommended
+        study_name="IntruderAvoidance-PBRS-MultiObjective-more-eval", # New name is recommended
         directions=["minimize", "minimize"], # Specify a direction for EACH objective
         storage="sqlite:///pbrs_tuning.db",
         load_if_exists=True
