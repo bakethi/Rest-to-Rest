@@ -6,24 +6,24 @@ import os
 # --- 1. DEFINE ALL MODEL PATHS ---
 
 # --- Baseline Model ---
-base_model_csv_path = "results/baseline_average_params_evaluation.csv"
+base_model_csv_path = "results/baseline_average_params_evaluation_2.csv"
 
 # --- Single-Objective Model ---
-single_objective_model_csv_path = "optuna_trials/IntruderAvoidance-PBRS-Tuning/trial_205/evaluation_details.csv"
+single_objective_model_csv_path = "results/single_objective_evaluation.csv"
 
 # --- Multi-Objective Models from the Pareto Front ---
-multi_obj_base_path = "optuna_trials/IntruderAvoidance-PBRS-MultiObjective/"
+multi_obj_base_path = "results/"
 
 # *** CORRECTED: Swapped paths to match your analysis ***
 # Trial 155 is the safest (lowest collision rate)
 # Trial 20 is the most efficient (lowest deviation)
-mo_model_safe_csv_path = os.path.join(multi_obj_base_path, "trial_155/evaluation_details.csv")
-mo_model_balanced_csv_path = os.path.join(multi_obj_base_path, "trial_167/evaluation_details.csv") 
-mo_model_efficient_csv_path = os.path.join(multi_obj_base_path, "trial_20/evaluation_details.csv")
+mo_model_safe_csv_path = os.path.join(multi_obj_base_path, "safest_model_full_evaluation.csv")
+mo_model_balanced_csv_path = os.path.join(multi_obj_base_path, "balanced_model_full_evaluation.csv") 
+mo_model_efficient_csv_path = os.path.join(multi_obj_base_path, "most_efficient_model_full_evaluation.csv")
 
 
 # --- Output Configuration ---
-training_number = "Training_5" # Updated version number
+training_number = "Training_5/full_eval" # Updated version number
 save_dir = f"plots/intruder_plots/{training_number}"
 os.makedirs(save_dir, exist_ok=True)
 
@@ -60,6 +60,18 @@ except FileNotFoundError as e:
     print(f"Missing file: {e.filename}")
     exit()
 
+model_order = [
+    'Baseline (Avg. Params)',
+    'Single-Objective Optuna',
+    'Multi-Obj (Safest)',
+    'Multi-Obj (Balanced)',
+    'Multi-Obj (Most Efficient)'
+]
+
+# Create a color dictionary mapping each model to a color
+# We use a built-in seaborn palette with enough distinct colors
+colors = sns.color_palette("viridis", len(model_order))
+color_palette = dict(zip(model_order, colors))
 
 # --- 3. PLOTTING (This section remains unchanged) ---
 # The rest of the script is correct. It will now generate plots with the right data associated with each label.
@@ -97,7 +109,7 @@ sns.barplot(
     x="Intruder Speed",
     y="Avg Collisions per Step",
     hue="Model",
-    palette="muted"
+    palette=color_palette
 )
 plt.title("Model Comparison: Collisions vs. Intruder Speed")
 plt.xlabel("Intruder Speed")
@@ -143,7 +155,7 @@ ax = sns.scatterplot(
     x="Avg Deviation",
     y="Avg Collisions per Step",
     hue="Model",
-    palette="viridis",
+    palette=color_palette,
     s=250,
     alpha=0.9,
     legend='full'
