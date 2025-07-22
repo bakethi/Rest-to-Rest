@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=Transformer Study
+#SBATCH --job-name=Transformer-Study
 #SBATCH --output=slurm_logs/transformer_%A_%a.out
 #SBATCH --error=slurm_logs/transformer_%A_%a.err
 #SBATCH --nodes=1
