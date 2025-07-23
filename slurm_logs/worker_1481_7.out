@@ -1,0 +1,96 @@
+--- Staging project to fast local storage: /super_fast_storage/bake/job_1489_7 ---
+--- Starting Optuna Worker 7 in /super_fast_storage/bake/job_1489_7 ---
+
+--- Starting Trial 0 ---
+Parameters: {'d_safe': 26.165809487601102, 'k_bubble': 158.64453445262075, 'C_collision': 1873.170144714378, 'k_pos': 0.029244543305633395, 'k_action': 0.006811842926483843, 'w_safe': 0.19779818911905986, 'w_pos': 0.6728798162225846}
+Training command: python -u scripts/ConvNet/train_optuna.py --save_path /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_0/agent.zip --total_timesteps 2000000 --n_envs 8 --d_safe 26.165809487601102 --k_bubble 158.64453445262075 --C_collision 1873.170144714378 --k_pos 0.029244543305633395 --k_action 0.006811842926483843 --w_safe 0.19779818911905986 --w_pos 0.6728798162225846
+--- Using device: cuda ---
+--- Training model for 2000000 timesteps ---
+--- Saving model to /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_0/agent.zip ---
+Evaluation command: python -u scripts/ConvNet/evaluate_intruder_for_optuna.py --model_path /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_0/agent.zip --log_file /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_0/evaluation_details.csv
+✅ Trial 0 finished with values: [0.06356944444444444, 72.39339570109327]
+
+--- Starting Trial 1 ---
+Parameters: {'d_safe': 16.372756570744812, 'k_bubble': 43.18721081278936, 'C_collision': 1003.7343581668065, 'k_pos': 0.013203602685096795, 'k_action': 0.0640383362183164, 'w_safe': 0.7271068333744976, 'w_pos': 0.4705925852411569}
+Training command: python -u scripts/ConvNet/train_optuna.py --save_path /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_1/agent.zip --total_timesteps 2000000 --n_envs 8 --d_safe 16.372756570744812 --k_bubble 43.18721081278936 --C_collision 1003.7343581668065 --k_pos 0.013203602685096795 --k_action 0.0640383362183164 --w_safe 0.7271068333744976 --w_pos 0.4705925852411569
+--- Using device: cuda ---
+--- Training model for 2000000 timesteps ---
+--- Saving model to /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_1/agent.zip ---
+Evaluation command: python -u scripts/ConvNet/evaluate_intruder_for_optuna.py --model_path /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_1/agent.zip --log_file /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_1/evaluation_details.csv
+✅ Trial 1 finished with values: [0.056805555555555554, 64.71758927826333]
+
+--- Starting Trial 2 ---
+Parameters: {'d_safe': 21.214430830538717, 'k_bubble': 116.97891903720071, 'C_collision': 1378.2676962627602, 'k_pos': 0.030601353464616843, 'k_action': 0.03327818968420185, 'w_safe': 0.20065835956680964, 'w_pos': 0.7516236297348302}
+Training command: python -u scripts/ConvNet/train_optuna.py --save_path /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_2/agent.zip --total_timesteps 2000000 --n_envs 8 --d_safe 21.214430830538717 --k_bubble 116.97891903720071 --C_collision 1378.2676962627602 --k_pos 0.030601353464616843 --k_action 0.03327818968420185 --w_safe 0.20065835956680964 --w_pos 0.7516236297348302
+--- Using device: cuda ---
+--- Training model for 2000000 timesteps ---
+--- Saving model to /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_2/agent.zip ---
+Evaluation command: python -u scripts/ConvNet/evaluate_intruder_for_optuna.py --model_path /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_2/agent.zip --log_file /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_2/evaluation_details.csv
+✅ Trial 2 finished with values: [0.0832638888888889, 74.58498000829472]
+
+--- Starting Trial 3 ---
+Parameters: {'d_safe': 22.313899468864136, 'k_bubble': 106.00666452073564, 'C_collision': 1699.8279818793562, 'k_pos': 0.06103713589897451, 'k_action': 0.01481395553354391, 'w_safe': 0.499516578629581, 'w_pos': 0.64391059786758}
+Training command: python -u scripts/ConvNet/train_optuna.py --save_path /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_3/agent.zip --total_timesteps 2000000 --n_envs 8 --d_safe 22.313899468864136 --k_bubble 106.00666452073564 --C_collision 1699.8279818793562 --k_pos 0.06103713589897451 --k_action 0.01481395553354391 --w_safe 0.499516578629581 --w_pos 0.64391059786758
+--- Using device: cuda ---
+--- Training model for 2000000 timesteps ---
+--- Saving model to /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_3/agent.zip ---
+Evaluation command: python -u scripts/ConvNet/evaluate_intruder_for_optuna.py --model_path /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_3/agent.zip --log_file /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_3/evaluation_details.csv
+✅ Trial 3 finished with values: [0.03648611111111111, 61.295744720605256]
+
+--- Starting Trial 4 ---
+Parameters: {'d_safe': 10.059466601133618, 'k_bubble': 84.52289166682196, 'C_collision': 1081.936176054971, 'k_pos': 0.008647516053106732, 'k_action': 0.018579322437804704, 'w_safe': 0.16260145064943965, 'w_pos': 0.3276636048990803}
+Training command: python -u scripts/ConvNet/train_optuna.py --save_path /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_4/agent.zip --total_timesteps 2000000 --n_envs 8 --d_safe 10.059466601133618 --k_bubble 84.52289166682196 --C_collision 1081.936176054971 --k_pos 0.008647516053106732 --k_action 0.018579322437804704 --w_safe 0.16260145064943965 --w_pos 0.3276636048990803
+--- Using device: cuda ---
+--- Training model for 2000000 timesteps ---
+--- Saving model to /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_4/agent.zip ---
+Evaluation command: python -u scripts/ConvNet/evaluate_intruder_for_optuna.py --model_path /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_4/agent.zip --log_file /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_4/evaluation_details.csv
+✅ Trial 4 finished with values: [0.084125, 77.07181410073461]
+
+--- Starting Trial 5 ---
+Parameters: {'d_safe': 37.167341428747974, 'k_bubble': 22.117006852129734, 'C_collision': 1146.2797644761645, 'k_pos': 0.041852692973274035, 'k_action': 0.008657845930807808, 'w_safe': 0.11184880384201473, 'w_pos': 0.3368870717391129}
+Training command: python -u scripts/ConvNet/train_optuna.py --save_path /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_5/agent.zip --total_timesteps 2000000 --n_envs 8 --d_safe 37.167341428747974 --k_bubble 22.117006852129734 --C_collision 1146.2797644761645 --k_pos 0.041852692973274035 --k_action 0.008657845930807808 --w_safe 0.11184880384201473 --w_pos 0.3368870717391129
+--- Using device: cuda ---
+--- Training model for 2000000 timesteps ---
+--- Saving model to /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_5/agent.zip ---
+Evaluation command: python -u scripts/ConvNet/evaluate_intruder_for_optuna.py --model_path /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_5/agent.zip --log_file /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_5/evaluation_details.csv
+✅ Trial 5 finished with values: [0.05493055555555556, 68.16464453935707]
+
+--- Starting Trial 6 ---
+Parameters: {'d_safe': 37.63338313608622, 'k_bubble': 115.84744529642381, 'C_collision': 1856.3121838323104, 'k_pos': 0.05101797610128051, 'k_action': 0.020239999346414253, 'w_safe': 0.28177647226567065, 'w_pos': 0.6944422933898494}
+Training command: python -u scripts/ConvNet/train_optuna.py --save_path /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_6/agent.zip --total_timesteps 2000000 --n_envs 8 --d_safe 37.63338313608622 --k_bubble 115.84744529642381 --C_collision 1856.3121838323104 --k_pos 0.05101797610128051 --k_action 0.020239999346414253 --w_safe 0.28177647226567065 --w_pos 0.6944422933898494
+--- Using device: cuda ---
+--- Training model for 2000000 timesteps ---
+--- Saving model to /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_6/agent.zip ---
+Evaluation command: python -u scripts/ConvNet/evaluate_intruder_for_optuna.py --model_path /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_6/agent.zip --log_file /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_6/evaluation_details.csv
+✅ Trial 6 finished with values: [0.064625, 75.52392466643072]
+
+--- Starting Trial 7 ---
+Parameters: {'d_safe': 33.28953680481405, 'k_bubble': 149.0522202731356, 'C_collision': 753.3081506946679, 'k_pos': 0.026722634618726756, 'k_action': 0.0016302745107358773, 'w_safe': 0.8374397720096759, 'w_pos': 0.5131465280007709}
+Training command: python -u scripts/ConvNet/train_optuna.py --save_path /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_7/agent.zip --total_timesteps 2000000 --n_envs 8 --d_safe 33.28953680481405 --k_bubble 149.0522202731356 --C_collision 753.3081506946679 --k_pos 0.026722634618726756 --k_action 0.0016302745107358773 --w_safe 0.8374397720096759 --w_pos 0.5131465280007709
+--- Using device: cuda ---
+--- Training model for 2000000 timesteps ---
+--- Saving model to /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_7/agent.zip ---
+Evaluation command: python -u scripts/ConvNet/evaluate_intruder_for_optuna.py --model_path /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_7/agent.zip --log_file /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_7/evaluation_details.csv
+✅ Trial 7 finished with values: [0.07733333333333334, 76.07383578785986]
+
+--- Starting Trial 8 ---
+Parameters: {'d_safe': 27.803499237140265, 'k_bubble': 146.5735594902375, 'C_collision': 1766.2175813775962, 'k_pos': 0.04669646738145937, 'k_action': 0.02247173076104869, 'w_safe': 0.1751363435766744, 'w_pos': 0.7837982160200635}
+Training command: python -u scripts/ConvNet/train_optuna.py --save_path /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_8/agent.zip --total_timesteps 2000000 --n_envs 8 --d_safe 27.803499237140265 --k_bubble 146.5735594902375 --C_collision 1766.2175813775962 --k_pos 0.04669646738145937 --k_action 0.02247173076104869 --w_safe 0.1751363435766744 --w_pos 0.7837982160200635
+--- Using device: cuda ---
+--- Training model for 2000000 timesteps ---
+--- Saving model to /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_8/agent.zip ---
+Evaluation command: python -u scripts/ConvNet/evaluate_intruder_for_optuna.py --model_path /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_8/agent.zip --log_file /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_8/evaluation_details.csv
+✅ Trial 8 finished with values: [0.050055555555555555, 72.94612026143373]
+
+--- Starting Trial 9 ---
+Parameters: {'d_safe': 38.8910310235983, 'k_bubble': 198.2691685992522, 'C_collision': 696.8263175851937, 'k_pos': 0.02009785244005683, 'k_action': 0.0026337520507015624, 'w_safe': 0.5678803332730059, 'w_pos': 0.5957361113818712}
+Training command: python -u scripts/ConvNet/train_optuna.py --save_path /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_9/agent.zip --total_timesteps 2000000 --n_envs 8 --d_safe 38.8910310235983 --k_bubble 198.2691685992522 --C_collision 696.8263175851937 --k_pos 0.02009785244005683 --k_action 0.0026337520507015624 --w_safe 0.5678803332730059 --w_pos 0.5957361113818712
+--- Using device: cuda ---
+--- Training model for 2000000 timesteps ---
+--- Saving model to /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_9/agent.zip ---
+Evaluation command: python -u scripts/ConvNet/evaluate_intruder_for_optuna.py --model_path /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_9/agent.zip --log_file /super_fast_storage/bake/job_1489_7/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_9/evaluation_details.csv
+✅ Trial 9 finished with values: [0.0905138888888889, 73.20001840173028]
+
+--- Worker finished 10 trials ---
+--- Worker finished. Staging results back to permanent storage. ---
+--- Job 7 fully complete. ---

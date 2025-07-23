@@ -1,0 +1,4 @@
+--- Starting Optuna Worker 1 for study 'IntruderAvoidance-CNN-Parallel' ---
+--- Using device: cuda ---
+--- Training model for 2000000 timesteps ---
+--- Saving model to /home/bake/Rest-to-Rest/optuna_trials/IntruderAvoidance-CNN-Parallel/trial_601/agent.zip ---

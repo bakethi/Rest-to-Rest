@@ -198,3 +198,6 @@
   gym.logger.warn(
 /home/bake/Rest-to-Rest/.venv/lib/python3.10/site-packages/gymnasium/spaces/box.py:305: UserWarning: [33mWARN: Box high's precision lowered by casting to float32, current high.dtype=float64[0m
   gym.logger.warn(
+slurmstepd-s_004_m: error: *** JOB 1454 ON s_004_m CANCELLED AT 2025-07-15T07:28:15 ***
+slurmstepd-s_004_m: error: common_file_write_uints: write value '4193203' to '/sys/fs/cgroup/cgroup.procs' failed: Device or resource busy
+slurmstepd-s_004_m: error: Unable to move pid 4193203 to init root cgroup /sys/fs/cgroup
