@@ -7,7 +7,7 @@ from LidarCNN import LidarCNN
 
 # --- CONFIGURATION ---
 # Use the absolute path to a model file on the HPC
-MODEL_PATH = "/home/bake/Projects/Rest-to-Rest/models/trial_535_agent.zip"
+MODEL_PATH = "/home/bake/Rest-to-Rest/models/trial_535_agent.zip"
 NUM_BENCHMARK_RUNS = 20 # Loading is slow, so we use fewer runs than for inference
 
 def benchmark_io_load(model_path: str):
