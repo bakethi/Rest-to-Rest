@@ -5,6 +5,7 @@ import json
 import os
 import re
 import argparse
+from optuna.storages import JournalStorage, JournalFileStorage
 
 def objective(trial: optuna.Trial) -> float:
     """
@@ -87,27 +88,28 @@ def objective(trial: optuna.Trial) -> float:
         print(f"❌ Trial {trial.number} failed in a subprocess.")
         print(f"--- STDOUT ---\n{e.stdout}") # Print captured output
         print(f"--- STDERR ---\n{e.stderr}") # Print captured error
-        # --- ✅ FIX #2: Return a tuple for multi-objective studies ---
         return float('inf'), float('inf')
     except (ValueError, json.JSONDecodeError) as e:
         print(f"❌ Trial {trial.number} failed during KPI parsing: {e}")
-        # --- ✅ FIX #2 (continued) ---
         return float('inf'), float('inf')
 
 # --- Main script execution ---
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run parallel trials for a single Optuna study.")
     parser.add_argument("--study_name", type=str, required=True, help="Name for the Optuna study.")
-    parser.add_argument("--storage_url", type=str, required=True, help="Database URL for Optuna storage.")
+    parser.add_argument("--storage_path", type=str, required=True, default="optuna_study.log", help="Path for the JournalFileStorage log file.")
     parser.add_argument("--n_trials_per_worker", type=int, default=10, help="Number of trials for this worker to run.")
     args = parser.parse_args()
+
+    # This ensures that all workers logging to the same file share the same study.
+    storage = JournalStorage(JournalFileStorage(args.storage_path))
 
     # This line connects to the central study database.
     # `load_if_exists=True` is crucial so that all workers join the same study.
     study = optuna.create_study(
         study_name=args.study_name,
         directions=["minimize", "minimize"],
-        storage=args.storage_url,
+        storage=storage,
         load_if_exists=True
     )
 
