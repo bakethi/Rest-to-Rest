@@ -12,18 +12,18 @@ base_model_csv_path = "results/baseline_average_params_evaluation_2.csv"
 single_objective_model_csv_path = "results/single_objective_evaluation.csv"
 
 # --- Multi-Objective Models from the Pareto Front ---
-multi_obj_base_path = "results/"
+multi_obj_base_path = "results/Training_7"
 
 # *** CORRECTED: Swapped paths to match your analysis ***
 # Trial 155 is the safest (lowest collision rate)
 # Trial 20 is the most efficient (lowest deviation)
-mo_model_safe_csv_path = os.path.join(multi_obj_base_path, "safest_model_full_evaluation.csv")
-mo_model_balanced_csv_path = os.path.join(multi_obj_base_path, "balanced_model_full_evaluation.csv") 
-mo_model_efficient_csv_path = os.path.join(multi_obj_base_path, "most_efficient_model_full_evaluation.csv")
+mo_model_safe_csv_path = os.path.join(multi_obj_base_path, "evaluation_safest.csv")
+mo_model_balanced_csv_path = os.path.join(multi_obj_base_path, "evaluation_balanced.csv") 
+mo_model_efficient_csv_path = os.path.join(multi_obj_base_path, "evaluation_most_efficient.csv")
 
 
 # --- Output Configuration ---
-training_number = "Training_5/full_eval" # Updated version number
+training_number = "Training_7/part_eval" # Updated version number
 save_dir = f"plots/intruder_plots/{training_number}"
 os.makedirs(save_dir, exist_ok=True)
 
