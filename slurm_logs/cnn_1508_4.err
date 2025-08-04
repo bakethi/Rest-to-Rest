@@ -1,0 +1,9 @@
+/var/spool/slurm/d/job01513/slurm_script: line 46: .venv/bin/activate: No such file or directory
+Traceback (most recent call last):
+  File "/super_fast_storage/bake/job_1513_4/scripts/ConvNet/train_optuna_manager.py", line 2, in <module>
+    import optuna
+ModuleNotFoundError: No module named 'optuna'
+rsync: [sender] change_dir "/super_fast_storage/bake/job_1513_4/optuna_trials" failed: No such file or directory (2)
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1338) [sender=3.2.7]
+slurmstepd-s_004_m: error: common_file_write_uints: write value '2322911' to '/sys/fs/cgroup/cgroup.procs' failed: Device or resource busy
+slurmstepd-s_004_m: error: Unable to move pid 2322911 to init root cgroup /sys/fs/cgroup
