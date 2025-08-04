@@ -6,12 +6,12 @@ import os
 # --- 1. DEFINE ALL MODEL PATHS ---
 
 # --- Baseline Model ---
-base_model_csv_path = "results/baseline_average_params_evaluation_2.csv"
+base_model_csv_path = "results/baseline_average_params_evaluation.csv"
 
 # --- Single-Objective Model ---
 single_objective_model_csv_path = "results/single_objective_evaluation.csv"
 
-# --- Multi-Objective Models from the Pareto Front ---
+# --- Multi-Objective TPE Models from the Pareto Front ---
 multi_obj_base_path = "results/Training_7"
 
 # *** CORRECTED: Swapped paths to match your analysis ***
@@ -21,9 +21,15 @@ mo_model_safe_csv_path = os.path.join(multi_obj_base_path, "evaluation_safest.cs
 mo_model_balanced_csv_path = os.path.join(multi_obj_base_path, "evaluation_balanced.csv") 
 mo_model_efficient_csv_path = os.path.join(multi_obj_base_path, "evaluation_most_efficient.csv")
 
+# Multi-Obj Random Sampler
+random_sampler_base_path = "models/best_model_24_50_PBRS_Random_Sampler"
+
+random_sampler_safest_path = os.path.join(random_sampler_base_path, "evaluation_safest.csv")
+random_sampler_balanced_path = os.path.join(random_sampler_base_path, "evaluation_balanced.csv")
+random_sampler_most_efficient_path = os.path.join(random_sampler_base_path, "evaluation_most_efficient.csv")
 
 # --- Output Configuration ---
-training_number = "Training_7/part_eval" # Updated version number
+training_number = "random_sampler" # Updated version number
 save_dir = f"plots/intruder_plots/{training_number}"
 os.makedirs(save_dir, exist_ok=True)
 
@@ -36,8 +42,11 @@ try:
     df_mo_safe = pd.read_csv(mo_model_safe_csv_path)
     df_mo_balanced = pd.read_csv(mo_model_balanced_csv_path)
     df_mo_efficient = pd.read_csv(mo_model_efficient_csv_path)
+    df_rs_safe = pd.read_csv(random_sampler_safest_path)
+    df_rs_balanced = pd.read_csv(random_sampler_balanced_path)
+    df_rs_efficient = pd.read_csv(random_sampler_most_efficient_path)
 
-    all_dfs = [df_base, df_single_obj, df_mo_safe, df_mo_balanced, df_mo_efficient]
+    all_dfs = [df_base, df_single_obj, df_mo_safe, df_mo_balanced, df_mo_efficient, df_rs_safe, df_rs_balanced, df_rs_efficient]
     
     # Clean column names
     for df in all_dfs:
@@ -45,15 +54,18 @@ try:
 
     # Add a descriptive 'Model' column to each DataFrame
     # *** This section is now correct because the DataFrames were loaded correctly above ***
-    df_base['Model'] = 'Baseline (Avg. Params)'
-    df_single_obj['Model'] = 'Single-Objective Optuna'
-    df_mo_safe['Model'] = 'Multi-Obj (Safest)'
-    df_mo_balanced['Model'] = 'Multi-Obj (Balanced)'
-    df_mo_efficient['Model'] = 'Multi-Obj (Most Efficient)'
+    df_base['Model'] = 'Baseline (Hand-Crafted)'
+    df_single_obj['Model'] = 'Single-Objective TPE'
+    df_mo_safe['Model'] = 'Multi-Obj TPE(Safest)'
+    df_mo_balanced['Model'] = 'Multi-Obj TPE(Balanced)'
+    df_mo_efficient['Model'] = 'Multi-Obj TPE(Most Efficient)'
+    df_rs_safe['Model'] = 'Multi-Obj RS(Safest)'
+    df_rs_balanced['Model'] = 'Multi-Obj RS(Balanced)'
+    df_rs_efficient['Model'] = 'Multi-Obj RS(Most Efficient)'
 
     df_comparison = pd.concat(all_dfs, ignore_index=True)
 
-    print("✅ Successfully loaded and combined data for 5 models with corrected labels.")
+    print("✅ Successfully loaded and combined data for 8 models with corrected labels.")
 
 except FileNotFoundError as e:
     print(f"❌ Error: Could not find a CSV file. Please check the paths.")
@@ -61,11 +73,14 @@ except FileNotFoundError as e:
     exit()
 
 model_order = [
-    'Baseline (Avg. Params)',
-    'Single-Objective Optuna',
-    'Multi-Obj (Safest)',
-    'Multi-Obj (Balanced)',
-    'Multi-Obj (Most Efficient)'
+    'Baseline (Hand-Crafted)',
+    'Single-Objective TPE',
+    'Multi-Obj TPE(Safest)',
+    'Multi-Obj TPE(Balanced)',
+    'Multi-Obj TPE(Most Efficient)',
+    'Multi-Obj RS(Safest)',
+    'Multi-Obj RS(Balanced)',
+    'Multi-Obj RS(Most Efficient)',
 ]
 
 # Create a color dictionary mapping each model to a color
