@@ -17,9 +17,9 @@ multi_obj_base_path = "results/Training_7"
 # *** CORRECTED: Swapped paths to match your analysis ***
 # Trial 155 is the safest (lowest collision rate)
 # Trial 20 is the most efficient (lowest deviation)
-mo_model_safe_csv_path = os.path.join(multi_obj_base_path, "evaluation_safest.csv")
-mo_model_balanced_csv_path = os.path.join(multi_obj_base_path, "evaluation_balanced.csv") 
-mo_model_efficient_csv_path = os.path.join(multi_obj_base_path, "evaluation_most_efficient.csv")
+NSGAII_model_safe_csv_path = os.path.join(multi_obj_base_path, "evaluation_safest.csv")
+NSGAII_model_balanced_csv_path = os.path.join(multi_obj_base_path, "evaluation_balanced.csv") 
+NSGAII_model_efficient_csv_path = os.path.join(multi_obj_base_path, "evaluation_most_efficient.csv")
 
 # Multi-Obj Random Sampler
 random_sampler_base_path = "models/best_model_24_50_PBRS_Random_Sampler"
@@ -39,14 +39,14 @@ try:
     # Load all data sources
     df_base = pd.read_csv(base_model_csv_path)
     df_single_obj = pd.read_csv(single_objective_model_csv_path)
-    df_mo_safe = pd.read_csv(mo_model_safe_csv_path)
-    df_mo_balanced = pd.read_csv(mo_model_balanced_csv_path)
-    df_mo_efficient = pd.read_csv(mo_model_efficient_csv_path)
+    df_NSGAII_safe = pd.read_csv(NSGAII_model_safe_csv_path)
+    df_NSGAII_balanced = pd.read_csv(NSGAII_model_balanced_csv_path)
+    df_NSGAII_efficient = pd.read_csv(NSGAII_model_efficient_csv_path)
     df_rs_safe = pd.read_csv(random_sampler_safest_path)
     df_rs_balanced = pd.read_csv(random_sampler_balanced_path)
     df_rs_efficient = pd.read_csv(random_sampler_most_efficient_path)
 
-    all_dfs = [df_base, df_single_obj, df_mo_safe, df_mo_balanced, df_mo_efficient, df_rs_safe, df_rs_balanced, df_rs_efficient]
+    all_dfs = [df_base, df_single_obj, df_NSGAII_safe, df_NSGAII_balanced, df_NSGAII_efficient, df_rs_safe, df_rs_balanced, df_rs_efficient]
     
     # Clean column names
     for df in all_dfs:
@@ -56,9 +56,9 @@ try:
     # *** This section is now correct because the DataFrames were loaded correctly above ***
     df_base['Model'] = 'Baseline (Hand-Crafted)'
     df_single_obj['Model'] = 'Single-Objective TPE'
-    df_mo_safe['Model'] = 'Multi-Obj TPE(Safest)'
-    df_mo_balanced['Model'] = 'Multi-Obj TPE(Balanced)'
-    df_mo_efficient['Model'] = 'Multi-Obj TPE(Most Efficient)'
+    df_NSGAII_safe['Model'] = 'Multi-Obj NSGAII(Safest)'
+    df_NSGAII_balanced['Model'] = 'Multi-Obj NSGAII(Balanced)'
+    df_NSGAII_efficient['Model'] = 'Multi-Obj NSGAII(Most Efficient)'
     df_rs_safe['Model'] = 'Multi-Obj RS(Safest)'
     df_rs_balanced['Model'] = 'Multi-Obj RS(Balanced)'
     df_rs_efficient['Model'] = 'Multi-Obj RS(Most Efficient)'
@@ -75,9 +75,9 @@ except FileNotFoundError as e:
 model_order = [
     'Baseline (Hand-Crafted)',
     'Single-Objective TPE',
-    'Multi-Obj TPE(Safest)',
-    'Multi-Obj TPE(Balanced)',
-    'Multi-Obj TPE(Most Efficient)',
+    'Multi-Obj NSGAII(Safest)',
+    'Multi-Obj NSGAII(Balanced)',
+    'Multi-Obj NSGAII(Most Efficient)',
     'Multi-Obj RS(Safest)',
     'Multi-Obj RS(Balanced)',
     'Multi-Obj RS(Most Efficient)',
