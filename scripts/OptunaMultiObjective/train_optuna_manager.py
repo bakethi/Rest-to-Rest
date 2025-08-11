@@ -4,7 +4,7 @@ import subprocess
 import json
 import os
 import re
-from optuna.multi_objective.samplers import MOTPEMultiObjectiveSampler
+from optuna.samplers import TPESampler
 
 def objective(trial: optuna.Trial) -> float:
     """
@@ -86,9 +86,9 @@ def objective(trial: optuna.Trial) -> float:
 
 # --- Main script execution ---
 if __name__ == "__main__":
-    sampler = MOTPEMultiObjectiveSampler(seed=42)
+    sampler = TPESampler(seed=42)
     study = optuna.create_study(
-        study_name="IntruderAvoidance-PBRS-MultiObjective-MOTPE", # New name is recommended
+        study_name="IntruderAvoidance-PBRS-MultiObjective-TPE", # New name is recommended
         directions=["minimize", "minimize"], # Specify a direction for EACH objective
         storage="sqlite:///pbrs_tuning.db",
         sampler=sampler,
