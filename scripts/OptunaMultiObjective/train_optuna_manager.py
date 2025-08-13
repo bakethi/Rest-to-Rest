@@ -4,7 +4,7 @@ import subprocess
 import json
 import os
 import re
-from optuna.samplers import TPESampler
+from optuna.samplers import NSGAIIISampler
 
 def objective(trial: optuna.Trial) -> float:
     """
@@ -86,7 +86,7 @@ def objective(trial: optuna.Trial) -> float:
 
 # --- Main script execution ---
 if __name__ == "__main__":
-    sampler = TPESampler(seed=42)
+    sampler = NSGAIIISampler(seed=42)
     study = optuna.create_study(
         study_name="IntruderAvoidance-PBRS-MultiObjective-TPE", # New name is recommended
         directions=["minimize", "minimize"], # Specify a direction for EACH objective

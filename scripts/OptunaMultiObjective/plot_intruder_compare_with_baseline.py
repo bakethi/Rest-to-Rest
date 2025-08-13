@@ -11,7 +11,7 @@ base_model_csv_path = "results/baseline_average_params_evaluation.csv"
 # --- Single-Objective Model ---
 single_objective_model_csv_path = "results/single_objective_evaluation.csv"
 
-# --- Multi-Objective TPE Models from the Pareto Front ---
+# --- Multi-Objective NSGAII Models from the Pareto Front ---
 multi_obj_base_path = "results/Training_7"
 
 # *** CORRECTED: Swapped paths to match your analysis ***
@@ -28,8 +28,15 @@ random_sampler_safest_path = os.path.join(random_sampler_base_path, "evaluation_
 random_sampler_balanced_path = os.path.join(random_sampler_base_path, "evaluation_balanced.csv")
 random_sampler_most_efficient_path = os.path.join(random_sampler_base_path, "evaluation_most_efficient.csv")
 
+# Multi-Obj TPE
+MO_TPE_base_path = "models/best_model_24_50_PBRS_MO_TPE"
+
+MO_TPE_safest_path = os.path.join(MO_TPE_base_path, "evaluation_safest.csv")
+MO_TPE_balanced_path = os.path.join(MO_TPE_base_path, "evaluation_balanced.csv")
+MO_TPE_most_efficient_path = os.path.join(MO_TPE_base_path, "evaluation_most_efficient.csv")
+
 # --- Output Configuration ---
-training_number = "random_sampler" # Updated version number
+training_number = "MO_TPE" # Updated version number
 save_dir = f"plots/intruder_plots/{training_number}"
 os.makedirs(save_dir, exist_ok=True)
 
@@ -45,8 +52,15 @@ try:
     df_rs_safe = pd.read_csv(random_sampler_safest_path)
     df_rs_balanced = pd.read_csv(random_sampler_balanced_path)
     df_rs_efficient = pd.read_csv(random_sampler_most_efficient_path)
+    df_MO_TPE_safe = pd.read_csv(MO_TPE_safest_path)
+    df_MO_TPE_balanced = pd.read_csv(MO_TPE_balanced_path)
+    df_MO_TPE_efficient = pd.read_csv(MO_TPE_most_efficient_path)
 
-    all_dfs = [df_base, df_single_obj, df_NSGAII_safe, df_NSGAII_balanced, df_NSGAII_efficient, df_rs_safe, df_rs_balanced, df_rs_efficient]
+    all_dfs = [df_base,
+            df_single_obj,
+            df_NSGAII_safe, df_NSGAII_balanced, df_NSGAII_efficient,
+            df_rs_safe, df_rs_balanced, df_rs_efficient,
+            df_MO_TPE_safe, df_MO_TPE_balanced, df_MO_TPE_efficient]
     
     # Clean column names
     for df in all_dfs:
@@ -62,6 +76,9 @@ try:
     df_rs_safe['Model'] = 'Multi-Obj RS(Safest)'
     df_rs_balanced['Model'] = 'Multi-Obj RS(Balanced)'
     df_rs_efficient['Model'] = 'Multi-Obj RS(Most Efficient)'
+    df_MO_TPE_safe['Model'] = 'Multi-Obj TPE(Safest)'
+    df_MO_TPE_balanced['Model'] = 'Multi-Obj TPE(Balanced)'
+    df_MO_TPE_efficient['Model'] = 'Multi-Obj TPE(Most Efficient)'
 
     df_comparison = pd.concat(all_dfs, ignore_index=True)
 
@@ -81,6 +98,9 @@ model_order = [
     'Multi-Obj RS(Safest)',
     'Multi-Obj RS(Balanced)',
     'Multi-Obj RS(Most Efficient)',
+    'Multi-Obj TPE(Safest)',
+    'Multi-Obj TPE(Balanced)',
+    'Multi-Obj TPE(Most Efficient)',
 ]
 
 # Create a color dictionary mapping each model to a color
