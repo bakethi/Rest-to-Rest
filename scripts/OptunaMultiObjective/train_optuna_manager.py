@@ -88,14 +88,14 @@ def objective(trial: optuna.Trial) -> float:
 if __name__ == "__main__":
     sampler = NSGAIIISampler(seed=42)
     study = optuna.create_study(
-        study_name="IntruderAvoidance-PBRS-MultiObjective-TPE", # New name is recommended
+        study_name="IntruderAvoidance-PBRS-MultiObjective-NSGAIII", # New name is recommended
         directions=["minimize", "minimize"], # Specify a direction for EACH objective
         storage="sqlite:///pbrs_tuning.db",
         sampler=sampler,
         load_if_exists=True
     )
 
-    study.optimize(objective, n_trials=200)
+    study.optimize(objective, n_trials=40)
 
     print("\n--- Optimization Finished ---")
     # For multi-objective, print the Pareto front (all non-dominated trials)
