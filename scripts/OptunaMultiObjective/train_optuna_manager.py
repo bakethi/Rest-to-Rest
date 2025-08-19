@@ -4,7 +4,7 @@ import subprocess
 import json
 import os
 import re
-from optuna.samplers import NSGAIIISampler
+from optuna.samplers import CmaEsSampler
 
 def objective(trial: optuna.Trial) -> float:
     """
@@ -73,7 +73,19 @@ def objective(trial: optuna.Trial) -> float:
         objective_values = kpi_data['values']
 
         print(f"✅ Trial {trial.number} finished with values: {objective_values}")
-        return tuple(objective_values)
+
+        # Get the individual KPI values from the list
+        avg_collisions = objective_values[0]
+        avg_deviation = objective_values[1]
+
+        W_COLLISION = 100.0
+        W_DEVIATION = 1.0
+
+        # Return a single, scalarized objective value
+        single_objective_value = (W_COLLISION * avg_collisions) + (W_DEVIATION * avg_deviation)
+        
+
+        return single_objective_value
 
     except subprocess.CalledProcessError as e:
         print(f"❌ Trial {trial.number} failed in a subprocess.")
@@ -86,16 +98,16 @@ def objective(trial: optuna.Trial) -> float:
 
 # --- Main script execution ---
 if __name__ == "__main__":
-    sampler = NSGAIIISampler(seed=42)
+    sampler = CmaEsSampler(seed=42)
     study = optuna.create_study(
-        study_name="IntruderAvoidance-PBRS-MultiObjective-NSGAIII", # New name is recommended
-        directions=["minimize", "minimize"], # Specify a direction for EACH objective
+        study_name="IntruderAvoidance-PBRS-SingleObjective-CmaEs", # New name is recommended
+        direction="minimize",  # Specify a direction for EACH objective
         storage="sqlite:///pbrs_tuning.db",
         sampler=sampler,
         load_if_exists=True
     )
 
-    study.optimize(objective, n_trials=40)
+    study.optimize(objective, n_trials=200)
 
     print("\n--- Optimization Finished ---")
     # For multi-objective, print the Pareto front (all non-dominated trials)
