@@ -35,8 +35,15 @@ MO_TPE_safest_path = os.path.join(MO_TPE_base_path, "evaluation_safest.csv")
 MO_TPE_balanced_path = os.path.join(MO_TPE_base_path, "evaluation_balanced.csv")
 MO_TPE_most_efficient_path = os.path.join(MO_TPE_base_path, "evaluation_most_efficient.csv")
 
+# Multi-Obj NSGAIII
+MO_NSGAIII_base_path = "models/best_model_24_50_PBRS_MO_NSGAIII"
+
+MO_NSGAIII_safest_path = os.path.join(MO_NSGAIII_base_path, "evaluation_safest.csv")
+MO_NSGAIII_balanced_path = os.path.join(MO_NSGAIII_base_path, "evaluation_balanced.csv")
+MO_NSGAIII_most_efficient_path = os.path.join(MO_NSGAIII_base_path, "evaluation_most_efficient.csv")
+
 # --- Output Configuration ---
-training_number = "MO_TPE" # Updated version number
+training_number = "MO_NSGAIII" # Updated version number
 save_dir = f"plots/intruder_plots/{training_number}"
 os.makedirs(save_dir, exist_ok=True)
 
@@ -55,12 +62,16 @@ try:
     df_MO_TPE_safe = pd.read_csv(MO_TPE_safest_path)
     df_MO_TPE_balanced = pd.read_csv(MO_TPE_balanced_path)
     df_MO_TPE_efficient = pd.read_csv(MO_TPE_most_efficient_path)
+    df_MO_NSGAIII_safe = pd.read_csv(MO_NSGAIII_safest_path)
+    df_MO_NSGAIII_balanced = pd.read_csv(MO_NSGAIII_balanced_path)
+    df_MO_NSGAIII_efficient = pd.read_csv(MO_NSGAIII_most_efficient_path)
 
     all_dfs = [df_base,
             df_single_obj,
             df_NSGAII_safe, df_NSGAII_balanced, df_NSGAII_efficient,
             df_rs_safe, df_rs_balanced, df_rs_efficient,
-            df_MO_TPE_safe, df_MO_TPE_balanced, df_MO_TPE_efficient]
+            df_MO_TPE_safe, df_MO_TPE_balanced, df_MO_TPE_efficient,
+            df_MO_NSGAIII_safe, df_MO_NSGAIII_balanced, df_MO_NSGAIII_efficient,]
     
     # Clean column names
     for df in all_dfs:
@@ -79,6 +90,9 @@ try:
     df_MO_TPE_safe['Model'] = 'Multi-Obj TPE(Safest)'
     df_MO_TPE_balanced['Model'] = 'Multi-Obj TPE(Balanced)'
     df_MO_TPE_efficient['Model'] = 'Multi-Obj TPE(Most Efficient)'
+    df_MO_NSGAIII_safe['Model'] = 'Multi-Obj NSGAIII(Safest)'
+    df_MO_NSGAIII_balanced['Model'] = 'Multi-Obj NSGAIII(Balanced)'
+    df_MO_NSGAIII_efficient['Model'] = 'Multi-Obj NSGAIII(Most Efficient)'
 
     df_comparison = pd.concat(all_dfs, ignore_index=True)
 
@@ -101,6 +115,9 @@ model_order = [
     'Multi-Obj TPE(Safest)',
     'Multi-Obj TPE(Balanced)',
     'Multi-Obj TPE(Most Efficient)',
+    'Multi-Obj NSGAIII(Safest)',
+    'Multi-Obj NSGAIII(Balanced)',
+    'Multi-Obj NSGAIII(Most Efficient)',
 ]
 
 # Create a color dictionary mapping each model to a color
