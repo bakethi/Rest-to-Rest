@@ -45,8 +45,11 @@ MO_NSGAIII_most_efficient_path = os.path.join(MO_NSGAIII_base_path, "evaluation_
 # SO CmaEs
 SO_CmaEs_csv_path = "/home/bake/Projects/Rest-to-Rest/models/best_model_24_50_PBRS_SO_CmaEs/evaluation_SO-CmaEs.csv"
 
+# SO GPSampler
+SO_GPSampler_csv_path = "/home/bake/Projects/Rest-to-Rest/models/best_model_24_50_PBRS_SO_GPSampler/evaluation_SO-GPSampler.csv"
+
 # --- Output Configuration ---
-training_number = "SO-CmaEs" # Updated version number
+training_number = "SO-GPSampler" # Updated version number
 save_dir = f"plots/intruder_plots/{training_number}"
 os.makedirs(save_dir, exist_ok=True)
 
@@ -69,6 +72,7 @@ try:
     df_MO_NSGAIII_balanced = pd.read_csv(MO_NSGAIII_balanced_path)
     df_MO_NSGAIII_efficient = pd.read_csv(MO_NSGAIII_most_efficient_path)
     df_SO_CmaEs = pd.read_csv(SO_CmaEs_csv_path)
+    df_SO_GPSampler = pd.read_csv(SO_GPSampler_csv_path)
 
     all_dfs = [df_base,
             df_single_obj,
@@ -77,6 +81,7 @@ try:
             df_MO_TPE_safe, df_MO_TPE_balanced, df_MO_TPE_efficient,
             df_MO_NSGAIII_safe, df_MO_NSGAIII_balanced, df_MO_NSGAIII_efficient,
             df_SO_CmaEs,
+            df_SO_GPSampler,
             ]
     
     # Clean column names
@@ -86,20 +91,21 @@ try:
     # Add a descriptive 'Model' column to each DataFrame
     # *** This section is now correct because the DataFrames were loaded correctly above ***
     df_base['Model'] = 'Baseline (Hand-Crafted)'
-    df_single_obj['Model'] = 'Single-Objective TPE'
-    df_NSGAII_safe['Model'] = 'Multi-Obj NSGAII(Safest)'
-    df_NSGAII_balanced['Model'] = 'Multi-Obj NSGAII(Balanced)'
-    df_NSGAII_efficient['Model'] = 'Multi-Obj NSGAII(Most Efficient)'
-    df_rs_safe['Model'] = 'Multi-Obj RS(Safest)'
-    df_rs_balanced['Model'] = 'Multi-Obj RS(Balanced)'
-    df_rs_efficient['Model'] = 'Multi-Obj RS(Most Efficient)'
-    df_MO_TPE_safe['Model'] = 'Multi-Obj TPE(Safest)'
-    df_MO_TPE_balanced['Model'] = 'Multi-Obj TPE(Balanced)'
-    df_MO_TPE_efficient['Model'] = 'Multi-Obj TPE(Most Efficient)'
-    df_MO_NSGAIII_safe['Model'] = 'Multi-Obj NSGAIII(Safest)'
-    df_MO_NSGAIII_balanced['Model'] = 'Multi-Obj NSGAIII(Balanced)'
-    df_MO_NSGAIII_efficient['Model'] = 'Multi-Obj NSGAIII(Most Efficient)'
-    df_SO_CmaEs['Model'] = 'Single-Objective CmaEs'
+    df_single_obj['Model'] = 'SO TPE'
+    df_NSGAII_safe['Model'] = 'MO NSGAII(Safest)'
+    df_NSGAII_balanced['Model'] = 'MO NSGAII(Balanced)'
+    df_NSGAII_efficient['Model'] = 'MO NSGAII(Most Efficient)'
+    df_rs_safe['Model'] = 'MO RS(Safest)'
+    df_rs_balanced['Model'] = 'MO RS(Balanced)'
+    df_rs_efficient['Model'] = 'MO RS(Most Efficient)'
+    df_MO_TPE_safe['Model'] = 'MO TPE(Safest)'
+    df_MO_TPE_balanced['Model'] = 'MO TPE(Balanced)'
+    df_MO_TPE_efficient['Model'] = 'MO TPE(Most Efficient)'
+    df_MO_NSGAIII_safe['Model'] = 'MO NSGAIII(Safest)'
+    df_MO_NSGAIII_balanced['Model'] = 'MO NSGAIII(Balanced)'
+    df_MO_NSGAIII_efficient['Model'] = 'MO NSGAIII(Most Efficient)'
+    df_SO_CmaEs['Model'] = 'SO CmaEs'
+    df_SO_GPSampler['Model'] = 'SO GPSampler'
 
     df_comparison = pd.concat(all_dfs, ignore_index=True)
 
@@ -112,20 +118,21 @@ except FileNotFoundError as e:
 
 model_order = [
     'Baseline (Hand-Crafted)',
-    'Single-Objective TPE',
-    'Multi-Obj NSGAII(Safest)',
-    'Multi-Obj NSGAII(Balanced)',
-    'Multi-Obj NSGAII(Most Efficient)',
-    'Multi-Obj RS(Safest)',
-    'Multi-Obj RS(Balanced)',
-    'Multi-Obj RS(Most Efficient)',
-    'Multi-Obj TPE(Safest)',
-    'Multi-Obj TPE(Balanced)',
-    'Multi-Obj TPE(Most Efficient)',
-    'Multi-Obj NSGAIII(Safest)',
-    'Multi-Obj NSGAIII(Balanced)',
-    'Multi-Obj NSGAIII(Most Efficient)',
-    'Single-Objective CmaEs',
+    'SO TPE',
+    'MO NSGAII(Safest)',
+    'MO NSGAII(Balanced)',
+    'MO NSGAII(Most Efficient)',
+    'MO RS(Safest)',
+    'MO RS(Balanced)',
+    'MO RS(Most Efficient)',
+    'MO TPE(Safest)',
+    'MO TPE(Balanced)',
+    'MO TPE(Most Efficient)',
+    'MO NSGAIII(Safest)',
+    'MO NSGAIII(Balanced)',
+    'MO NSGAIII(Most Efficient)',
+    'SO CmaEs',
+    'SO GPSampler'
 ]
 
 # Create a color dictionary mapping each model to a color
