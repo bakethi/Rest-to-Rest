@@ -4,7 +4,7 @@ import subprocess
 import json
 import os
 import re
-from optuna.samplers import CmaEsSampler
+from optuna.samplers import GPSampler
 
 def objective(trial: optuna.Trial) -> float:
     """
@@ -98,16 +98,16 @@ def objective(trial: optuna.Trial) -> float:
 
 # --- Main script execution ---
 if __name__ == "__main__":
-    sampler = CmaEsSampler(seed=42)
+    sampler = GPSampler(seed=42)
     study = optuna.create_study(
-        study_name="IntruderAvoidance-PBRS-SingleObjective-CmaEs", # New name is recommended
+        study_name="IntruderAvoidance-PBRS-SingleObjective-GPSampler", # New name is recommended
         direction="minimize",  # Specify a direction for EACH objective
         storage="sqlite:///pbrs_tuning.db",
         sampler=sampler,
         load_if_exists=True
     )
 
-    study.optimize(objective, n_trials=200)
+    study.optimize(objective, n_trials=54)
 
     print("\n--- Optimization Finished ---")
     # For multi-objective, print the Pareto front (all non-dominated trials)
