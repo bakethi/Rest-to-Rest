@@ -3,7 +3,7 @@ import subprocess
 import sys
 
 # The name of your evaluation script file
-EVALUATION_SCRIPT_NAME = "evaluate_intruder_for_optuna.py"
+EVALUATION_SCRIPT_NAME = "scripts/OptunaMultiObjective/evaluate_intruder_for_optuna.py"
 
 # --- CONFIGURATION ---
 # Define all models to be evaluated here.
@@ -24,11 +24,11 @@ MODELS_TO_EVALUATE = {
         "log_path": f"{csv_output_path}/MO_NSGAII/MO_NSGAII_evaluation_safest.csv"
     },
     "MO NSGA-II (Balanced)": {
-        "model_path": "models/best_model_24_50_PBRS_MO_NSGAII/balanced_model.zip",  # <-- UPDATE THIS PATH
+        "model_path": "models/best_model_24_50_PBRS_MO_NSGAII/balanced.zip",  # <-- UPDATE THIS PATH
         "log_path": f"{csv_output_path}/MO_NSGAII/evaluation_balanced.csv"
     },
     "MO NSGA-II (Most Efficient)": {
-        "model_path": "models/best_model_24_50_PBRS_MO_NSGAII/most_efficient_model.zip",  # <-- UPDATE THIS PATH
+        "model_path": "models/best_model_24_50_PBRS_MO_NSGAII/most_efficient.zip",  # <-- UPDATE THIS PATH
         "log_path": f"{csv_output_path}/MO_NSGAII/evaluation_most_efficient.csv"
     },
     "MO Random Sampler (Safest)": {
