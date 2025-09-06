@@ -11,50 +11,50 @@ EVALUATION_SCRIPT_NAME = "scripts/OptunaMultiObjective/evaluate_intruder_for_opt
 # and the desired output path for the evaluation results (.csv file).
 csv_output_path = "/home/bake/Projects/Rest-to-Rest/results/PBRS-Full-Eval"
 MODELS_TO_EVALUATE = {
-    "Baseline": {
-        "model_path": "models/baseline_average_params/agent_avg.zip",  # <-- UPDATE THIS PATH
-        "log_path": f"{csv_output_path}/baseline_average_params_evaluation.csv"
-    },
-    "Single-Objective TPE": {
-        "model_path": "models/best_model_24_50_PBRS_SO_TPE/SO-TPE.zip",  # <-- UPDATE THIS PATH
-        "log_path": f"{csv_output_path}/single_objective_TPE_evaluation.csv"
-    },
-    "MO NSGA-II (Safest)": {
-        "model_path": "models/best_model_24_50_PBRS_MO_NSGAII/safest.zip",  # <-- UPDATE THIS PATH
-        "log_path": f"{csv_output_path}/MO_NSGAII/MO_NSGAII_evaluation_safest.csv"
-    },
+#    "Baseline": {
+#        "model_path": "models/baseline_average_params/agent_avg.zip",  # <-- UPDATE THIS PATH
+#        "log_path": f"{csv_output_path}/baseline_average_params_evaluation.csv"
+#    },
+#    "Single-Objective TPE": {
+#        "model_path": "models/best_model_24_50_PBRS_SO_TPE/SO-TPE.zip",  # <-- UPDATE THIS PATH
+#        "log_path": f"{csv_output_path}/single_objective_TPE_evaluation.csv"
+#    },
+#    "MO NSGA-II (Safest)": {
+#        "model_path": "models/best_model_24_50_PBRS_MO_NSGAII/safest.zip",  # <-- UPDATE THIS PATH
+#        "log_path": f"{csv_output_path}/MO_NSGAII/MO_NSGAII_evaluation_safest.csv"
+#    },
     "MO NSGA-II (Balanced)": {
         "model_path": "models/best_model_24_50_PBRS_MO_NSGAII/balanced.zip",  # <-- UPDATE THIS PATH
         "log_path": f"{csv_output_path}/MO_NSGAII/evaluation_balanced.csv"
     },
-    "MO NSGA-II (Most Efficient)": {
-        "model_path": "models/best_model_24_50_PBRS_MO_NSGAII/most_efficient.zip",  # <-- UPDATE THIS PATH
-        "log_path": f"{csv_output_path}/MO_NSGAII/evaluation_most_efficient.csv"
-    },
+#    "MO NSGA-II (Most Efficient)": {
+#        "model_path": "models/best_model_24_50_PBRS_MO_NSGAII/most_efficient.zip",  # <-- UPDATE THIS PATH
+#        "log_path": f"{csv_output_path}/MO_NSGAII/evaluation_most_efficient.csv"
+#    },
     "MO Random Sampler (Safest)": {
         "model_path": "models/best_model_24_50_PBRS_Random_Sampler/safest.zip", # <-- UPDATE
         "log_path": f"{csv_output_path}/MO_Random_Sampler/evaluation_safest.csv"
     },
-    "MO Random Sampler (Balanced)": {
-        "model_path": "models/best_model_24_50_PBRS_Random_Sampler/balanced.zip", # <-- UPDATE
-        "log_path": f"{csv_output_path}/MO_Random_Sampler/evaluation_balanced.csv"
-    },
+#    "MO Random Sampler (Balanced)": {
+#        "model_path": "models/best_model_24_50_PBRS_Random_Sampler/balanced.zip", # <-- UPDATE
+#        "log_path": f"{csv_output_path}/MO_Random_Sampler/evaluation_balanced.csv"
+#    },
     "MO Random Sampler (Most Efficient)": {
         "model_path": "models/best_model_24_50_PBRS_Random_Sampler/most_efficient.zip", # <-- UPDATE
         "log_path": f"{csv_output_path}/MO_Random_Sampler/evaluation_most_efficient.csv"
     },
-    "SO CmaEs": {
-        "model_path": "models/best_model_24_50_PBRS_SO_CmaEs/SO-CmaEs.zip", # <-- UPDATE
-        "log_path": f"{csv_output_path}/SO_CmaEs/evaluation_SO-CmaEs.csv"
-    },
-    "SO GPSampler": {
-        "model_path": "models/best_model_24_50_PBRS_SO_GPSampler/SO-GPSampler.zip", # <-- UPDATE
-        "log_path": f"{csv_output_path}/SO_GPSampler/evaluation_SO-GPSampler.csv"
-    },
-    "MO TPE (Safest)": {
-        "model_path": "models/best_model_24_50_PBRS_MO_TPE/safest.zip",
-        "log_path": f"{csv_output_path}/MO_TPE/evaluation_safest.csv"
-    },
+#    "SO CmaEs": {
+#        "model_path": "models/best_model_24_50_PBRS_SO_CmaEs/SO-CmaEs.zip", # <-- UPDATE
+#        "log_path": f"{csv_output_path}/SO_CmaEs/evaluation_SO-CmaEs.csv"
+#    },
+#    "SO GPSampler": {
+#        "model_path": "models/best_model_24_50_PBRS_SO_GPSampler/SO-GPSampler.zip", # <-- UPDATE
+#        "log_path": f"{csv_output_path}/SO_GPSampler/evaluation_SO-GPSampler.csv"
+#    },
+#    "MO TPE (Safest)": {
+#        "model_path": "models/best_model_24_50_PBRS_MO_TPE/safest.zip",
+#        "log_path": f"{csv_output_path}/MO_TPE/evaluation_safest.csv"
+#    },
         "MO TPE (Balanced)": {
         "model_path": "models/best_model_24_50_PBRS_MO_TPE/balanced.zip",
         "log_path": f"{csv_output_path}/MO_TPE/evaluation_balanced.csv"
@@ -71,10 +71,10 @@ MODELS_TO_EVALUATE = {
         "model_path": "models/best_model_24_50_PBRS_MO_NSGAIII/balanced.zip",
         "log_path": f"{csv_output_path}/MO_NSGAIII/evaluation_balanced.csv"
     },
-        "MO NSGAIII (Most Efficient)": {
-        "model_path": "models/best_model_24_50_PBRS_MO_NSGAIII/most_efficient.zip",
-        "log_path": f"{csv_output_path}/MO_NSGAIII/evaluation_most_efficient.csv"
-    },
+#        "MO NSGAIII (Most Efficient)": {
+#        "model_path": "models/best_model_24_50_PBRS_MO_NSGAIII/most_efficient.zip",
+#        "log_path": f"{csv_output_path}/MO_NSGAIII/evaluation_most_efficient.csv"
+#    },
 }
 
 

@@ -6,13 +6,13 @@ import os
 # --- 1. DEFINE ALL MODEL PATHS ---
 
 # --- Baseline Model ---
-base_model_csv_path = "results/baseline_average_params_evaluation.csv"
+base_model_csv_path = "results/PBRS-Full-Eval/baseline/baseline_average_params_evaluation.csv"
 
-# --- Single-Objective Model ---
-single_objective_model_csv_path = "results/single_objective_evaluation.csv"
+# --- Single-Objective TPE Model ---
+single_objective_model_csv_path = "results/PBRS-Full-Eval/SO_TPE/single_objective_TPE_evaluation.csv"
 
 # --- Multi-Objective NSGAII Models from the Pareto Front ---
-multi_obj_base_path = "results/Training_7"
+multi_obj_base_path = "results/PBRS-Full-Eval/MO_NSGAII"
 
 # *** CORRECTED: Swapped paths to match your analysis ***
 # Trial 155 is the safest (lowest collision rate)
@@ -22,34 +22,34 @@ NSGAII_model_balanced_csv_path = os.path.join(multi_obj_base_path, "evaluation_b
 NSGAII_model_efficient_csv_path = os.path.join(multi_obj_base_path, "evaluation_most_efficient.csv")
 
 # Multi-Obj Random Sampler
-random_sampler_base_path = "models/best_model_24_50_PBRS_Random_Sampler"
+random_sampler_base_path = "results/PBRS-Full-Eval/MO_Random_Sampler"
 
 random_sampler_safest_path = os.path.join(random_sampler_base_path, "evaluation_safest.csv")
 random_sampler_balanced_path = os.path.join(random_sampler_base_path, "evaluation_balanced.csv")
 random_sampler_most_efficient_path = os.path.join(random_sampler_base_path, "evaluation_most_efficient.csv")
 
 # Multi-Obj TPE
-MO_TPE_base_path = "models/best_model_24_50_PBRS_MO_TPE"
+MO_TPE_base_path = "results/PBRS-Full-Eval/MO_TPE"
 
 MO_TPE_safest_path = os.path.join(MO_TPE_base_path, "evaluation_safest.csv")
 MO_TPE_balanced_path = os.path.join(MO_TPE_base_path, "evaluation_balanced.csv")
 MO_TPE_most_efficient_path = os.path.join(MO_TPE_base_path, "evaluation_most_efficient.csv")
 
 # Multi-Obj NSGAIII
-MO_NSGAIII_base_path = "models/best_model_24_50_PBRS_MO_NSGAIII"
+MO_NSGAIII_base_path = "results/PBRS-Full-Eval/MO_NSGAIII"
 
 MO_NSGAIII_safest_path = os.path.join(MO_NSGAIII_base_path, "evaluation_safest.csv")
 MO_NSGAIII_balanced_path = os.path.join(MO_NSGAIII_base_path, "evaluation_balanced.csv")
 MO_NSGAIII_most_efficient_path = os.path.join(MO_NSGAIII_base_path, "evaluation_most_efficient.csv")
 
 # SO CmaEs
-SO_CmaEs_csv_path = "/home/bake/Projects/Rest-to-Rest/models/best_model_24_50_PBRS_SO_CmaEs/evaluation_SO-CmaEs.csv"
+SO_CmaEs_csv_path = "results/PBRS-Full-Eval/SO_CmaEs/evaluation_SO-CmaEs.csv"
 
 # SO GPSampler
-SO_GPSampler_csv_path = "/home/bake/Projects/Rest-to-Rest/models/best_model_24_50_PBRS_SO_GPSampler/evaluation_SO-GPSampler.csv"
+SO_GPSampler_csv_path = "results/PBRS-Full-Eval/SO_GPSampler/evaluation_SO-GPSampler.csv"
 
 # --- Output Configuration ---
-training_number = "SO-GPSampler" # Updated version number
+training_number = "Full-Eval" # Updated version number
 save_dir = f"plots/intruder_plots/{training_number}"
 os.makedirs(save_dir, exist_ok=True)
 
