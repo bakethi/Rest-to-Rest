@@ -1,0 +1,11 @@
+results profiling 1Mil steps with single thread intruder env and mlp ppo
+
+--- Overall Performance ---
+Total Runtime for 1,000,000 steps: 1020.85 seconds
+Steps Per Second (SPS): 979.57
+------------------------------
+--- Detailed Time Breakdown ---
+1. Environment Simulation (env.step):         337.11s (33.02%)
+2. Data Collection & Buffering (Overhead):    442.48s (43.34%)
+3. Neural Network Training (model.train):       240.76s (23.58%)
+4. Other (Logging, Callbacks, etc.):        0.50s (0.05%)
