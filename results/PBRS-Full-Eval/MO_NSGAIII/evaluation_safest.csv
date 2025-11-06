@@ -1,0 +1,11 @@
+Number of Intruders,Intruder Size,Intruder Speed,Direction Change Interval,Avg Collisions per Step,Avg Deviation,Model
+20,9,2,6,0.0591,72.59342942949631,safest.zip
+20,6,1,6,0.0141,63.45974526938087,safest.zip
+30,6,3,6,0.1728,62.005041870080355,safest.zip
+30,3,1,9,0.042,63.5180401418447,safest.zip
+40,6,2,9,0.1633,81.02385334212674,safest.zip
+40,3,2,12,0.157,83.52953058633696,safest.zip
+40,3,2,9,0.1444,89.16312469923129,safest.zip
+40,6,3,9,0.2975,59.94892881763523,safest.zip
+40,9,3,9,0.3639,64.34767832141151,safest.zip
+40,9,1,12,0.0902,77.34533269241655,safest.zip

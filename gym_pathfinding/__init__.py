@@ -5,3 +5,8 @@ register(
      id="gym_pathfinding/IntruderAvoidance-v0",
      entry_point="gym_pathfinding.envs.intruder_avoidance_env:IntruderAvoidanceEnv",
 )
+
+register(
+    id='gym_pathfinding/IntruderAvoidanceTransformer-v0',
+    entry_point='gym_pathfinding.envs.intruder_avoidance_env_transformer:IntruderAvoidanceTransformerEnv',
+)

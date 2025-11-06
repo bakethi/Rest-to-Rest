@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/home/bake/Rest-to-Rest/scripts/ConvNet/train_optuna_manager.py", line 2, in <module>
+    import optuna
+ModuleNotFoundError: No module named 'optuna'
+slurmstepd-s_004_m: error: common_file_write_uints: write value '4087893' to '/sys/fs/cgroup/cgroup.procs' failed: Device or resource busy
+slurmstepd-s_004_m: error: Unable to move pid 4087893 to init root cgroup /sys/fs/cgroup

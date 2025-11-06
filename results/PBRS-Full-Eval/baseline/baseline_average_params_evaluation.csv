@@ -1,0 +1,11 @@
+Number of Intruders,Intruder Size,Intruder Speed,Direction Change Interval,Avg Collisions per Step,Avg Deviation,Model
+20,6,3,12,0.2115,85.317923095727,agent_avg.zip
+20,6,2,6,0.0367,79.6207678488228,agent_avg.zip
+20,9,3,12,0.2838,86.72590291783894,agent_avg.zip
+30,3,3,6,0.0752,73.34958452591489,agent_avg.zip
+30,6,3,6,0.1528,74.6043026753559,agent_avg.zip
+30,3,1,6,0.0096,79.56746825663711,agent_avg.zip
+30,6,1,9,0.0594,84.77619319432,agent_avg.zip
+30,9,1,6,0.0232,70.80532408335344,agent_avg.zip
+40,3,2,12,0.153,69.50838620115863,agent_avg.zip
+40,9,2,9,0.1474,74.57039100294772,agent_avg.zip

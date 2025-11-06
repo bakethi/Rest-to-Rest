@@ -99,3 +99,16 @@ Training5:
 Multi-Objective Optimization
 
 Training6 - new baseline with avg. parameters from the study:
+
+Training7 - more eval samples
+train:
+        self.num_intruders_range = [5, 20]  # Train with 5 to 20 intruders
+        self.intruder_speed_range = [0.5, 1.0]   # Train with speeds between 0.8 and 2.0
+eval:
+NUMBERS_OF_INTRUDERS = [30, 40]
+INTRUDER_SIZES = [3, 6, 9]
+INTRUDER_SPEEDS = [2, 3]
+CHANGE_DIRECTION_INTERVALS = [6, 9, 12]
+NUM_SAMPLED_CONDITIONS = 10
+NUM_TRIALS_PER_CONDITION = 100
+MAX_STEPS_PER_EPISODE = 1000

@@ -1,0 +1,11 @@
+Number of Intruders,Intruder Size,Intruder Speed,Direction Change Interval,Avg Collisions per Step,Avg Deviation,Model
+20,6,3,6,0.1184,69.744826661166,most_efficient.zip
+20,3,1,12,0.0107,73.81938941179446,most_efficient.zip
+20,9,3,9,0.2323,69.11267878826122,most_efficient.zip
+30,9,1,12,0.0568,68.93808062617167,most_efficient.zip
+30,3,3,9,0.1566,73.86370677884557,most_efficient.zip
+30,3,3,6,0.1155,67.9688799373978,most_efficient.zip
+30,6,2,12,0.1889,72.84213253564477,most_efficient.zip
+30,3,2,9,0.0932,85.90285134452049,most_efficient.zip
+40,6,1,9,0.0702,69.77778225925127,most_efficient.zip
+40,3,1,9,0.0456,69.79849759185133,most_efficient.zip
